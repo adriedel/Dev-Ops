@@ -161,3 +161,36 @@ app.delete("/api/bewerbungen/:id", (req, res) => {
     res.json({ message: "Bewerbung gelöscht" });
   });
 });
+
+// GET Statistiken
+app.get("/api/statistiken", (req, res) => {
+  const query = `
+    SELECT 
+      status,
+      COUNT(*) as anzahl
+    FROM bewerbungen
+    GROUP BY status
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    const stats = {
+      beworben: 0,
+      stufe_weiter: 0,
+      angenommen: 0,
+      abgelehnt: 0,
+      keine_antwort: 0,
+      gesamt: 0,
+    };
+
+    rows.forEach((row) => {
+      stats[row.status] = row.anzahl;
+      stats.gesamt += row.anzahl;
+    });
+
+    res.json(stats);
+  });
+});
