@@ -43,4 +43,20 @@ export const bewerbungenApi = {
       throw new Error("Fehler beim Aktualisieren der Bewerbung");
     return response.json();
   },
+
+  // Bewerbung löschen
+  delete: async (id) => {
+    const response = await fetch(`${API_URL}/bewerbungen/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Fehler beim Löschen der Bewerbung");
+    return response.json();
+  },
+
+  // Statistiken abrufen
+  getStats: async () => {
+    const response = await fetch(`${API_URL}/statistiken`);
+    if (!response.ok) throw new Error("Fehler beim Laden der Statistiken");
+    return response.json();
+  },
 };
