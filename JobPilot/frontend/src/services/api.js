@@ -29,4 +29,18 @@ export const bewerbungenApi = {
     if (!response.ok) throw new Error("Fehler beim Erstellen der Bewerbung");
     return response.json();
   },
+
+  // Bewerbung aktualisieren
+  update: async (id, data) => {
+    const response = await fetch(`${API_URL}/bewerbungen/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok)
+      throw new Error("Fehler beim Aktualisieren der Bewerbung");
+    return response.json();
+  },
 };
