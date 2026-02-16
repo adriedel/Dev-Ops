@@ -97,3 +97,52 @@ app.post("/api/bewerbungen", (req, res) => {
     },
   );
 });
+
+// PUT Bewerbung aktualisieren
+app.put("/api/bewerbungen/:id", (req, res) => {
+  const { id } = req.params;
+  const {
+    position,
+    firma,
+    status,
+    datum,
+    standort,
+    ansprechpartner,
+    notizen,
+    bewerbungsart,
+    startdatum,
+  } = req.body;
+
+  const query = `
+    UPDATE bewerbungen 
+    SET position = ?, firma = ?, status = ?, datum = ?, 
+        standort = ?, ansprechpartner = ?, notizen = ?, 
+        bewerbungsart = ?, startdatum = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `;
+
+  db.run(
+    query,
+    [
+      position,
+      firma,
+      status,
+      datum,
+      standort,
+      ansprechpartner,
+      notizen,
+      bewerbungsart,
+      startdatum,
+      id,
+    ],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ error: "Bewerbung nicht gefunden" });
+      }
+      res.json({ message: "Bewerbung aktualisiert" });
+    },
+  );
+});
