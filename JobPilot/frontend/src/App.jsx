@@ -1,7 +1,13 @@
 import Header from "./components/Header/header";
+import StatCards from "./components/StatCards/statcards";
 
 function App() {
-  return <Header />;
+  return (
+    <>
+      <Header />
+      <StatCards />
+    </>
+  );
 }
 
 export default App;
