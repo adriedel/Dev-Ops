@@ -146,3 +146,18 @@ app.put("/api/bewerbungen/:id", (req, res) => {
     },
   );
 });
+
+// DELETE Bewerbung löschen
+app.delete("/api/bewerbungen/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.run("DELETE FROM bewerbungen WHERE id = ?", [id], function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Bewerbung nicht gefunden" });
+    }
+    res.json({ message: "Bewerbung gelöscht" });
+  });
+});
