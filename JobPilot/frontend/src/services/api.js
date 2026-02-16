@@ -16,4 +16,17 @@ export const bewerbungenApi = {
     if (!response.ok) throw new Error("Bewerbung nicht gefunden");
     return response.json();
   },
+
+  // Neue Bewerbung erstellen
+  create: async (data) => {
+    const response = await fetch(`${API_URL}/bewerbungen`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error("Fehler beim Erstellen der Bewerbung");
+    return response.json();
+  },
 };
