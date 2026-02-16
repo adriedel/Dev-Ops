@@ -194,3 +194,7 @@ app.get("/api/statistiken", (req, res) => {
     res.json(stats);
   });
 });
+
+app.listen(PORT, () => {
+  console.log(`Server läuft auf Port ${PORT}`);
+});
