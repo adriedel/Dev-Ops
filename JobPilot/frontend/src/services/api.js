@@ -10,3 +10,10 @@ export const bewerbungenApi = {
     return response.json();
   },
 
+  // Einzelne Bewerbung abrufen
+  getById: async (id) => {
+    const response = await fetch(`${API_URL}/bewerbungen/${id}`);
+    if (!response.ok) throw new Error("Bewerbung nicht gefunden");
+    return response.json();
+  },
+};
