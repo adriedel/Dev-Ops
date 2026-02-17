@@ -16,14 +16,13 @@ export const STATUS_LABELS = {
   [STATUS.KEINE_ANTWORT]: "Keine Antwort",
 };
 
-/*export const STATUS_ICONS = {
-  [STATUS.BEWORBEN]: '✈️',
-  [STATUS.STUFE_WEITER]: '➡️',
-  [STATUS.ANGENOMMEN]: '✅',
-  [STATUS.ABGELEHNT]: '❌',
-  [STATUS.KEINE_ANTWORT]: '🕐'
+export const STATUS_ICONS = {
+  [STATUS.BEWORBEN]: "✈️",
+  [STATUS.STUFE_WEITER]: "➡️",
+  [STATUS.ANGENOMMEN]: "✅",
+  [STATUS.ABGELEHNT]: "❌",
+  [STATUS.KEINE_ANTWORT]: "🕐",
 };
-*/
 
 export const BEWERBUNGSARTEN = [
   "Initiativbewerbung",
