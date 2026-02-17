@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import Header from "./components/Header/header";
-import StatCards from "./components/StatCards/StatCards";
+import StatCards from "./components/StatCards/statcards";
 import SearchBar from "./components/SearchBar/SearchBar";
 import BewerbungsCard from "./components/BewerbungsCard/BewerbungsCard";
 import BewerbungsModal from "./components/BewerbungsModal/BewerbungsModal";
