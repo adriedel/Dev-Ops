@@ -126,6 +126,21 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
           </div>
         )}
       </section>
+
+      {bewerbung.notizen && (
+        <div className="card-footer">
+          <div className="card-notizen">{bewerbung.notizen}</div>
+        </div>
+      )}
+
+      {bewerbung.startdatum && bewerbung.status === "angenommen" && (
+        <div className="card-footer">
+          <div className="detail-item">
+            <span>🎯</span>
+            <span>Start am {formatDate(bewerbung.startdatum)}</span>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

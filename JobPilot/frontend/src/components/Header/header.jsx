@@ -1,5 +1,5 @@
 import "./header.css";
-function Header() {
+function Header({ darkMode, onToggleDarkMode, onNewBewerbung }) {
   return (
     <header>
       <section>
@@ -10,14 +10,11 @@ function Header() {
         <button
           className="theme-toggle"
           aria-label="Toggle dark mode"
-          //onClick={onToggleDarkMode}
+          onClick={onToggleDarkMode}
         >
-          "☀️" : "🌙"
+          {darkMode ? "☀️" : "🌙"}
         </button>
-        <button
-          className="btn btn-application"
-          //onClick={onNewBewerbung}>
-        >
+        <button className="btn btn-application" onClick={onNewBewerbung}>
           <span>+</span> Neue Bewerbung
         </button>
       </section>
