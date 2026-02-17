@@ -1,13 +1,19 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const jobRoutes = require("./routes/jobRoutes");
+const db = require("./database");
 
 const app = express();
 const PORT = 3001;
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Vite Frontend Port
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+  }),
+);
 app.use(bodyParser.json());
 
 // GET alle Bewerbungen
