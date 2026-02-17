@@ -1,6 +1,12 @@
+import React, { useState, useEffect } from "react";
+import "./App.css";
 import Header from "./components/Header/header";
-import StatCards from "./components/StatCards/statcards";
+import StatCards from "./components/StatCards/StatCards";
 import SearchBar from "./components/SearchBar/SearchBar";
+import BewerbungsCard from "./components/BewerbungsCard/BewerbungsCard";
+import BewerbungsModal from "./components/BewerbungsModal/BewerbungsModal";
+import { bewerbungenApi } from "./services/api";
+import { STATUS } from "./utils/constants";
 
 function App() {
   const [bewerbungen, setBewerbungen] = useState([]);
@@ -116,15 +122,15 @@ function App() {
     } else {
       setEditingBewerbung(null);
       setFormData({
-        position: "",
-        firma: "",
-        status: STATUS.BEWORBEN,
-        datum: new Date().toISOString().split("T")[0],
-        standort: "",
-        ansprechpartner: "",
-        notizen: "",
-        bewerbungsart: "Initiativbewerbung",
-        startdatum: "",
+        position: bewerbung.position || "",
+        firma: bewerbung.firma || "",
+        status: bewerbung.status || STATUS.BEWORBEN,
+        datum: bewerbung.datum || new Date().toISOString().split("T")[0],
+        standort: bewerbung.standort || "",
+        ansprechpartner: bewerbung.ansprechpartner || "",
+        notizen: bewerbung.notizen || "",
+        bewerbungsart: bewerbung.bewerbungsart || "Initiativbewerbung",
+        startdatum: bewerbung.startdatum || "",
       });
     }
     setShowModal(true);
@@ -169,9 +175,48 @@ function App() {
 
   return (
     <>
-      <Header />
-      <StatCards />
-      <SearchBar />
+      <section className="app">
+        <Header
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
+          onNewBewerbung={() => openModal()}
+        />
+        <StatCards stats={stats} />
+        <SearchBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          filterStatus={filterStatus}
+          onFilterChange={setFilterStatus}
+        />
+
+        <section className="bewerbungen-grid">
+          {getFilteredBewerbungen().length === 0 ? (
+            <div className="empty-state">
+              <h3>Keine Bewerbungen gefunden</h3>
+              <p>Erstellen Sie Ihre erste Bewerbung, um loszulegen!</p>
+            </div>
+          ) : (
+            getFilteredBewerbungen().map((bewerbung) => (
+              <BewerbungsCard
+                key={bewerbung.id}
+                bewerbung={bewerbung}
+                onEdit={openModal}
+                onDelete={handleDelete}
+                onStatusChange={handleStatusChange}
+              />
+            ))
+          )}
+        </section>
+
+        <BewerbungsModal
+          isOpen={showModal}
+          onClose={closeModal}
+          onSubmit={handleSubmit}
+          formData={formData}
+          onChange={handleInputChange}
+          isEditing={!!editingBewerbung}
+        />
+      </section>
     </>
   );
 }
