@@ -40,6 +40,7 @@ function App() {
     notizen: "",
     bewerbungsart: "Initiativbewerbung",
     startdatum: "",
+    link: "",
   });
 
   // Dark Mode Effekt
@@ -122,15 +123,16 @@ function App() {
     } else {
       setEditingBewerbung(null);
       setFormData({
-        position: bewerbung.position || "",
-        firma: bewerbung.firma || "",
-        status: bewerbung.status || STATUS.BEWORBEN,
-        datum: bewerbung.datum || new Date().toISOString().split("T")[0],
-        standort: bewerbung.standort || "",
-        ansprechpartner: bewerbung.ansprechpartner || "",
-        notizen: bewerbung.notizen || "",
-        bewerbungsart: bewerbung.bewerbungsart || "Initiativbewerbung",
-        startdatum: bewerbung.startdatum || "",
+        position: "",
+        firma: "",
+        status: STATUS.BEWORBEN,
+        datum: new Date().toISOString().split("T")[0],
+        standort: "",
+        ansprechpartner: "",
+        notizen: "",
+        bewerbungsart: "Initiativbewerbung",
+        startdatum: "",
+        link: "",
       });
     }
     setShowModal(true);
