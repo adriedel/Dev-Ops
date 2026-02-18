@@ -1,80 +1,81 @@
-# 💼 JobPilot - Bewerbungstracker
+# JobPilot - Bewerbungstracker
 
 Ein moderner Full-Stack Bewerbungstracker zum Verwalten und Tracken von Bewerbungen mit Statusverfolgung, Statistiken und Dark Mode.
 
-![JobPilot Screenshot](https://via.placeholder.com/800x400/4a6bc5/ffffff?text=JobPilot+Screenshot)
+## Features
 
-<!-- Ersetze mit echtem Screenshot -->
+- **Dashboard mit Statistiken** - Behalte den Überblick über alle Bewerbungsstatus
+- **Status-Tracking** - 5 Bewerbungsstatus: Beworben, Stufe weiter, Angenommen, Abgelehnt, Keine Antwort
+- **Suche & Filter** - Finde schnell Bewerbungen nach Firma, Position oder Standort
+- **CRUD-Operationen** - Erstellen, Bearbeiten, Löschen von Bewerbungen
+- **Dark Mode** - Hell/Dunkel-Umschaltung mit lokalem Speicher & Systemerkennung
+- **Schneller Status-Wechsel** - Dropdown-Menü direkt auf der Karte
+- **Link zur Stellenanzeige** - Direkter Link zur Ausschreibung pro Bewerbung
+- **Responsive Design** - Funktioniert auf Desktop und Mobile
 
-## ✨ Features
-
-- 📊 **Dashboard mit Statistiken** - Behalte den Überblick über alle Bewerbungsstatus
-- 🎯 **Status-Tracking** - 5 Bewerbungsstatus (Beworben, Stufe weiter, Angenommen, Abgelehnt, Keine Antwort)
-- 🔍 **Suche & Filter** - Finde schnell bestimmte Bewerbungen
-- 📝 **CRUD-Operationen** - Erstellen, Bearbeiten, Löschen von Bewerbungen
-- 🎨 **Dark Mode** - Augenschonendes Arbeiten auch nachts
-- 📱 **Responsive Design** - Funktioniert auf Desktop und Mobile
-- ⚡ **Schneller Status-Wechsel** - Dropdown-Menü für direktes Ändern des Status
-- 💾 **Persistente Speicherung** - PostgreSQL-Datenbank
-
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 
-- **React 18** - UI Library
-- **Vite** - Build Tool & Dev Server
-- **CSS3** - Styling (kein Framework)
+- **React 19** - UI Library
+- **Vite 7** - Build Tool & Dev Server
+- **CSS3** - Styling (kein Framework, komponentenbasierte CSS-Dateien)
 - **Fetch API** - HTTP Requests
 
 ### Backend
 
 - **Node.js** - Runtime
-- **Express.js** - Web Framework
-- **PostgreSQL** - Datenbank (Production)
-- **SQLite** - Datenbank (Local Development)
+- **Express.js 5** - Web Framework
+- **SQLite3** - Datenbank (lokale Entwicklung)
 - **CORS** - Cross-Origin Resource Sharing
 
-## 📁 Projektstruktur
+## Projektstruktur
 
 ```
 JobPilot/
 ├── backend/
-│   ├── database.js          # PostgreSQL/SQLite Connection
+│   ├── database.js          # SQLite Datenbankverbindung & Schema
 │   ├── server.js            # Express Server mit REST API
-│   ├── package.json         # Backend Dependencies
-│   └── .env.example         # Environment Variables Template
+│   ├── bewerbungen.db       # SQLite Datenbankdatei
+│   └── package.json         # Backend Dependencies
 │
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # React Komponenten
-│   │   │   ├── Header.jsx
-│   │   │   ├── StatCards.jsx
-│   │   │   ├── SearchBar.jsx
-│   │   │   ├── BewerbungCard.jsx
-│   │   │   └── BewerbungModal.jsx
-│   │   ├── services/        # API Service Layer
-│   │   │   └── api.js
-│   │   ├── utils/           # Konstanten & Helpers
-│   │   │   └── constants.js
-│   │   ├── App.jsx          # Hauptkomponente
-│   │   ├── App.css          # Styles
-│   │   └── main.jsx         # Entry Point
-│   ├── public/
-│   │   └── index.html
-│   └── package.json         # Frontend Dependencies
-│
-├── DEPLOYMENT.md            # Deployment Anleitung
-├── README.md                # Diese Datei
-└── .gitignore
+└── frontend/
+    ├── index.html           # HTML Entry Point
+    ├── vite.config.js       # Vite Konfiguration
+    ├── package.json         # Frontend Dependencies
+    └── src/
+        ├── main.jsx         # React Entry Point
+        ├── App.jsx          # Hauptkomponente (State & Logik)
+        ├── App.css          # App-weite Styles
+        ├── index.css        # Globale Styles
+        ├── components/
+        │   ├── Header/
+        │   │   ├── header.jsx
+        │   │   └── header.css
+        │   ├── StatCards/
+        │   │   ├── StatCards.jsx
+        │   │   └── StatCards.css
+        │   ├── SearchBar/
+        │   │   ├── SearchBar.jsx
+        │   │   └── SearchBar.css
+        │   ├── BewerbungsCard/
+        │   │   ├── BewerbungsCard.jsx
+        │   │   └── BewerbungsCard.css
+        │   └── BewerbungsModal/
+        │       ├── BewerbungsModal.jsx
+        │       └── BewerbungsModal.css
+        ├── services/
+        │   └── api.js       # API Service Layer (Fetch-Wrapper)
+        └── utils/
+            └── constants.js # Status-Konstanten, Labels & Icons
 ```
 
-## 🚀 Installation & Lokale Entwicklung
+## Installation & Lokale Entwicklung
 
 ### Voraussetzungen
 
-- Node.js (v14 oder höher)
-- npm oder yarn
-- Optional: PostgreSQL (für lokale Entwicklung, sonst SQLite)
+- Node.js (v18 oder höher)
+- npm
 
 ### 1. Repository klonen
 
@@ -83,20 +84,20 @@ git clone https://github.com/DEIN-USERNAME/jobpilot.git
 cd jobpilot
 ```
 
-### 2. Backend Setup
+### 2. Backend starten
 
 ```bash
-cd backend
+cd JobPilot/backend
 npm install
 npm start
 ```
 
 Backend läuft auf `http://localhost:3001`
 
-### 3. Frontend Setup
+### 3. Frontend starten
 
 ```bash
-cd frontend
+cd JobPilot/frontend
 npm install
 npm run dev
 ```
@@ -105,35 +106,30 @@ Frontend läuft auf `http://localhost:5173`
 
 ### 4. App öffnen
 
-Öffne deinen Browser und gehe zu:
-
 ```
 http://localhost:5173
 ```
 
-## 🌐 Live Demo
-
-- **Frontend:** [https://jobpilot.vercel.app](https://jobpilot.vercel.app)
-- **Backend API:** [https://jobpilot-backend.onrender.com/api](https://jobpilot-backend.onrender.com/api)
-
-<!-- Ersetze mit deinen echten URLs nach dem Deployment -->
-
-## 📚 API Dokumentation
+## API Dokumentation
 
 ### Endpoints
 
 #### Bewerbungen
 
-- `GET /api/bewerbungen` - Alle Bewerbungen abrufen
-- `GET /api/bewerbungen?status=beworben` - Nach Status filtern
-- `GET /api/bewerbungen/:id` - Einzelne Bewerbung abrufen
-- `POST /api/bewerbungen` - Neue Bewerbung erstellen
-- `PUT /api/bewerbungen/:id` - Bewerbung aktualisieren
-- `DELETE /api/bewerbungen/:id` - Bewerbung löschen
+| Methode | Endpoint | Beschreibung |
+|---------|----------|--------------|
+| `GET` | `/api/bewerbungen` | Alle Bewerbungen abrufen |
+| `GET` | `/api/bewerbungen?status=beworben` | Nach Status filtern |
+| `GET` | `/api/bewerbungen/:id` | Einzelne Bewerbung abrufen |
+| `POST` | `/api/bewerbungen` | Neue Bewerbung erstellen |
+| `PUT` | `/api/bewerbungen/:id` | Bewerbung aktualisieren |
+| `DELETE` | `/api/bewerbungen/:id` | Bewerbung löschen |
 
 #### Statistiken
 
-- `GET /api/statistiken` - Statistiken über alle Bewerbungen
+| Methode | Endpoint | Beschreibung |
+|---------|----------|--------------|
+| `GET` | `/api/statistiken` | Zähler nach Status & Gesamt |
 
 ### Beispiel Request
 
@@ -143,89 +139,94 @@ POST /api/bewerbungen
 Content-Type: application/json
 
 {
-  "position": "Frontend Developer",
-  "firma": "Example GmbH",
-  "status": "beworben",
-  "datum": "2026-02-18",
+  "position": "Frontend Developer",   // Pflichtfeld
+  "firma": "Example GmbH",           // Pflichtfeld
+  "status": "beworben",              // Pflichtfeld
+  "datum": "2026-02-18",             // Pflichtfeld
   "standort": "München",
   "ansprechpartner": "Max Mustermann",
   "notizen": "Erstes Gespräch am 25.02.",
-  "bewerbungsart": "Initiativbewerbung"
+  "bewerbungsart": "Stellenausschreibung",
+  "startdatum": "",
+  "link": "https://jobs.example.com/123"
 }
 ```
 
-## 🎨 Komponenten-Übersicht
+### Datenbankschema
+
+Tabelle `bewerbungen`:
+
+| Spalte | Typ | Pflicht | Beschreibung |
+|--------|-----|---------|--------------|
+| `id` | INTEGER | - | Primary Key, Auto-increment |
+| `position` | TEXT | Ja | Stellenbezeichnung |
+| `firma` | TEXT | Ja | Unternehmen |
+| `status` | TEXT | Ja | Bewerbungsstatus |
+| `datum` | TEXT | Ja | Bewerbungsdatum |
+| `standort` | TEXT | Nein | Arbeitsort |
+| `ansprechpartner` | TEXT | Nein | Kontaktperson |
+| `notizen` | TEXT | Nein | Freitext-Notizen |
+| `bewerbungsart` | TEXT | Nein | z.B. Initiativbewerbung |
+| `startdatum` | TEXT | Nein | Startdatum (bei Annahme) |
+| `link` | TEXT | Nein | URL zur Stellenanzeige |
+| `created_at` | DATETIME | - | Automatisch gesetzt |
+| `updated_at` | DATETIME | - | Automatisch aktualisiert |
+
+### Status-Werte
+
+| Wert | Anzeige | Icon |
+|------|---------|------|
+| `beworben` | Beworben | ✈️ |
+| `stufe_weiter` | Stufe weiter | ➡️ |
+| `angenommen` | Angenommen | ✅ |
+| `abgelehnt` | Abgelehnt | ❌ |
+| `keine_antwort` | Keine Antwort | 🕐 |
+
+## Komponenten-Übersicht
 
 ### Header
 
-Header mit Logo, Theme Toggle und "Neue Bewerbung" Button
+Logo, Titel, Hell/Dunkel-Umschalter und "Neue Bewerbung"-Button.
 
 ### StatCards
 
-Dashboard mit 6 Statistik-Karten:
-
-- Beworben
-- Stufe weiter
-- Angenommen
-- Abgelehnt
-- Keine Antwort
-- Gesamt
+6 Statistik-Karten mit Zählern: Beworben, Stufe weiter, Angenommen, Abgelehnt, Keine Antwort, Gesamt.
 
 ### SearchBar
 
-Suche nach Firma/Position und Status-Filter
+Texteingabe für die Suche (Firma, Position, Standort) und Status-Filter-Dropdown.
 
-### BewerbungCard
+### BewerbungsCard
 
-Karte für einzelne Bewerbung mit:
+Karte für eine einzelne Bewerbung mit:
 
 - Position & Firma
-- Status-Badge
-- Datum, Standort, Ansprechpartner
-- Dropdown-Menü (Bearbeiten, Status ändern, Löschen)
+- Status-Badge mit Icon
+- Datum, Standort, Ansprechpartner, Link zur Stellenanzeige
+- Notizen
+- Startdatum (nur bei Status "Angenommen")
+- Drei-Punkte-Menü: Bearbeiten, Status direkt wechseln, Löschen
 
-### BewerbungModal
+### BewerbungsModal
 
-Formular zum Erstellen/Bearbeiten von Bewerbungen
+Formular zum Erstellen/Bearbeiten mit Feldern für Firma, Position, Datum, Status, Standort, Gehalt, Link, Ansprechpartner, Startdatum (bei Annahme) und Notizen.
 
-## 🔧 Entwicklung
+## Entwicklung
 
 ### Scripts
 
 **Backend:**
 
 ```bash
-npm start        # Server starten
+npm start        # Server starten (node server.js)
 npm run dev      # Server mit Nodemon (Auto-Reload)
 ```
 
 **Frontend:**
 
 ```bash
-npm run dev      # Development Server
+npm run dev      # Development Server (http://localhost:5173)
 npm run build    # Production Build
 npm run preview  # Preview Production Build
+npm run lint     # ESLint Code-Qualität prüfen
 ```
-
-### Environment Variables
-
-**Backend (.env):**
-
-```env
-DATABASE_URL=postgresql://user:pass@localhost:5432/jobpilot
-FRONTEND_URL=http://localhost:5173
-PORT=3001
-NODE_ENV=development
-```
-
-**Frontend (.env):**
-
-```env
-VITE_API_URL=http://localhost:3001/api
-```
-
-**Empfohlener Stack:**
-
-- Frontend: Vercel
-- Backend: Render
-- Datenbank: Render PostgreSQL (kostenlos)
