@@ -2,7 +2,9 @@
 
 Ein moderner Full-Stack Bewerbungstracker zum Verwalten und Tracken von Bewerbungen mit Statusverfolgung, Statistiken und Dark Mode.
 
-![JobPilot Screenshot](<img width="2302" height="1689" alt="image" src="https://github.com/user-attachments/assets/0ce6f7d5-11a1-4d58-9c8d-45efe65edb4c" />)
+JobPilot Screenshot:
+
+<img width="2302" height="1689" alt="image" src="https://github.com/user-attachments/assets/0ce6f7d5-11a1-4d58-9c8d-45efe65edb4c" />
 
 <!-- Ersetze mit echtem Screenshot -->
 
