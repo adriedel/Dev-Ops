@@ -1,3 +1,5 @@
+import { useState } from "react";
+import "./BewerbungsCard.css";
 import { STATUS, STATUS_LABELS, STATUS_ICONS } from "../../utils/constants";
 
 function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
@@ -18,17 +20,17 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
   };
 
   return (
-    <section className="bewerbung-card" onMouseLeave={() => setShowMenu(false)}>
-      <section className="card-header">
-        <section className="card-title-section">
-          <h3>{bewerbung.position}</h3>
+    <article className="bewerbung-card" onMouseLeave={() => setShowMenu(false)}>
+      <div className="card-header">
+        <div className="card-title-section">
+          <h3 className="card-position">{bewerbung.position}</h3>
           <div className="card-firma">
-            <span>Emoji</span>
+            <span>🏢</span>
             <span>{bewerbung.firma}</span>
           </div>
-        </section>
+        </div>
 
-        <section className="card-menu-container">
+        <div className="card-menu-container">
           <button
             className="card-menu-button"
             onClick={() => setShowMenu(!showMenu)}
@@ -38,7 +40,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
           </button>
 
           {showMenu && (
-            <section className="dropdown-menu">
+            <div className="dropdown-menu">
               <button
                 className="dropdown-item"
                 onClick={() => onEdit(bewerbung)}
@@ -46,7 +48,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
                 <span>✏️</span>
                 <span>Bearbeiten</span>
               </button>
-              <div className="dropdown-divider"></div>
+              <div className="dropdown-divider" />
               <button
                 className="dropdown-item"
                 onClick={() => handleStatusChange(STATUS.BEWORBEN)}
@@ -82,7 +84,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
                 <span>🕐</span>
                 <span>Keine Antwort</span>
               </button>
-              <div className="dropdown-divider"></div>
+              <div className="dropdown-divider" />
               <button
                 className="dropdown-item dropdown-item-delete"
                 onClick={() => {
@@ -93,22 +95,17 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
                 <span>🗑️</span>
                 <span>Löschen</span>
               </button>
-            </section>
+            </div>
           )}
-        </section>
-      </section>
+        </div>
+      </div>
 
-      <section className={`status-badge ${bewerbung.status}`}>
-        <span>{STATUS_ICONS[bewerbung.status]}</span>
-        <span>{STATUS_LABELS[bewerbung.status]}</span>
-      </section>
-
-      <div className={`status-badge ${bewerbung.status}`}>
+      <div className={`status-badge status-${bewerbung.status}`}>
         <span>{STATUS_ICONS[bewerbung.status]}</span>
         <span>{STATUS_LABELS[bewerbung.status]}</span>
       </div>
 
-      <section className="card-details">
+      <div className="card-details">
         <div className="detail-item">
           <span>📅</span>
           <span>{formatDate(bewerbung.datum)}</span>
@@ -125,15 +122,28 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
             <span>{bewerbung.ansprechpartner}</span>
           </div>
         )}
-      </section>
+        {bewerbung.link && (
+          <div className="detail-item">
+            <span>🔗</span>
+            <a
+              href={bewerbung.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card-link"
+            >
+              Stellenanzeige öffnen
+            </a>
+          </div>
+        )}
+      </div>
 
       {bewerbung.notizen && (
         <div className="card-footer">
-          <div className="card-notizen">{bewerbung.notizen}</div>
+          <p className="card-notizen">{bewerbung.notizen}</p>
         </div>
       )}
 
-      {bewerbung.startdatum && bewerbung.status === "angenommen" && (
+      {bewerbung.startdatum && bewerbung.status === STATUS.ANGENOMMEN && (
         <div className="card-footer">
           <div className="detail-item">
             <span>🎯</span>
@@ -141,7 +151,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
           </div>
         </div>
       )}
-    </section>
+    </article>
   );
 }
 

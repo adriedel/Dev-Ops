@@ -1,0 +1,192 @@
+.bewerbung-card {
+  background: var(--bg-surface);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle);
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+  position: relative;
+}
+
+.bewerbung-card:hover {
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+/* ── Header (Titel + Menü) ── */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-position {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.card-firma {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ── Drei-Punkte-Menü ── */
+.card-menu-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.card-menu-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  padding: 2px 6px;
+  border-radius: 6px;
+  line-height: 1;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.card-menu-button:hover {
+  background: var(--bg-hover);
+  color: var(--text-label);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 170px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-label);
+  text-align: left;
+  width: 100%;
+  transition: background 0.12s;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-hover);
+}
+
+.dropdown-item-delete {
+  color: #dc2626;
+}
+
+.dropdown-item-delete:hover {
+  background: #fef2f2;
+}
+
+.dark-mode .dropdown-item-delete:hover {
+  background: rgba(220, 38, 38, 0.15);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 4px 0;
+}
+
+/* ── Status-Badge ── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  align-self: flex-start;
+}
+
+/* Status-Badge Farben – via CSS-Variablen (light + dark automatisch) */
+.status-beworben      { background: var(--status-beworben-bg);      color: var(--status-beworben-accent); }
+.status-stufe_weiter  { background: var(--status-stufe_weiter-bg);  color: var(--status-stufe_weiter-accent); }
+.status-angenommen    { background: var(--status-angenommen-bg);    color: var(--status-angenommen-accent); }
+.status-abgelehnt     { background: var(--status-abgelehnt-bg);     color: var(--status-abgelehnt-accent); }
+.status-keine_antwort { background: var(--status-keine_antwort-bg); color: var(--status-keine_antwort-accent); }
+
+/* ── Details-Zeile ── */
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.card-link {
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Footer / Notizen ── */
+.card-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 12px;
+}
+
+.card-notizen {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  line-clamp: initial;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
