@@ -1,3 +1,4 @@
+import "./SearchBar.css";
 import { STATUS } from "../../utils/constants";
 
 function SearchBar({
@@ -8,13 +9,20 @@ function SearchBar({
 }) {
   return (
     <section className="controls">
-      <input
-        type="text"
-        className="search-input"
-        placeholder="Suche nach Firma oder Position..."
-        value={searchQuery}
-        onChange={(e) => onSearchChange(e.target.value)}
-      />
+      <div className="search-wrapper">
+        <span className="search-icon">🔍</span>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Suche nach Firma oder Position..."
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+        />
+      </div>
+
+      <button className="filter-btn" title="Filter" aria-label="Filter">
+        ☰
+      </button>
 
       <select
         className="filter-select"

@@ -1,0 +1,109 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 32px 24px;
+}
+
+.search-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.08);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.filter-btn {
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-input);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.2s;
+}
+
+.filter-btn:hover {
+  background: var(--bg-hover);
+}
+
+.filter-select {
+  padding: 10px 36px 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-input);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  flex-shrink: 0;
+  transition: border-color 0.15s, background 0.2s, color 0.2s;
+}
+
+.filter-select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.08);
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .controls {
+    padding: 0 16px 16px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls {
+    flex-wrap: wrap;
+    padding: 0 12px 14px;
+  }
+
+  .search-wrapper {
+    flex: 1 1 100%;
+  }
+
+  .filter-btn {
+    display: none;
+  }
+
+  .filter-select {
+    flex: 1;
+  }
+}
