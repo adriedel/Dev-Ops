@@ -17,10 +17,14 @@ db.serialize(() => {
       notizen TEXT,
       bewerbungsart TEXT,
       startdatum TEXT,
+      link TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Migration: link-Spalte für bestehende Datenbanken hinzufügen
+  db.run(`ALTER TABLE bewerbungen ADD COLUMN link TEXT`, () => {});
 
   console.log("Datenbank initialisiert");
 });

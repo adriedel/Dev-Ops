@@ -65,6 +65,7 @@ app.post("/api/bewerbungen", (req, res) => {
     notizen,
     bewerbungsart,
     startdatum,
+    link,
   } = req.body;
 
   if (!position || !firma || !status || !datum) {
@@ -74,9 +75,9 @@ app.post("/api/bewerbungen", (req, res) => {
   }
 
   const query = `
-    INSERT INTO bewerbungen 
-    (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO bewerbungen
+    (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum, link)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.run(
@@ -91,6 +92,7 @@ app.post("/api/bewerbungen", (req, res) => {
       notizen,
       bewerbungsart,
       startdatum,
+      link,
     ],
     function (err) {
       if (err) {
@@ -117,13 +119,14 @@ app.put("/api/bewerbungen/:id", (req, res) => {
     notizen,
     bewerbungsart,
     startdatum,
+    link,
   } = req.body;
 
   const query = `
-    UPDATE bewerbungen 
-    SET position = ?, firma = ?, status = ?, datum = ?, 
-        standort = ?, ansprechpartner = ?, notizen = ?, 
-        bewerbungsart = ?, startdatum = ?, updated_at = CURRENT_TIMESTAMP
+    UPDATE bewerbungen
+    SET position = ?, firma = ?, status = ?, datum = ?,
+        standort = ?, ansprechpartner = ?, notizen = ?,
+        bewerbungsart = ?, startdatum = ?, link = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
   `;
 
@@ -139,6 +142,7 @@ app.put("/api/bewerbungen/:id", (req, res) => {
       notizen,
       bewerbungsart,
       startdatum,
+      link,
       id,
     ],
     function (err) {
