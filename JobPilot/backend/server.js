@@ -168,7 +168,31 @@ app.delete("/api/bewerbungen/:id", (req, res) => {
     if (this.changes === 0) {
       return res.status(404).json({ error: "Bewerbung nicht gefunden" });
     }
-    res.json({ message: "Bewerbung gelöscht" });
+
+    // Prüfen, ob noch Bewerbungen existieren
+    db.get("SELECT COUNT(*) as count FROM bewerbungen", [], (err, row) => {
+      if (err) {
+        console.error("Fehler beim Zählen:", err.message);
+        return res.json({ message: "Bewerbung gelöscht" });
+      }
+
+      // Wenn keine Bewerbungen mehr existieren, ID-Zähler zurücksetzen
+      if (row.count === 0) {
+        db.run(
+          "DELETE FROM sqlite_sequence WHERE name = 'bewerbungen'",
+          (err) => {
+            if (err) {
+              console.error("Fehler beim Zurücksetzen der ID:", err.message);
+            } else {
+              console.log("ID-Zähler wurde zurückgesetzt");
+            }
+            res.json({ message: "Bewerbung gelöscht" });
+          },
+        );
+      } else {
+        res.json({ message: "Bewerbung gelöscht" });
+      }
+    });
   });
 });
 
