@@ -92,14 +92,12 @@ function App() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Bewerbung wirklich löschen?")) {
-      try {
-        await bewerbungenApi.delete(id);
-        loadBewerbungen();
-        loadStats();
-      } catch (error) {
-        console.error("Fehler beim Löschen:", error);
-      }
+    try {
+      await bewerbungenApi.delete(id);
+      loadBewerbungen();
+      loadStats();
+    } catch (error) {
+      console.error("Fehler beim Löschen:", error);
     }
   };
 
