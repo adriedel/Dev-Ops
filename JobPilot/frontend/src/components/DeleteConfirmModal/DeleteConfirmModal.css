@@ -142,7 +142,7 @@
 }
 
 .delete-confirm-button {
-  background: var(--status-abgelehnt-accent);
+  background: #a11919;
   color: white;
 }
 
