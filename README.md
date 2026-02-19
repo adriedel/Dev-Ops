@@ -2,7 +2,11 @@
 
 Ein moderner Full-Stack Bewerbungstracker zum Verwalten und Tracken von Bewerbungen mit Statusverfolgung, Statistiken und Dark Mode.
 
-## Features
+![JobPilot Screenshot](https://via.placeholder.com/800x400/4a6bc5/ffffff?text=JobPilot+Screenshot)
+
+<!-- Ersetze mit echtem Screenshot -->
+
+## ✨ Features
 
 - **Dashboard mit Statistiken** - Behalte den Überblick über alle Bewerbungsstatus
 - **Status-Tracking** - 5 Bewerbungsstatus: Beworben, Stufe weiter, Angenommen, Abgelehnt, Keine Antwort
@@ -116,20 +120,20 @@ http://localhost:5173
 
 #### Bewerbungen
 
-| Methode | Endpoint | Beschreibung |
-|---------|----------|--------------|
-| `GET` | `/api/bewerbungen` | Alle Bewerbungen abrufen |
-| `GET` | `/api/bewerbungen?status=beworben` | Nach Status filtern |
-| `GET` | `/api/bewerbungen/:id` | Einzelne Bewerbung abrufen |
-| `POST` | `/api/bewerbungen` | Neue Bewerbung erstellen |
-| `PUT` | `/api/bewerbungen/:id` | Bewerbung aktualisieren |
-| `DELETE` | `/api/bewerbungen/:id` | Bewerbung löschen |
+| Methode  | Endpoint                           | Beschreibung               |
+| -------- | ---------------------------------- | -------------------------- |
+| `GET`    | `/api/bewerbungen`                 | Alle Bewerbungen abrufen   |
+| `GET`    | `/api/bewerbungen?status=beworben` | Nach Status filtern        |
+| `GET`    | `/api/bewerbungen/:id`             | Einzelne Bewerbung abrufen |
+| `POST`   | `/api/bewerbungen`                 | Neue Bewerbung erstellen   |
+| `PUT`    | `/api/bewerbungen/:id`             | Bewerbung aktualisieren    |
+| `DELETE` | `/api/bewerbungen/:id`             | Bewerbung löschen          |
 
 #### Statistiken
 
-| Methode | Endpoint | Beschreibung |
-|---------|----------|--------------|
-| `GET` | `/api/statistiken` | Zähler nach Status & Gesamt |
+| Methode | Endpoint           | Beschreibung                |
+| ------- | ------------------ | --------------------------- |
+| `GET`   | `/api/statistiken` | Zähler nach Status & Gesamt |
 
 ### Beispiel Request
 
@@ -156,31 +160,31 @@ Content-Type: application/json
 
 Tabelle `bewerbungen`:
 
-| Spalte | Typ | Pflicht | Beschreibung |
-|--------|-----|---------|--------------|
-| `id` | INTEGER | - | Primary Key, Auto-increment |
-| `position` | TEXT | Ja | Stellenbezeichnung |
-| `firma` | TEXT | Ja | Unternehmen |
-| `status` | TEXT | Ja | Bewerbungsstatus |
-| `datum` | TEXT | Ja | Bewerbungsdatum |
-| `standort` | TEXT | Nein | Arbeitsort |
-| `ansprechpartner` | TEXT | Nein | Kontaktperson |
-| `notizen` | TEXT | Nein | Freitext-Notizen |
-| `bewerbungsart` | TEXT | Nein | z.B. Initiativbewerbung |
-| `startdatum` | TEXT | Nein | Startdatum (bei Annahme) |
-| `link` | TEXT | Nein | URL zur Stellenanzeige |
-| `created_at` | DATETIME | - | Automatisch gesetzt |
-| `updated_at` | DATETIME | - | Automatisch aktualisiert |
+| Spalte            | Typ      | Pflicht | Beschreibung                |
+| ----------------- | -------- | ------- | --------------------------- |
+| `id`              | INTEGER  | -       | Primary Key, Auto-increment |
+| `position`        | TEXT     | Ja      | Stellenbezeichnung          |
+| `firma`           | TEXT     | Ja      | Unternehmen                 |
+| `status`          | TEXT     | Ja      | Bewerbungsstatus            |
+| `datum`           | TEXT     | Ja      | Bewerbungsdatum             |
+| `standort`        | TEXT     | Nein    | Arbeitsort                  |
+| `ansprechpartner` | TEXT     | Nein    | Kontaktperson               |
+| `notizen`         | TEXT     | Nein    | Freitext-Notizen            |
+| `bewerbungsart`   | TEXT     | Nein    | z.B. Initiativbewerbung     |
+| `startdatum`      | TEXT     | Nein    | Startdatum (bei Annahme)    |
+| `link`            | TEXT     | Nein    | URL zur Stellenanzeige      |
+| `created_at`      | DATETIME | -       | Automatisch gesetzt         |
+| `updated_at`      | DATETIME | -       | Automatisch aktualisiert    |
 
 ### Status-Werte
 
-| Wert | Anzeige | Icon |
-|------|---------|------|
-| `beworben` | Beworben | ✈️ |
-| `stufe_weiter` | Stufe weiter | ➡️ |
-| `angenommen` | Angenommen | ✅ |
-| `abgelehnt` | Abgelehnt | ❌ |
-| `keine_antwort` | Keine Antwort | 🕐 |
+| Wert            | Anzeige       | Icon |
+| --------------- | ------------- | ---- |
+| `beworben`      | Beworben      | ✈️   |
+| `stufe_weiter`  | Stufe weiter  | ➡️   |
+| `angenommen`    | Angenommen    | ✅   |
+| `abgelehnt`     | Abgelehnt     | ❌   |
+| `keine_antwort` | Keine Antwort | 🕐   |
 
 ## Komponenten-Übersicht
 
