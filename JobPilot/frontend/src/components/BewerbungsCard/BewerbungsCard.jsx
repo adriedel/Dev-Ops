@@ -1,9 +1,11 @@
 import { useState } from "react";
 import "./BewerbungsCard.css";
 import { STATUS, STATUS_LABELS, STATUS_ICONS } from "../../utils/constants";
+import DeleteConfirmModal from "../DeleteConfirmModal/DeleteConfirmModal";
 
 function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
   const [showMenu, setShowMenu] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -17,6 +19,20 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
   const handleStatusChange = (newStatus) => {
     onStatusChange(bewerbung.id, newStatus);
     setShowMenu(false);
+  };
+
+  const handleDeleteClick = () => {
+    setShowMenu(false);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    setShowDeleteModal(false);
+    onDelete(bewerbung.id);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
   };
 
   return (
@@ -87,10 +103,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
               <div className="dropdown-divider" />
               <button
                 className="dropdown-item dropdown-item-delete"
-                onClick={() => {
-                  setShowMenu(false);
-                  onDelete(bewerbung.id);
-                }}
+                onClick={handleDeleteClick}
               >
                 <span>🗑️</span>
                 <span>Löschen</span>
@@ -150,6 +163,14 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
             <span>Start am {formatDate(bewerbung.startdatum)}</span>
           </div>
         </div>
+      )}
+
+      {showDeleteModal && (
+        <DeleteConfirmModal
+          bewerbung={bewerbung}
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+        />
       )}
     </article>
   );
