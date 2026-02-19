@@ -1,0 +1,157 @@
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.delete-modal-container {
+  background: var(--bg-surface);
+  border-radius: 12px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: var(--shadow-modal);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.delete-modal-header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.delete-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.delete-modal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.delete-warning-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.delete-modal-message {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.delete-bewerbung-info {
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.delete-info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.delete-info-item:last-child {
+  border-bottom: none;
+}
+
+.delete-info-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.delete-info-value {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+.delete-modal-warning {
+  color: var(--status-abgelehnt-accent);
+  font-size: 0.9rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.delete-modal-footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.delete-modal-button {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-cancel-button {
+  background: var(--bg-app);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.delete-cancel-button:hover {
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+
+.delete-confirm-button {
+  background: var(--status-abgelehnt-accent);
+  color: white;
+}
+
+.delete-confirm-button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.delete-modal-button:active {
+  transform: translateY(0);
+}
