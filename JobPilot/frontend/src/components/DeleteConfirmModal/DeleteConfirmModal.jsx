@@ -1,7 +1,8 @@
+import { createPortal } from "react-dom";
 import "./DeleteConfirmModal.css";
 
 function DeleteConfirmModal({ bewerbung, onConfirm, onCancel }) {
-  return (
+  return createPortal(
     <div className="delete-modal-overlay" onClick={onCancel}>
       <div
         className="delete-modal-container"
@@ -54,7 +55,8 @@ function DeleteConfirmModal({ bewerbung, onConfirm, onCancel }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
