@@ -1,0 +1,2138 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JobPilot – Architektur­dokumentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,500;0,700;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0d0f14;
+        --surface: #141720;
+        --surface2: #1c2030;
+        --border: #2a3040;
+        --accent: #4f8ef7;
+        --accent2: #50e3b0;
+        --accent3: #f7c948;
+        --text: #d4daf0;
+        --text-muted: #6b7799;
+        --danger: #f76b6b;
+        --mono: "IBM Plex Mono", monospace;
+        --sans: "IBM Plex Sans", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      /* Header */
+      header {
+        border-bottom: 1px solid var(--border);
+        padding: 32px 48px;
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        z-index: 100;
+        backdrop-filter: blur(8px);
+      }
+
+      header h1 {
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        color: #fff;
+      }
+
+      header .badge {
+        font-family: var(--mono);
+        font-size: 11px;
+        background: var(--accent);
+        color: #000;
+        padding: 2px 8px;
+        border-radius: 2px;
+        font-weight: 600;
+      }
+
+      nav {
+        margin-left: auto;
+        display: flex;
+        gap: 24px;
+      }
+
+      nav a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 13px;
+        font-family: var(--mono);
+        transition: color 0.2s;
+      }
+      nav a:hover {
+        color: var(--accent);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 56px 48px;
+      }
+
+      /* Section */
+      section {
+        margin-bottom: 80px;
+      }
+
+      .section-label {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--accent);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      h2 {
+        font-family: var(--mono);
+        font-size: 22px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 24px;
+        letter-spacing: -0.5px;
+      }
+
+      h3 {
+        font-family: var(--mono);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--accent2);
+        margin-bottom: 16px;
+      }
+
+      p {
+        color: var(--text-muted);
+        max-width: 680px;
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+
+      /* Diagram container */
+      .diagram-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 40px;
+        overflow-x: auto;
+      }
+
+      /* SVG styles via classes injected */
+      .uml-svg {
+        display: block;
+        margin: 0 auto;
+      }
+
+      /* Endpoint table */
+      .endpoint-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--mono);
+        font-size: 12px;
+        margin-top: 16px;
+      }
+
+      .endpoint-table th {
+        background: var(--surface2);
+        color: var(--text-muted);
+        text-align: left;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+
+      .endpoint-table td {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+        vertical-align: top;
+      }
+
+      .endpoint-table tr:last-child td {
+        border-bottom: none;
+      }
+      .endpoint-table tr:hover td {
+        background: var(--surface2);
+      }
+
+      .method {
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 2px;
+        font-size: 11px;
+      }
+      .get {
+        background: #1a3a20;
+        color: var(--accent2);
+      }
+      .post {
+        background: #1a2d3a;
+        color: var(--accent);
+      }
+      .put {
+        background: #2d2a1a;
+        color: var(--accent3);
+      }
+      .delete {
+        background: #2d1a1a;
+        color: var(--danger);
+      }
+
+      /* Two-column layout */
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 24px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 24px;
+      }
+
+      .card-title {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      .field {
+        display: flex;
+        gap: 12px;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .field:last-child {
+        border-bottom: none;
+      }
+
+      .field-name {
+        color: var(--text);
+        min-width: 120px;
+      }
+      .field-type {
+        color: var(--accent3);
+      }
+      .field-note {
+        color: var(--text-muted);
+        font-size: 11px;
+        margin-left: auto;
+      }
+
+      /* Divider */
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 60px 0;
+      }
+
+      .text {
+        margin: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>JobPilot</h1>
+      <span class="badge">REST API</span>
+      <nav>
+        <a href="#komponenten">Komponenten</a>
+        <a href="#klassen">Klassen</a>
+        <a href="#endpunkte">Endpunkte</a>
+        <a href="#datenmodell">Datenmodell</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Intro -->
+      <section>
+        <div class="section-label">Übersicht</div>
+        <h2>Architekturdokumentation</h2>
+        <p>
+          JobPilot ist eine REST-API zur Verwaltung von Bewerbungsprozessen. Das
+          Backend basiert auf Node.js/Express mit einer SQLite-Datenbank. Die
+          folgende Dokumentation zeigt Komponentendiagramm und verfeinertes
+          Klassendiagramm.
+        </p>
+      </section>
+
+      <!-- Komponentendiagramm -->
+      <section id="komponenten">
+        <div class="section-label">UML 2.0</div>
+        <h2>Komponentendiagramm</h2>
+        <p>
+          Zeigt die Systemarchitektur mit ihren Komponenten, Schnittstellen und
+          Abhängigkeiten.
+        </p>
+
+        <div class="diagram-wrap">
+          <svg
+            class="uml-svg"
+            width="900"
+            height="520"
+            viewBox="0 0 900 520"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <marker
+                id="arrow"
+                markerWidth="10"
+                markerHeight="7"
+                refX="9"
+                refY="3.5"
+                orient="auto"
+              >
+                <polygon points="0 0, 10 3.5, 0 7" fill="#4f8ef7" />
+              </marker>
+              <marker
+                id="arrow-gray"
+                markerWidth="10"
+                markerHeight="7"
+                refX="9"
+                refY="3.5"
+                orient="auto"
+              >
+                <polygon points="0 0, 10 3.5, 0 7" fill="#6b7799" />
+              </marker>
+              <marker
+                id="diamond"
+                markerWidth="10"
+                markerHeight="8"
+                refX="0"
+                refY="4"
+                orient="auto"
+              >
+                <polygon
+                  points="0 4, 5 0, 10 4, 5 8"
+                  fill="#1c2030"
+                  stroke="#4f8ef7"
+                  stroke-width="1"
+                />
+              </marker>
+            </defs>
+
+            <!-- Background grid -->
+            <pattern
+              id="grid"
+              width="20"
+              height="20"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 20 0 L 0 0 0 20"
+                fill="none"
+                stroke="#1c2030"
+                stroke-width="0.5"
+              />
+            </pattern>
+            <rect width="900" height="520" fill="url(#grid)" />
+
+            <!-- ══ Frontend (Client) ══ -->
+            <rect
+              x="20"
+              y="40"
+              width="160"
+              height="100"
+              rx="4"
+              fill="#141720"
+              stroke="#2a3040"
+              stroke-width="1.5"
+            />
+            <text
+              x="100"
+              y="25"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+              text-anchor="middle"
+              letter-spacing="1"
+            >
+              «subsystem»
+            </text>
+            <rect x="20" y="40" width="160" height="28" rx="4" fill="#1c2030" />
+            <text
+              x="100"
+              y="59"
+              font-family="IBM Plex Mono"
+              font-size="12"
+              fill="#d4daf0"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              Frontend
+            </text>
+            <text
+              x="35"
+              y="85"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              «component»
+            </text>
+            <text
+              x="35"
+              y="100"
+              font-family="IBM Plex Mono"
+              font-size="11"
+              fill="#d4daf0"
+            >
+              React App
+            </text>
+            <text
+              x="35"
+              y="118"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              localhost:5173
+            </text>
+            <!-- Component notch -->
+            <rect
+              x="164"
+              y="85"
+              width="14"
+              height="8"
+              rx="1"
+              fill="#141720"
+              stroke="#4f8ef7"
+              stroke-width="1"
+            />
+            <rect
+              x="164"
+              y="99"
+              width="14"
+              height="8"
+              rx="1"
+              fill="#141720"
+              stroke="#4f8ef7"
+              stroke-width="1"
+            />
+
+            <!-- ══ Express Server ══ -->
+            <rect
+              x="300"
+              y="20"
+              width="300"
+              height="440"
+              rx="6"
+              fill="#141720"
+              stroke="#4f8ef7"
+              stroke-width="1.5"
+              stroke-dasharray="6,3"
+            />
+            <text
+              x="450"
+              y="14"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#4f8ef7"
+              text-anchor="middle"
+              letter-spacing="1"
+            >
+              «component» Express Server — :3001
+            </text>
+
+            <!-- Middleware -->
+            <rect
+              x="320"
+              y="36"
+              width="260"
+              height="60"
+              rx="4"
+              fill="#1c2030"
+              stroke="#2a3040"
+            />
+            <text
+              x="450"
+              y="52"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+              text-anchor="middle"
+            >
+              «component»
+            </text>
+            <text
+              x="450"
+              y="68"
+              font-family="IBM Plex Mono"
+              font-size="12"
+              fill="#d4daf0"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              Middleware Stack
+            </text>
+            <text
+              x="340"
+              y="87"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              cors · body-parser · json
+            </text>
+
+            <!-- Router -->
+            <rect
+              x="320"
+              y="120"
+              width="260"
+              height="200"
+              rx="4"
+              fill="#1c2030"
+              stroke="#2a3040"
+            />
+            <text
+              x="450"
+              y="138"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+              text-anchor="middle"
+            >
+              «component»
+            </text>
+            <text
+              x="450"
+              y="155"
+              font-family="IBM Plex Mono"
+              font-size="12"
+              fill="#d4daf0"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              API Router
+            </text>
+
+            <line
+              x1="330"
+              y1="168"
+              x2="570"
+              y2="168"
+              stroke="#2a3040"
+              stroke-width="1"
+            />
+            <!-- routes -->
+            <text
+              x="340"
+              y="185"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#4f8ef7"
+            >
+              GET
+            </text>
+            <text
+              x="390"
+              y="185"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              /api/bewerbungen
+            </text>
+            <text
+              x="340"
+              y="203"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#4f8ef7"
+            >
+              GET
+            </text>
+            <text
+              x="390"
+              y="203"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              /api/bewerbungen/:id
+            </text>
+            <text
+              x="340"
+              y="221"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              POST
+            </text>
+            <text
+              x="390"
+              y="221"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              /api/bewerbungen
+            </text>
+            <text
+              x="340"
+              y="239"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#f7c948"
+            >
+              PUT
+            </text>
+            <text
+              x="390"
+              y="239"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              /api/bewerbungen/:id
+            </text>
+            <text
+              x="340"
+              y="257"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#f76b6b"
+            >
+              DELETE
+            </text>
+            <text
+              x="390"
+              y="257"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              /api/bewerbungen/:id
+            </text>
+            <text
+              x="340"
+              y="275"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#4f8ef7"
+            >
+              GET
+            </text>
+            <text
+              x="390"
+              y="275"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              /api/statistiken
+            </text>
+            <text
+              x="340"
+              y="293"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#4f8ef7"
+            >
+              GET
+            </text>
+            <text
+              x="390"
+              y="293"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              /api /health
+            </text>
+
+            <!-- Database Module -->
+            <rect
+              x="320"
+              y="348"
+              width="260"
+              height="50"
+              rx="4"
+              fill="#1c2030"
+              stroke="#2a3040"
+            />
+            <text
+              x="450"
+              y="366"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+              text-anchor="middle"
+            >
+              «component»
+            </text>
+            <text
+              x="450"
+              y="384"
+              font-family="IBM Plex Mono"
+              font-size="12"
+              fill="#d4daf0"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              database.js
+            </text>
+
+            <!-- Health/Root -->
+            <rect
+              x="320"
+              y="420"
+              width="120"
+              height="30"
+              rx="4"
+              fill="#1c2030"
+              stroke="#2a3040"
+            />
+            <text
+              x="380"
+              y="440"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+              text-anchor="middle"
+            >
+              / · /health · /api
+            </text>
+
+            <!-- ══ SQLite ══ -->
+            <rect
+              x="720"
+              y="150"
+              width="150"
+              height="140"
+              rx="4"
+              fill="#141720"
+              stroke="#f7c948"
+              stroke-width="1.5"
+            />
+            <rect
+              x="720"
+              y="150"
+              width="150"
+              height="28"
+              rx="4"
+              fill="#2d2a1a"
+            />
+            <text
+              x="795"
+              y="168"
+              font-family="IBM Plex Mono"
+              font-size="11"
+              fill="#f7c948"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              SQLite DB
+            </text>
+            <text
+              x="735"
+              y="195"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              «table»
+            </text>
+            <text
+              x="735"
+              y="212"
+              font-family="IBM Plex Mono"
+              font-size="11"
+              fill="#d4daf0"
+            >
+              bewerbungen
+            </text>
+            <line
+              x1="730"
+              y1="222"
+              x2="860"
+              y2="222"
+              stroke="#2a3040"
+              stroke-width="1"
+            />
+            <text
+              x="735"
+              y="238"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              id
+            </text>
+            <text
+              x="775"
+              y="238"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              INTEGER PK
+            </text>
+            <text
+              x="735"
+              y="254"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              position
+            </text>
+            <text
+              x="735"
+              y="270"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              firma · status …
+            </text>
+
+            <!-- Arrows -->
+            <!-- Frontend → Express (HTTP/CORS) -->
+            <line
+              x1="182"
+              y1="90"
+              x2="298"
+              y2="90"
+              stroke="#4f8ef7"
+              stroke-width="1.5"
+              marker-end="url(#arrow)"
+            />
+            <text
+              x="240"
+              y="82"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#4f8ef7"
+              text-anchor="middle"
+            >
+              HTTP/CORS
+            </text>
+
+            <!-- Middleware → Router -->
+            <line
+              x1="450"
+              y1="96"
+              x2="450"
+              y2="118"
+              stroke="#6b7799"
+              stroke-width="1"
+              marker-end="url(#arrow-gray)"
+            />
+
+            <!-- Router → Database Module -->
+            <line
+              x1="450"
+              y1="320"
+              x2="450"
+              y2="346"
+              stroke="#6b7799"
+              stroke-width="1"
+              marker-end="url(#arrow-gray)"
+            />
+
+            <!-- database.js → SQLite -->
+            <line
+              x1="582"
+              y1="373"
+              x2="718"
+              y2="230"
+              stroke="#f7c948"
+              stroke-width="1.5"
+              stroke-dasharray="5,3"
+              marker-end="url(#arrow)"
+            />
+            <text
+              x="665"
+              y="285"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#f7c948"
+              text-anchor="middle"
+            >
+              sqlite3
+            </text>
+
+            <!-- Legend -->
+            <text
+              x="20"
+              y="480"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              — — — → Datenbankverbindung (async callback)
+            </text>
+            <text
+              x="20"
+              y="498"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              ———→ Komponentenabhängigkeit / HTTP
+            </text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Klassendiagramm -->
+      <section id="klassen">
+        <div class="section-label">UML 2.0</div>
+        <h2>Verfeinertes Klassendiagramm</h2>
+        <p>
+          Da Express keine klassische OOP-Architektur erzwingt, zeigt das
+          Diagramm die logischen Module als Klassen mit Attributen, Methoden und
+          deren Beziehungen.
+        </p>
+
+        <div class="diagram-wrap">
+          <svg
+            class="uml-svg"
+            width="880"
+            height="600"
+            viewBox="0 0 880 600"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <marker
+                id="arr2"
+                markerWidth="10"
+                markerHeight="7"
+                refX="9"
+                refY="3.5"
+                orient="auto"
+              >
+                <polygon points="0 0, 10 3.5, 0 7" fill="#4f8ef7" />
+              </marker>
+              <marker
+                id="arr-open"
+                markerWidth="12"
+                markerHeight="8"
+                refX="12"
+                refY="4"
+                orient="auto"
+              >
+                <polyline
+                  points="0 0, 10 4, 0 8"
+                  fill="none"
+                  stroke="#6b7799"
+                  stroke-width="1.5"
+                />
+              </marker>
+              <marker
+                id="arr-dashed"
+                markerWidth="10"
+                markerHeight="7"
+                refX="9"
+                refY="3.5"
+                orient="auto"
+              >
+                <polygon points="0 0, 10 3.5, 0 7" fill="#50e3b0" />
+              </marker>
+            </defs>
+
+            <pattern
+              id="grid2"
+              width="20"
+              height="20"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 20 0 L 0 0 0 20"
+                fill="none"
+                stroke="#1c2030"
+                stroke-width="0.5"
+              />
+            </pattern>
+            <rect width="880" height="600" fill="url(#grid2)" />
+
+            <!-- ══ App ══ -->
+            <rect
+              x="20"
+              y="60"
+              width="220"
+              height="200"
+              rx="4"
+              fill="#141720"
+              stroke="#4f8ef7"
+              stroke-width="1.5"
+            />
+            <!-- header -->
+            <rect x="20" y="60" width="220" height="28" rx="4" fill="#182038" />
+            <text
+              x="130"
+              y="79"
+              font-family="IBM Plex Mono"
+              font-size="12"
+              fill="#fff"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              App
+            </text>
+            <!-- stereotype -->
+            <text
+              x="130"
+              y="57"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#4f8ef7"
+              text-anchor="middle"
+            >
+              «module»
+            </text>
+            <!-- divider -->
+            <line
+              x1="20"
+              y1="88"
+              x2="240"
+              y2="88"
+              stroke="#4f8ef7"
+              stroke-width="0.8"
+              opacity="0.4"
+            />
+            <!-- fields -->
+            <text
+              x="32"
+              y="106"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              - app: Express
+            </text>
+            <text
+              x="32"
+              y="122"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              - PORT: number = 3001
+            </text>
+            <!-- divider -->
+            <line
+              x1="20"
+              y1="133"
+              x2="240"
+              y2="133"
+              stroke="#2a3040"
+              stroke-width="0.8"
+            />
+            <!-- methods -->
+            <text
+              x="32"
+              y="150"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + use(middleware)
+            </text>
+            <text
+              x="32"
+              y="167"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + get(path, handler)
+            </text>
+            <text
+              x="32"
+              y="184"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + post(path, handler)
+            </text>
+            <text
+              x="32"
+              y="201"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + put(path, handler)
+            </text>
+            <text
+              x="32"
+              y="218"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + delete(path, handler)
+            </text>
+            <text
+              x="32"
+              y="235"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + listen(port, callback)
+            </text>
+            <text
+              x="32"
+              y="252"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              - setupMiddleware()
+            </text>
+
+            <!-- ══ BewerbungenController ══ -->
+            <rect
+              x="320"
+              y="20"
+              width="250"
+              height="280"
+              rx="4"
+              fill="#141720"
+              stroke="#50e3b0"
+              stroke-width="1.5"
+            />
+            <rect
+              x="320"
+              y="20"
+              width="250"
+              height="28"
+              rx="4"
+              fill="#142018"
+            />
+            <text
+              x="445"
+              y="39"
+              font-family="IBM Plex Mono"
+              font-size="11"
+              fill="#fff"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              BewerbungenController
+            </text>
+            <text
+              x="445"
+              y="16"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#50e3b0"
+              text-anchor="middle"
+            >
+              «controller»
+            </text>
+            <line
+              x1="320"
+              y1="48"
+              x2="570"
+              y2="48"
+              stroke="#50e3b0"
+              stroke-width="0.8"
+              opacity="0.4"
+            />
+            <!-- attributes -->
+            <text
+              x="332"
+              y="66"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              - db: Database
+            </text>
+            <line
+              x1="320"
+              y1="75"
+              x2="570"
+              y2="75"
+              stroke="#2a3040"
+              stroke-width="0.8"
+            />
+            <!-- methods -->
+            <text
+              x="332"
+              y="93"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#4f8ef7"
+            >
+              + getAll(req, res): void
+            </text>
+            <text
+              x="342"
+              y="108"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              ↳ filter: status?: string
+            </text>
+            <text
+              x="332"
+              y="126"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#4f8ef7"
+            >
+              + getById(req, res): void
+            </text>
+            <text
+              x="342"
+              y="141"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              ↳ params: id
+            </text>
+            <text
+              x="332"
+              y="159"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + create(req, res): void
+            </text>
+            <text
+              x="342"
+              y="174"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              ↳ validates: pos, firma, status, datum
+            </text>
+            <text
+              x="332"
+              y="192"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#f7c948"
+            >
+              + update(req, res): void
+            </text>
+            <text
+              x="342"
+              y="207"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              ↳ params: id
+            </text>
+            <text
+              x="332"
+              y="225"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#f76b6b"
+            >
+              + delete(req, res): void
+            </text>
+            <text
+              x="342"
+              y="240"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              ↳ resets ID on empty table
+            </text>
+            <text
+              x="332"
+              y="258"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#4f8ef7"
+            >
+              + getStatistiken(req, res): void
+            </text>
+            <text
+              x="342"
+              y="273"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              ↳ groups by status
+            </text>
+
+            <!-- ══ Database ══ -->
+            <rect
+              x="320"
+              y="360"
+              width="250"
+              height="160"
+              rx="4"
+              fill="#141720"
+              stroke="#f7c948"
+              stroke-width="1.5"
+            />
+            <rect
+              x="320"
+              y="360"
+              width="250"
+              height="28"
+              rx="4"
+              fill="#2d2a1a"
+            />
+            <text
+              x="445"
+              y="379"
+              font-family="IBM Plex Mono"
+              font-size="12"
+              fill="#fff"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              Database
+            </text>
+            <text
+              x="445"
+              y="356"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#f7c948"
+              text-anchor="middle"
+            >
+              «module»
+            </text>
+            <line
+              x1="320"
+              y1="388"
+              x2="570"
+              y2="388"
+              stroke="#f7c948"
+              stroke-width="0.8"
+              opacity="0.4"
+            />
+            <text
+              x="332"
+              y="406"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              - db: sqlite3.Database
+            </text>
+            <text
+              x="332"
+              y="422"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              - DB_PATH: string
+            </text>
+            <line
+              x1="320"
+              y1="432"
+              x2="570"
+              y2="432"
+              stroke="#2a3040"
+              stroke-width="0.8"
+            />
+            <text
+              x="332"
+              y="450"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + all(sql, params, cb)
+            </text>
+            <text
+              x="332"
+              y="468"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + get(sql, params, cb)
+            </text>
+            <text
+              x="332"
+              y="486"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + run(sql, params, cb)
+            </text>
+            <text
+              x="332"
+              y="504"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              - initSchema(): void
+            </text>
+
+            <!-- ══ Bewerbung (Model) ══ -->
+            <rect
+              x="650"
+              y="200"
+              width="210"
+              height="280"
+              rx="4"
+              fill="#141720"
+              stroke="#a78bfa"
+              stroke-width="1.5"
+            />
+            <rect
+              x="650"
+              y="200"
+              width="210"
+              height="28"
+              rx="4"
+              fill="#1e1a30"
+            />
+            <text
+              x="755"
+              y="219"
+              font-family="IBM Plex Mono"
+              font-size="12"
+              fill="#fff"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              Bewerbung
+            </text>
+            <text
+              x="755"
+              y="196"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#a78bfa"
+              text-anchor="middle"
+            >
+              «entity»
+            </text>
+            <line
+              x1="650"
+              y1="228"
+              x2="860"
+              y2="228"
+              stroke="#a78bfa"
+              stroke-width="0.8"
+              opacity="0.4"
+            />
+            <text
+              x="662"
+              y="246"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + id: INTEGER (PK, AI)
+            </text>
+            <text
+              x="662"
+              y="262"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + position: TEXT NN
+            </text>
+            <text
+              x="662"
+              y="278"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + firma: TEXT NN
+            </text>
+            <text
+              x="662"
+              y="294"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + status: TEXT NN
+            </text>
+            <text
+              x="662"
+              y="310"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + datum: TEXT NN
+            </text>
+            <text
+              x="662"
+              y="326"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              + standort?: TEXT
+            </text>
+            <text
+              x="662"
+              y="342"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              + ansprechpartner?: TEXT
+            </text>
+            <text
+              x="662"
+              y="358"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              + notizen?: TEXT
+            </text>
+            <text
+              x="662"
+              y="374"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              + bewerbungsart?: TEXT
+            </text>
+            <text
+              x="662"
+              y="390"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              + startdatum?: TEXT
+            </text>
+            <text
+              x="662"
+              y="406"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              + link?: TEXT
+            </text>
+            <line
+              x1="650"
+              y1="415"
+              x2="860"
+              y2="415"
+              stroke="#2a3040"
+              stroke-width="0.8"
+            />
+            <text
+              x="662"
+              y="433"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + created_at: TIMESTAMP
+            </text>
+            <text
+              x="662"
+              y="449"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + updated_at: TIMESTAMP
+            </text>
+            <text
+              x="662"
+              y="468"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              DEFAULT CURRENT_TIMESTAMP
+            </text>
+
+            <!-- ══ Statistiken (DTO) ══ -->
+            <rect
+              x="650"
+              y="60"
+              width="210"
+              height="120"
+              rx="4"
+              fill="#141720"
+              stroke="#6b7799"
+              stroke-width="1"
+              stroke-dasharray="4,3"
+            />
+            <rect
+              x="650"
+              y="60"
+              width="210"
+              height="24"
+              rx="4"
+              fill="#181818"
+            />
+            <text
+              x="755"
+              y="77"
+              font-family="IBM Plex Mono"
+              font-size="11"
+              fill="#d4daf0"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              StatistikDTO
+            </text>
+            <text
+              x="755"
+              y="56"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+              text-anchor="middle"
+            >
+              «DTO»
+            </text>
+            <line
+              x1="650"
+              y1="84"
+              x2="860"
+              y2="84"
+              stroke="#2a3040"
+              stroke-width="0.8"
+            />
+            <text
+              x="662"
+              y="101"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + beworben: number
+            </text>
+            <text
+              x="662"
+              y="116"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + stufe_weiter: number
+            </text>
+            <text
+              x="662"
+              y="131"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + angenommen: number
+            </text>
+            <text
+              x="662"
+              y="146"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + abgelehnt: number
+            </text>
+            <text
+              x="662"
+              y="161"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#d4daf0"
+            >
+              + keine_antwort: number
+            </text>
+            <text
+              x="662"
+              y="176"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#50e3b0"
+            >
+              + gesamt: number
+            </text>
+
+            <!-- Relationships -->
+            <!-- App uses BewerbungenController -->
+            <line
+              x1="240"
+              y1="140"
+              x2="318"
+              y2="140"
+              stroke="#4f8ef7"
+              stroke-width="1.5"
+              marker-end="url(#arr2)"
+            />
+            <text
+              x="270"
+              y="132"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#4f8ef7"
+            >
+              uses
+            </text>
+
+            <!-- BewerbungenController uses Database -->
+            <line
+              x1="445"
+              y1="300"
+              x2="445"
+              y2="358"
+              stroke="#6b7799"
+              stroke-width="1.5"
+              stroke-dasharray="5,3"
+              marker-end="url(#arr-dashed)"
+            />
+            <text
+              x="452"
+              y="335"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              depends
+            </text>
+
+            <!-- BewerbungenController creates/reads Bewerbung -->
+            <line
+              x1="570"
+              y1="160"
+              x2="648"
+              y2="260"
+              stroke="#a78bfa"
+              stroke-width="1.5"
+              marker-end="url(#arr2)"
+            />
+            <text
+              x="600"
+              y="205"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#a78bfa"
+            >
+              returns
+            </text>
+
+            <!-- Controller returns StatistikDTO -->
+            <line
+              x1="570"
+              y1="80"
+              x2="648"
+              y2="100"
+              stroke="#6b7799"
+              stroke-width="1"
+              stroke-dasharray="4,2"
+              marker-end="url(#arr-open)"
+            />
+            <text
+              x="595"
+              y="78"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#6b7799"
+            >
+              creates
+            </text>
+
+            <!-- Database maps to Bewerbung -->
+            <line
+              x1="570"
+              y1="440"
+              x2="648"
+              y2="400"
+              stroke="#f7c948"
+              stroke-width="1"
+              stroke-dasharray="4,2"
+              marker-end="url(#arr-open)"
+            />
+            <text
+              x="596"
+              y="435"
+              font-family="IBM Plex Mono"
+              font-size="9"
+              fill="#f7c948"
+            >
+              maps
+            </text>
+
+            <!-- Legend -->
+            <text
+              x="20"
+              y="530"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              NN = NOT NULL | PK = Primary Key | AI = AUTO INCREMENT | ? =
+              optional
+            </text>
+            <text
+              x="20"
+              y="548"
+              font-family="IBM Plex Mono"
+              font-size="10"
+              fill="#6b7799"
+            >
+              ——→ Abhängigkeit | - - → Verwendung | · · → Erstellung/Rückgabe
+            </text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Endpunkte Tabelle -->
+      <section id="endpunkte">
+        <div class="section-label">REST Interface</div>
+        <h2>API-Endpunkte</h2>
+
+        <div class="diagram-wrap" style="padding: 0; overflow: hidden">
+          <table class="endpoint-table">
+            <thead>
+              <tr>
+                <th>Methode</th>
+                <th>Pfad</th>
+                <th>Beschreibung</th>
+                <th>Request Body / Query</th>
+                <th>Response</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="method get">GET</span></td>
+                <td>/api/bewerbungen</td>
+                <td>Alle Bewerbungen auflisten</td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >?status=beworben</span
+                  >
+                </td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >200 Bewerbung[]</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="method get">GET</span></td>
+                <td>/api/bewerbungen/:id</td>
+                <td>Einzelne Bewerbung</td>
+                <td>—</td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >200 Bewerbung | 404</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="method post">POST</span></td>
+                <td>/api/bewerbungen</td>
+                <td>Neue Bewerbung erstellen</td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >position, firma, status, datum (NN)</span
+                  >
+                </td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >201 {id, message} | 400</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="method put">PUT</span></td>
+                <td>/api/bewerbungen/:id</td>
+                <td>Bewerbung aktualisieren</td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >alle Felder (full replace)</span
+                  >
+                </td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >200 {message} | 404</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="method delete">DELETE</span></td>
+                <td>/api/bewerbungen/:id</td>
+                <td>Bewerbung löschen</td>
+                <td>—</td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >200 {message} | 404</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="method get">GET</span></td>
+                <td>/api/statistiken</td>
+                <td>Bewerbungsstatistiken</td>
+                <td>—</td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >200 StatistikDTO</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="method get">GET</span></td>
+                <td>/health</td>
+                <td>Health Check</td>
+                <td>—</td>
+                <td>
+                  <span
+                    style="
+                      color: #6b7799;
+                      font-family: var(--mono);
+                      font-size: 11px;
+                    "
+                    >200 {status: "ok"}</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Datenmodell -->
+      <section id="datenmodell">
+        <div class="section-label">Schema</div>
+        <h2>Datenmodell</h2>
+        <div class="cols">
+          <div class="card">
+            <div class="card-title">bewerbungen — Pflichtfelder</div>
+            <div class="field">
+              <span class="field-name">id</span
+              ><span class="field-type">INTEGER</span
+              ><span class="field-note">PK · AUTOINCREMENT</span>
+            </div>
+            <div class="field">
+              <span class="field-name">position</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">NOT NULL</span>
+            </div>
+            <div class="field">
+              <span class="field-name">firma</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">NOT NULL</span>
+            </div>
+            <div class="field">
+              <span class="field-name">status</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">NOT NULL</span>
+            </div>
+            <div class="field">
+              <span class="field-name">datum</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">NOT NULL</span>
+            </div>
+            <div class="field">
+              <span class="field-name">created_at</span
+              ><span class="field-type">TIMESTAMP</span
+              ><span class="field-note">DEFAULT NOW</span>
+            </div>
+            <div class="field">
+              <span class="field-name">updated_at</span
+              ><span class="field-type">TIMESTAMP</span
+              ><span class="field-note">DEFAULT NOW</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">bewerbungen — Optionale Felder</div>
+            <div class="field">
+              <span class="field-name">standort</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">nullable</span>
+            </div>
+            <div class="field">
+              <span class="field-name">ansprechpartner</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">nullable</span>
+            </div>
+            <div class="field">
+              <span class="field-name">notizen</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">nullable</span>
+            </div>
+            <div class="field">
+              <span class="field-name">bewerbungsart</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">nullable</span>
+            </div>
+            <div class="field">
+              <span class="field-name">startdatum</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">nullable</span>
+            </div>
+            <div class="field">
+              <span class="field-name">link</span
+              ><span class="field-type">TEXT</span
+              ><span class="field-note">nullable · URL</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Status-Enum (Werte)</div>
+            <div class="field">
+              <span class="field-name">beworben</span
+              ><span class="field-note">Initiale Bewerbung verschickt</span>
+            </div>
+            <div class="field">
+              <span class="field-name">stufe_weiter</span
+              ><span class="field-note">In einem nächsten Schritt</span>
+            </div>
+            <div class="field">
+              <span class="field-name">angenommen</span
+              ><span class="field-note">Angebot erhalten/akzeptiert</span>
+            </div>
+            <div class="field">
+              <span class="field-name">abgelehnt</span
+              ><span class="field-note">Absage erhalten</span>
+            </div>
+            <div class="field">
+              <span class="field-name">keine_antwort</span
+              ><span class="field-note">Keine Rückmeldung</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Anmerkungen zur Architektur</div>
+            <div class="field" style="flex-direction: column; gap: 4px">
+              <span
+                style="
+                  color: #f7c948;
+                  font-family: var(--mono);
+                  font-size: 11px;
+                "
+                >⚠ PUT ist Full-Replace</span
+              >
+              <span style="color: #6b7799; font-size: 12px"
+                >Kein PATCH-Endpunkt vorhanden. Alle Felder müssen beim Update
+                mitgeschickt werden.</span
+              >
+            </div>
+            <div class="field" style="flex-direction: column; gap: 4px">
+              <span
+                style="
+                  color: #f7c948;
+                  font-family: var(--mono);
+                  font-size: 11px;
+                "
+                >⚠ ID-Reset bei leerer Tabelle</span
+              >
+              <span style="color: #6b7799; font-size: 12px"
+                >Nach DELETE aller Einträge wird sqlite_sequence
+                zurückgesetzt.</span
+              >
+            </div>
+            <div class="field" style="flex-direction: column; gap: 4px">
+              <span
+                style="
+                  color: #50e3b0;
+                  font-family: var(--mono);
+                  font-size: 11px;
+                "
+                >✓ CORS konfiguriert</span
+              >
+              <span style="color: #6b7799; font-size: 12px"
+                >Origin localhost:5173 explizit erlaubt (Vite Dev Server).</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
