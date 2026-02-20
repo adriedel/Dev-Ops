@@ -16,6 +16,26 @@ app.use(
 );
 app.use(bodyParser.json());
 
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "JobPilot Backend läuft",
+    api: "/api",
+  });
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+app.get("/api", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "JobPilot API erreichbar",
+    endpoints: ["/api/bewerbungen", "/api/statistiken"],
+  });
+});
+
 // GET alle Bewerbungen
 app.get("/api/bewerbungen", (req, res) => {
   const { status } = req.query;
