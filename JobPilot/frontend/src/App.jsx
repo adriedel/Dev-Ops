@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./App.css";
 import Header from "./components/Header/header";
 import StatCards from "./components/StatCards/statcards";
@@ -53,28 +53,28 @@ function App() {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
 
-  const loadBewerbungen = async () => {
+  const loadBewerbungen = useCallback(async () => {
     try {
       const data = await bewerbungenApi.getAll();
       setBewerbungen(data);
     } catch (error) {
       console.error("Fehler beim Laden der Bewerbungen:", error);
     }
-  };
+  }, []);
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     try {
       const data = await bewerbungenApi.getStats();
       setStats(data);
     } catch (error) {
       console.error("Fehler beim Laden der Statistiken:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadBewerbungen();
     loadStats();
-  }, []);
+  }, [loadBewerbungen, loadStats]);
 
   const handleSubmit = async () => {
     try {
