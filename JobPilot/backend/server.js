@@ -189,15 +189,15 @@ app.delete("/api/bewerbungen/:id", (req, res) => {
       return res.status(404).json({ error: "Bewerbung nicht gefunden" });
     }
 
-    // Prüfen, ob noch Bewerbungen existieren
-    db.get("SELECT COUNT(*) as count FROM bewerbungen", [], (err, row) => {
+    // IDs der verbleibenden Einträge neu nummerieren
+    db.all("SELECT id FROM bewerbungen ORDER BY id ASC", [], (err, rows) => {
       if (err) {
-        console.error("Fehler beim Zählen:", err.message);
+        console.error("Fehler beim Laden der IDs:", err.message);
         return res.json({ message: "Bewerbung gelöscht" });
       }
 
-      // Wenn keine Bewerbungen mehr existieren, ID-Zähler zurücksetzen
-      if (row.count === 0) {
+      if (rows.length === 0) {
+        // Keine Einträge mehr – Sequenz zurücksetzen
         db.run(
           "DELETE FROM sqlite_sequence WHERE name = 'bewerbungen'",
           (err) => {
@@ -209,9 +209,42 @@ app.delete("/api/bewerbungen/:id", (req, res) => {
             res.json({ message: "Bewerbung gelöscht" });
           },
         );
-      } else {
-        res.json({ message: "Bewerbung gelöscht" });
+        return;
       }
+
+      // Zweistufige Umnummerierung, um UNIQUE-Konflikte zu vermeiden:
+      // Schritt 1: Negative temporäre IDs vergeben
+      // Schritt 2: Positive sequentielle IDs vergeben
+      db.serialize(() => {
+        rows.forEach((row, index) => {
+          db.run("UPDATE bewerbungen SET id = ? WHERE id = ?", [
+            -(index + 1),
+            row.id,
+          ]);
+        });
+
+        rows.forEach((row, index) => {
+          db.run("UPDATE bewerbungen SET id = ? WHERE id = ?", [
+            index + 1,
+            -(index + 1),
+          ]);
+        });
+
+        // Sequenz-Zähler auf den neuen Maximalwert setzen
+        db.run(
+          "UPDATE sqlite_sequence SET seq = ? WHERE name = 'bewerbungen'",
+          [rows.length],
+          (err) => {
+            if (err) {
+              console.error(
+                "Fehler beim Aktualisieren der Sequenz:",
+                err.message,
+              );
+            }
+            res.json({ message: "Bewerbung gelöscht" });
+          },
+        );
+      });
     });
   });
 });
