@@ -158,6 +158,8 @@ Content-Type: application/json
 
 ### Datenbankschema
 
+Detailliertere Ansicht: https://adriedel.github.io/html-preview-DevOps/
+
 Tabelle `bewerbungen`:
 
 | Spalte            | Typ      | Pflicht | Beschreibung                |
