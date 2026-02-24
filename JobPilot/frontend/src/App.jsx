@@ -72,9 +72,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    loadBewerbungen();
-    loadStats();
-  }, [loadBewerbungen, loadStats]);
+    const fetchInitialData = async () => {
+      try {
+        const [bewerbungenData, statsData] = await Promise.all([
+          bewerbungenApi.getAll(),
+          bewerbungenApi.getStats(),
+        ]);
+        setBewerbungen(bewerbungenData);
+        setStats(statsData);
+      } catch (error) {
+        console.error("Fehler beim initialen Laden:", error);
+      }
+    };
+    fetchInitialData();
+  }, []);
 
   const handleSubmit = async () => {
     try {
