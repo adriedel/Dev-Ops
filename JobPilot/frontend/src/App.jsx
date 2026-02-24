@@ -53,11 +53,6 @@ function App() {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
 
-  useEffect(() => {
-    loadBewerbungen();
-    loadStats();
-  }, []);
-
   const loadBewerbungen = async () => {
     try {
       const data = await bewerbungenApi.getAll();
@@ -75,6 +70,11 @@ function App() {
       console.error("Fehler beim Laden der Statistiken:", error);
     }
   };
+
+  useEffect(() => {
+    loadBewerbungen();
+    loadStats();
+  }, []);
 
   const handleSubmit = async () => {
     try {
