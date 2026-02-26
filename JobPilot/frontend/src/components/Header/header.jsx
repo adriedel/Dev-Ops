@@ -5,11 +5,17 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
     <header className="header">
       <div className="header-left">
         <div className="app-icon">
-          <img className="app-logo" src="/bag-white.svg" alt="Bewerbungstracker Logo" />
+          <img
+            className="app-logo"
+            src="/briefcase-white.svg"
+            alt="Bewerbungstracker Logo"
+          />
         </div>
         <div className="header-text">
           <h1 className="header-title">Bewerbungstracker</h1>
-          <p className="header-subtitle">Behalten Sie den Überblick über Ihre Bewerbungen</p>
+          <p className="header-subtitle">
+            Behalten Sie den Überblick über Ihre Bewerbungen
+          </p>
         </div>
       </div>
 
