@@ -30,7 +30,11 @@
   background: var(--bg-input);
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.2s,
+    color 0.2s;
 }
 
 .search-input:focus {
@@ -52,7 +56,9 @@
   font-size: 1rem;
   line-height: 1;
   flex-shrink: 0;
-  transition: background 0.15s, border-color 0.2s;
+  transition:
+    background 0.15s,
+    border-color 0.2s;
 }
 
 .filter-btn:hover {
@@ -73,7 +79,10 @@
   background-repeat: no-repeat;
   background-position: right 12px center;
   flex-shrink: 0;
-  transition: border-color 0.15s, background 0.2s, color 0.2s;
+  transition:
+    border-color 0.15s,
+    background 0.2s,
+    color 0.2s;
 }
 
 .filter-select:focus {
@@ -99,11 +108,7 @@
     flex: 1 1 100%;
   }
 
-  .filter-btn {
-    display: none;
-  }
-
   .filter-select {
-    flex: 1;
+    flex: 0 1 auto;
   }
 }
