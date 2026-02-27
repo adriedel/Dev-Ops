@@ -13,7 +13,9 @@
   flex-direction: column;
   gap: 0.5rem;
   box-shadow: var(--shadow-sm);
-  transition: background 0.2s, box-shadow 0.2s;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
 }
 
 .stat-icon {
@@ -25,6 +27,12 @@
   justify-content: center;
   font-size: 1.3rem;
   margin-bottom: 10px;
+}
+
+.stat-icon img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
 .stat-number {
@@ -40,11 +48,26 @@
 }
 
 /* ── Icon-Farben – via CSS-Variablen (light + dark automatisch) ── */
-.beworben .stat-icon      { background: var(--status-beworben-bg);      color: var(--status-beworben-accent); }
-.stufe_weiter .stat-icon  { background: var(--status-stufe_weiter-bg);  color: var(--status-stufe_weiter-accent); }
-.angenommen .stat-icon    { background: var(--status-angenommen-bg);    color: var(--status-angenommen-accent); }
-.abgelehnt .stat-icon     { background: var(--status-abgelehnt-bg);     color: var(--status-abgelehnt-accent); }
-.keine_antwort .stat-icon { background: var(--status-keine_antwort-bg); color: var(--status-keine_antwort-accent); }
+.beworben .stat-icon {
+  background: var(--status-beworben-bg);
+  color: var(--status-beworben-accent);
+}
+.stufe_weiter .stat-icon {
+  background: var(--status-stufe_weiter-bg);
+  color: var(--status-stufe_weiter-accent);
+}
+.angenommen .stat-icon {
+  background: var(--status-angenommen-bg);
+  color: var(--status-angenommen-accent);
+}
+.abgelehnt .stat-icon {
+  background: var(--status-abgelehnt-bg);
+  color: var(--status-abgelehnt-accent);
+}
+.keine_antwort .stat-icon {
+  background: var(--status-keine_antwort-bg);
+  color: var(--status-keine_antwort-accent);
+}
 
 /* ── Gesamt-Karte ── */
 .gesamt {
