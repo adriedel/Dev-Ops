@@ -1,13 +1,14 @@
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+require("dotenv").config();
+const { Pool } = require("pg");
 
-const dbPath = path.join(__dirname, "bewerbungen.db");
-const db = new sqlite3.Database(dbPath);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
-db.serialize(() => {
-  db.run(`
+async function initDB() {
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS bewerbungen (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       position TEXT NOT NULL,
       firma TEXT NOT NULL,
       status TEXT NOT NULL,
@@ -18,15 +19,14 @@ db.serialize(() => {
       bewerbungsart TEXT,
       startdatum TEXT,
       link TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
-  // Migration: link-Spalte für bestehende Datenbanken hinzufügen
-  db.run(`ALTER TABLE bewerbungen ADD COLUMN link TEXT`, () => {});
-
   console.log("Datenbank initialisiert");
-});
+}
 
-module.exports = db;
+initDB().catch(console.error);
+
+module.exports = pool;

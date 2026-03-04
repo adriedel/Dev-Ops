@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const db = require("./database");
+const pool = require("./database");
 
 const app = express();
 const PORT = 3001;
@@ -37,44 +37,46 @@ app.get("/api", (req, res) => {
 });
 
 // GET alle Bewerbungen
-app.get("/api/bewerbungen", (req, res) => {
+app.get("/api/bewerbungen", async (req, res) => {
   const { status } = req.query;
 
   let query = "SELECT * FROM bewerbungen";
   let params = [];
 
   if (status) {
-    query += " WHERE status = ?";
+    query += " WHERE status = $1";
     params.push(status);
   }
 
   query += " ORDER BY created_at DESC";
 
-  db.all(query, params, (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(rows);
-  });
+  try {
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // GET einzelne Bewerbung
-app.get("/api/bewerbungen/:id", (req, res) => {
+app.get("/api/bewerbungen/:id", async (req, res) => {
   const { id } = req.params;
 
-  db.get("SELECT * FROM bewerbungen WHERE id = ?", [id], (err, row) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    if (!row) {
+  try {
+    const result = await pool.query("SELECT * FROM bewerbungen WHERE id = $1", [
+      id,
+    ]);
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: "Bewerbung nicht gefunden" });
     }
-    res.json(row);
-  });
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // POST neue Bewerbung erstellen
-app.post("/api/bewerbungen", (req, res) => {
+app.post("/api/bewerbungen", async (req, res) => {
   const {
     position,
     firma,
@@ -97,12 +99,12 @@ app.post("/api/bewerbungen", (req, res) => {
   const query = `
     INSERT INTO bewerbungen
     (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum, link)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    RETURNING id
   `;
 
-  db.run(
-    query,
-    [
+  try {
+    const result = await pool.query(query, [
       position,
       firma,
       status,
@@ -113,21 +115,18 @@ app.post("/api/bewerbungen", (req, res) => {
       bewerbungsart,
       startdatum,
       link,
-    ],
-    function (err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      res.status(201).json({
-        id: this.lastID,
-        message: "Bewerbung erstellt",
-      });
-    },
-  );
+    ]);
+    res.status(201).json({
+      id: result.rows[0].id,
+      message: "Bewerbung erstellt",
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // PUT Bewerbung aktualisieren
-app.put("/api/bewerbungen/:id", (req, res) => {
+app.put("/api/bewerbungen/:id", async (req, res) => {
   const { id } = req.params;
   const {
     position,
@@ -144,15 +143,14 @@ app.put("/api/bewerbungen/:id", (req, res) => {
 
   const query = `
     UPDATE bewerbungen
-    SET position = ?, firma = ?, status = ?, datum = ?,
-        standort = ?, ansprechpartner = ?, notizen = ?,
-        bewerbungsart = ?, startdatum = ?, link = ?, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ?
+    SET position = $1, firma = $2, status = $3, datum = $4,
+        standort = $5, ansprechpartner = $6, notizen = $7,
+        bewerbungsart = $8, startdatum = $9, link = $10, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $11
   `;
 
-  db.run(
-    query,
-    [
+  try {
+    const result = await pool.query(query, [
       position,
       firma,
       status,
@@ -164,105 +162,88 @@ app.put("/api/bewerbungen/:id", (req, res) => {
       startdatum,
       link,
       id,
-    ],
-    function (err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      if (this.changes === 0) {
-        return res.status(404).json({ error: "Bewerbung nicht gefunden" });
-      }
-      res.json({ message: "Bewerbung aktualisiert" });
-    },
-  );
+    ]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Bewerbung nicht gefunden" });
+    }
+    res.json({ message: "Bewerbung aktualisiert" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // DELETE Bewerbung löschen
-app.delete("/api/bewerbungen/:id", (req, res) => {
+app.delete("/api/bewerbungen/:id", async (req, res) => {
   const { id } = req.params;
+  const client = await pool.connect();
 
-  db.run("DELETE FROM bewerbungen WHERE id = ?", [id], function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    if (this.changes === 0) {
+  try {
+    await client.query("BEGIN");
+
+    const deleteResult = await client.query(
+      "DELETE FROM bewerbungen WHERE id = $1",
+      [id],
+    );
+
+    if (deleteResult.rowCount === 0) {
+      await client.query("ROLLBACK");
       return res.status(404).json({ error: "Bewerbung nicht gefunden" });
     }
 
     // IDs der verbleibenden Einträge neu nummerieren
-    db.all("SELECT id FROM bewerbungen ORDER BY id ASC", [], (err, rows) => {
-      if (err) {
-        console.error("Fehler beim Laden der IDs:", err.message);
-        return res.json({ message: "Bewerbung gelöscht" });
-      }
+    const { rows } = await client.query(
+      "SELECT id FROM bewerbungen ORDER BY id ASC",
+    );
 
-      if (rows.length === 0) {
-        // Keine Einträge mehr – Sequenz zurücksetzen
-        db.run(
-          "DELETE FROM sqlite_sequence WHERE name = 'bewerbungen'",
-          (err) => {
-            if (err) {
-              console.error("Fehler beim Zurücksetzen der ID:", err.message);
-            } else {
-              console.log("ID-Zähler wurde zurückgesetzt");
-            }
-            res.json({ message: "Bewerbung gelöscht" });
-          },
-        );
-        return;
-      }
-
+    if (rows.length === 0) {
+      // Keine Einträge mehr – Sequenz zurücksetzen
+      await client.query("ALTER SEQUENCE bewerbungen_id_seq RESTART WITH 1");
+      console.log("ID-Zähler wurde zurückgesetzt");
+    } else {
       // Zweistufige Umnummerierung, um UNIQUE-Konflikte zu vermeiden:
       // Schritt 1: Negative temporäre IDs vergeben
+      for (let i = 0; i < rows.length; i++) {
+        await client.query("UPDATE bewerbungen SET id = $1 WHERE id = $2", [
+          -(i + 1),
+          rows[i].id,
+        ]);
+      }
       // Schritt 2: Positive sequentielle IDs vergeben
-      db.serialize(() => {
-        rows.forEach((row, index) => {
-          db.run("UPDATE bewerbungen SET id = ? WHERE id = ?", [
-            -(index + 1),
-            row.id,
-          ]);
-        });
+      for (let i = 0; i < rows.length; i++) {
+        await client.query("UPDATE bewerbungen SET id = $1 WHERE id = $2", [
+          i + 1,
+          -(i + 1),
+        ]);
+      }
+      // Sequenz-Zähler auf den neuen Maximalwert setzen
+      await client.query("SELECT setval('bewerbungen_id_seq', $1)", [
+        rows.length,
+      ]);
+    }
 
-        rows.forEach((row, index) => {
-          db.run("UPDATE bewerbungen SET id = ? WHERE id = ?", [
-            index + 1,
-            -(index + 1),
-          ]);
-        });
-
-        // Sequenz-Zähler auf den neuen Maximalwert setzen
-        db.run(
-          "UPDATE sqlite_sequence SET seq = ? WHERE name = 'bewerbungen'",
-          [rows.length],
-          (err) => {
-            if (err) {
-              console.error(
-                "Fehler beim Aktualisieren der Sequenz:",
-                err.message,
-              );
-            }
-            res.json({ message: "Bewerbung gelöscht" });
-          },
-        );
-      });
-    });
-  });
+    await client.query("COMMIT");
+    res.json({ message: "Bewerbung gelöscht" });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Fehler beim Löschen:", err.message);
+    res.status(500).json({ error: err.message });
+  } finally {
+    client.release();
+  }
 });
 
 // GET Statistiken
-app.get("/api/statistiken", (req, res) => {
+app.get("/api/statistiken", async (req, res) => {
   const query = `
-    SELECT 
+    SELECT
       status,
-      COUNT(*) as anzahl
+      COUNT(*)::int AS anzahl
     FROM bewerbungen
     GROUP BY status
   `;
 
-  db.all(query, [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
+  try {
+    const result = await pool.query(query);
 
     const stats = {
       beworben: 0,
@@ -273,13 +254,15 @@ app.get("/api/statistiken", (req, res) => {
       gesamt: 0,
     };
 
-    rows.forEach((row) => {
+    result.rows.forEach((row) => {
       stats[row.status] = row.anzahl;
       stats.gesamt += row.anzahl;
     });
 
     res.json(stats);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.listen(PORT, () => {
