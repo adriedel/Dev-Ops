@@ -69,35 +69,41 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
                 className="dropdown-item"
                 onClick={() => handleStatusChange(STATUS.BEWORBEN)}
               >
-                <span>✈️</span>
+                <img src={STATUS_ICONS[STATUS.BEWORBEN]} alt="Beworben" />
                 <span>Beworben</span>
               </button>
               <button
                 className="dropdown-item"
                 onClick={() => handleStatusChange(STATUS.STUFE_WEITER)}
               >
-                <span>➡️</span>
+                <img
+                  src={STATUS_ICONS[STATUS.STUFE_WEITER]}
+                  alt="Stufe weiter"
+                />
                 <span>Stufe weiter</span>
               </button>
               <button
                 className="dropdown-item"
                 onClick={() => handleStatusChange(STATUS.ANGENOMMEN)}
               >
-                <span>✅</span>
+                <img src={STATUS_ICONS[STATUS.ANGENOMMEN]} alt="Angenommen" />
                 <span>Angenommen</span>
               </button>
               <button
                 className="dropdown-item"
                 onClick={() => handleStatusChange(STATUS.ABGELEHNT)}
               >
-                <span>❌</span>
+                <img src={STATUS_ICONS[STATUS.ABGELEHNT]} alt="Abgelehnt" />
                 <span>Abgelehnt</span>
               </button>
               <button
                 className="dropdown-item"
                 onClick={() => handleStatusChange(STATUS.KEINE_ANTWORT)}
               >
-                <span>🕐</span>
+                <img
+                  src={STATUS_ICONS[STATUS.KEINE_ANTWORT]}
+                  alt="Keine Antwort"
+                />
                 <span>Keine Antwort</span>
               </button>
               <div className="dropdown-divider" />
@@ -114,7 +120,10 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
       </div>
 
       <div className={`status-badge status-${bewerbung.status}`}>
-        <span>{STATUS_ICONS[bewerbung.status]}</span>
+        <img
+          src={STATUS_ICONS[bewerbung.status]}
+          alt={STATUS_LABELS[bewerbung.status]}
+        />
         <span>{STATUS_LABELS[bewerbung.status]}</span>
       </div>
 

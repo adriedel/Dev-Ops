@@ -17,11 +17,11 @@ export const STATUS_LABELS = {
 };
 
 export const STATUS_ICONS = {
-  [STATUS.BEWORBEN]: "✈️",
-  [STATUS.STUFE_WEITER]: "➡️",
-  [STATUS.ANGENOMMEN]: "✅",
-  [STATUS.ABGELEHNT]: "❌",
-  [STATUS.KEINE_ANTWORT]: "🕐",
+  [STATUS.BEWORBEN]: "/paperplane-applied.svg",
+  [STATUS.STUFE_WEITER]: "/arrow-step-further.svg",
+  [STATUS.ANGENOMMEN]: "/check-circle-accepted.svg",
+  [STATUS.ABGELEHNT]: "/cross-circle-denied.svg",
+  [STATUS.KEINE_ANTWORT]: "/clock-no-answer.svg",
 };
 
 export const BEWERBUNGSARTEN = [

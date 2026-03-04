@@ -107,6 +107,12 @@
   transition: background 0.12s;
 }
 
+.dropdown-item img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
 .dropdown-item:hover {
   background: var(--bg-hover);
 }
@@ -141,12 +147,33 @@
   align-self: flex-start;
 }
 
+.status-badge img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
 /* Status-Badge Farben – via CSS-Variablen (light + dark automatisch) */
-.status-beworben      { background: var(--status-beworben-bg);      color: var(--status-beworben-accent); }
-.status-stufe_weiter  { background: var(--status-stufe_weiter-bg);  color: var(--status-stufe_weiter-accent); }
-.status-angenommen    { background: var(--status-angenommen-bg);    color: var(--status-angenommen-accent); }
-.status-abgelehnt     { background: var(--status-abgelehnt-bg);     color: var(--status-abgelehnt-accent); }
-.status-keine_antwort { background: var(--status-keine_antwort-bg); color: var(--status-keine_antwort-accent); }
+.status-beworben {
+  background: var(--status-beworben-bg);
+  color: var(--status-beworben-accent);
+}
+.status-stufe_weiter {
+  background: var(--status-stufe_weiter-bg);
+  color: var(--status-stufe_weiter-accent);
+}
+.status-angenommen {
+  background: var(--status-angenommen-bg);
+  color: var(--status-angenommen-accent);
+}
+.status-abgelehnt {
+  background: var(--status-abgelehnt-bg);
+  color: var(--status-abgelehnt-accent);
+}
+.status-keine_antwort {
+  background: var(--status-keine_antwort-bg);
+  color: var(--status-keine_antwort-accent);
+}
 
 /* ── Details-Zeile ── */
 .card-details {
