@@ -23,7 +23,11 @@ function BewerbungsModal({
           <h2 className="modal-title">
             {isEditing ? "Bewerbung bearbeiten" : "Neue Bewerbung"}
           </h2>
-          <button className="modal-close" onClick={onClose} aria-label="Schließen">
+          <button
+            className="modal-close"
+            onClick={onClose}
+            aria-label="Schließen"
+          >
             ×
           </button>
         </div>
@@ -68,6 +72,7 @@ function BewerbungsModal({
             <div className="form-group">
               <label>Status</label>
               <select name="status" value={formData.status} onChange={onChange}>
+                <option value={STATUS.IN_PLANUNG}>📝 In Planung</option>
                 <option value={STATUS.BEWORBEN}>✈ Beworben</option>
                 <option value={STATUS.STUFE_WEITER}>→ Stufe weiter</option>
                 <option value={STATUS.ANGENOMMEN}>✓ Angenommen</option>

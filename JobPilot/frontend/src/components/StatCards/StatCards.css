@@ -52,6 +52,11 @@
   background: var(--status-beworben-bg);
   color: var(--status-beworben-accent);
 }
+
+.beworben .stat-icon {
+  background: var(--status-beworben-bg);
+  color: var(--status-beworben-accent);
+}
 .stufe_weiter .stat-icon {
   background: var(--status-stufe_weiter-bg);
   color: var(--status-stufe_weiter-accent);
