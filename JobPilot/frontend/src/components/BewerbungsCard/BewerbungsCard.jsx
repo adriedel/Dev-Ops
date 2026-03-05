@@ -67,6 +67,13 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
               <div className="dropdown-divider" />
               <button
                 className="dropdown-item"
+                onClick={() => handleStatusChange(STATUS.IN_PLANUNG)}
+              >
+                <img src={STATUS_ICONS[STATUS.IN_PLANUNG]} alt="In Planung" />
+                <span>In Planung</span>
+              </button>
+              <button
+                className="dropdown-item"
                 onClick={() => handleStatusChange(STATUS.BEWORBEN)}
               >
                 <img src={STATUS_ICONS[STATUS.BEWORBEN]} alt="Beworben" />

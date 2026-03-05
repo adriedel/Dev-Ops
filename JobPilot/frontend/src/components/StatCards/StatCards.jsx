@@ -4,6 +4,13 @@ import { STATUS, STATUS_ICONS } from "../../utils/constants";
 function StatCards({ stats }) {
   return (
     <section className="stats-container">
+      <section className="stat-card in_planung">
+        <div className="stat-icon">
+          <img src={STATUS_ICONS[STATUS.IN_PLANUNG]} alt="In Planung" />
+        </div>
+        <div className="stat-number">{stats.in_planung ?? 0}</div>
+        <div className="stat-label">In Planung</div>
+      </section>
       <section className="stat-card beworben">
         <div className="stat-icon">
           <img src={STATUS_ICONS[STATUS.BEWORBEN]} alt="Beworben" />
@@ -45,7 +52,9 @@ function StatCards({ stats }) {
       </section>
 
       <section className="stat-card gesamt">
-        <div className="stat-icon">📈</div>
+        <div className="stat-icon">
+          <img src={STATUS_ICONS[STATUS.GESAMT]} alt="Gesamt" />
+        </div>
         <div className="stat-number">{stats.gesamt ?? 0}</div>
         <div className="stat-label">Gesamt</div>
       </section>
