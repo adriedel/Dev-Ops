@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const pool = require("./database");
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./swagger.yaml");
 
 const app = express();
 const PORT = 3001;
@@ -35,6 +38,8 @@ app.get("/api", (req, res) => {
     endpoints: ["/api/bewerbungen", "/api/statistiken"],
   });
 });
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // GET alle Bewerbungen
 app.get("/api/bewerbungen", async (req, res) => {

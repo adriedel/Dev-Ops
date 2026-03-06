@@ -1,0 +1,433 @@
+openapi: 3.0.0
+info:
+  title: JobPilot API
+  description: Backend API für den JobPilot Bewerbungstracker
+  version: 1.0.0
+  contact:
+    name: JobPilot Support
+servers:
+  - url: http://localhost:3001
+    description: Lokale Entwicklungsumgebung
+
+tags:
+  - name: Bewerbungen
+    description: Verwaltung von Bewerbungen
+  - name: Statistiken
+    description: Statistiken zu Bewerbungen
+  - name: Health
+    description: Server Status
+
+paths:
+  /:
+    get:
+      tags:
+        - Health
+      summary: Root Endpoint
+      description: Gibt Basisinformationen über die API zurück
+      responses:
+        "200":
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  message:
+                    type: string
+                    example: JobPilot Backend läuft
+                  api:
+                    type: string
+                    example: /api
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health Check
+      description: Prüft, ob der Server läuft
+      responses:
+        "200":
+          description: Server ist verfügbar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /api:
+    get:
+      tags:
+        - Health
+      summary: API Info
+      description: Gibt Informationen über verfügbare API-Endpunkte zurück
+      responses:
+        "200":
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  message:
+                    type: string
+                    example: JobPilot API erreichbar
+                  endpoints:
+                    type: array
+                    items:
+                      type: string
+                    example: ["/api/bewerbungen", "/api/statistiken"]
+
+  /api/bewerbungen:
+    get:
+      tags:
+        - Bewerbungen
+      summary: Alle Bewerbungen abrufen
+      description: Gibt alle Bewerbungen zurück, optional gefiltert nach Status
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - beworben
+              - stufe_weiter
+              - angenommen
+              - abgelehnt
+              - keine_antwort
+          description: Filtert Bewerbungen nach Status
+      responses:
+        "200":
+          description: Liste aller Bewerbungen
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Bewerbung"
+        "500":
+          description: Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      tags:
+        - Bewerbungen
+      summary: Neue Bewerbung erstellen
+      description: Erstellt eine neue Bewerbung in der Datenbank
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BewerbungInput"
+      responses:
+        "201":
+          description: Bewerbung erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: Bewerbung erstellt
+        "400":
+          description: Fehlende Pflichtfelder
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/bewerbungen/{id}:
+    get:
+      tags:
+        - Bewerbungen
+      summary: Einzelne Bewerbung abrufen
+      description: Gibt eine bestimmte Bewerbung anhand der ID zurück
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID der Bewerbung
+      responses:
+        "200":
+          description: Bewerbung gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bewerbung"
+        "404":
+          description: Bewerbung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - Bewerbungen
+      summary: Bewerbung aktualisieren
+      description: Aktualisiert eine bestehende Bewerbung
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID der Bewerbung
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BewerbungInput"
+      responses:
+        "200":
+          description: Bewerbung erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bewerbung aktualisiert
+        "404":
+          description: Bewerbung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags:
+        - Bewerbungen
+      summary: Bewerbung löschen
+      description: Löscht eine Bewerbung und nummeriert IDs neu
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID der Bewerbung
+      responses:
+        "200":
+          description: Bewerbung erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bewerbung gelöscht
+        "404":
+          description: Bewerbung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/statistiken:
+    get:
+      tags:
+        - Statistiken
+      summary: Statistiken abrufen
+      description: Gibt Statistiken über Bewerbungen gruppiert nach Status zurück
+      responses:
+        "200":
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Statistiken"
+        "500":
+          description: Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Bewerbung:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        position:
+          type: string
+          example: "Senior Developer"
+        firma:
+          type: string
+          example: "Tech GmbH"
+        status:
+          type: string
+          enum:
+            - beworben
+            - stufe_weiter
+            - angenommen
+            - abgelehnt
+            - keine_antwort
+          example: "beworben"
+        datum:
+          type: string
+          format: date
+          example: "2026-03-05"
+        standort:
+          type: string
+          nullable: true
+          example: "Berlin"
+        ansprechpartner:
+          type: string
+          nullable: true
+          example: "Max Mustermann"
+        notizen:
+          type: string
+          nullable: true
+          example: "Interessante Position"
+        bewerbungsart:
+          type: string
+          nullable: true
+          example: "Online"
+        startdatum:
+          type: string
+          format: date
+          nullable: true
+          example: "2026-04-01"
+        link:
+          type: string
+          nullable: true
+          example: "https://example.com/job"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-03-01T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-03-02T12:00:00Z"
+
+    BewerbungInput:
+      type: object
+      required:
+        - position
+        - firma
+        - status
+        - datum
+      properties:
+        position:
+          type: string
+          example: "Senior Developer"
+        firma:
+          type: string
+          example: "Tech GmbH"
+        status:
+          type: string
+          enum:
+            - beworben
+            - stufe_weiter
+            - angenommen
+            - abgelehnt
+            - keine_antwort
+          example: "beworben"
+        datum:
+          type: string
+          format: date
+          example: "2026-03-05"
+        standort:
+          type: string
+          nullable: true
+          example: "Berlin"
+        ansprechpartner:
+          type: string
+          nullable: true
+          example: "Max Mustermann"
+        notizen:
+          type: string
+          nullable: true
+          example: "Interessante Position"
+        bewerbungsart:
+          type: string
+          nullable: true
+          example: "Online"
+        startdatum:
+          type: string
+          format: date
+          nullable: true
+          example: "2026-04-01"
+        link:
+          type: string
+          nullable: true
+          example: "https://example.com/job"
+
+    Statistiken:
+      type: object
+      properties:
+        beworben:
+          type: integer
+          example: 5
+        stufe_weiter:
+          type: integer
+          example: 3
+        angenommen:
+          type: integer
+          example: 1
+        abgelehnt:
+          type: integer
+          example: 2
+        keine_antwort:
+          type: integer
+          example: 1
+        gesamt:
+          type: integer
+          example: 12
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Ein Fehler ist aufgetreten"
