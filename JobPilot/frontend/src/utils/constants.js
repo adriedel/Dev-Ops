@@ -1,5 +1,6 @@
 export const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+  import.meta.env.VITE_API_URL ||
+  "https://jobpilot-backend-d6yj.onrender.com/api";
 
 export const STATUS = {
   IN_PLANUNG: "in_planung",
