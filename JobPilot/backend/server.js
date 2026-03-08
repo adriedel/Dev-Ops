@@ -5,6 +5,7 @@ const pool = require("./database");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./swagger.yaml");
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
