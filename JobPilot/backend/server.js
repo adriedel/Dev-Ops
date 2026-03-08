@@ -5,14 +5,15 @@ const pool = require("./database");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./swagger.yaml");
+require("dotenv").config();
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173", // Vite Frontend Port
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Vite Frontend Port
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type"],
   }),
