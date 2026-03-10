@@ -192,13 +192,15 @@ function App() {
           toggleDarkMode={toggleDarkMode}
           onNewBewerbung={() => openModal()}
         />
-        <StatCards stats={stats} />
-        <SearchBar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          filterStatus={filterStatus}
-          onFilterChange={setFilterStatus}
-        />
+        <div className="stat-cards">
+          <StatCards stats={stats} />
+          <SearchBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            filterStatus={filterStatus}
+            onFilterChange={setFilterStatus}
+          />
+        </div>
 
         <section className="bewerbungen-grid">
           {getFilteredBewerbungen().length === 0 ? (
