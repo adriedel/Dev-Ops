@@ -89,10 +89,6 @@ function SearchBar({
         />
       </div>
 
-      <button className="filter-btn" title="Filter" aria-label="Filter">
-        <img src="/sliders-horizontal.svg" alt="" aria-hidden="true" />
-      </button>
-
       <div className="status-dropdown" ref={dropdownRef}>
         <button
           type="button"
@@ -101,9 +97,17 @@ function SearchBar({
           aria-haspopup="listbox"
           aria-expanded={isDropdownOpen}
         >
+          <span>
+            <img
+              className="filter-icon"
+              src="/sliders-horizontal.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </span>
           <span>{selectedOption.label}</span>
           <span className="status-dropdown-chevron" aria-hidden="true">
-            <img src="/chevron-down.svg" alt="" />
+            <img src="/chevron-down.svg" alt="" aria-hidden="true" />
           </span>
         </button>
 
@@ -138,7 +142,7 @@ function SearchBar({
                   </span>
                   {isSelected ? (
                     <span className="status-dropdown-check">
-                      <img src="/check.svg" alt="Check" />
+                      <img src="/check.svg" alt="Check" aria-hidden="true" />
                     </span>
                   ) : null}
                 </button>
