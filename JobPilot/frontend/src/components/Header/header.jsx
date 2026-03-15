@@ -1,4 +1,6 @@
 import "./header.css";
+import SunIcon from "../../assets/icons/sun.svg?react";
+import MoonIcon from "../../assets/icons/moon.svg?react";
 
 function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
   return (
@@ -28,7 +30,11 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
               aria-label="Light mode"
               title="Hell"
             >
-              <img src="/sun.svg" alt="Light mode" />
+              <SunIcon
+                className="theme-icon"
+                aria-hidden="true"
+                focusable="false"
+              />
             </button>
             <button
               className={`theme-btn${darkMode ? " active" : ""}`}
@@ -36,7 +42,11 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
               aria-label="Dark mode"
               title="Dunkel"
             >
-              <img src="/moon.svg" alt="Dark mode" />
+              <MoonIcon
+                className="theme-icon"
+                aria-hidden="true"
+                focusable="false"
+              />
             </button>
           </div>
           <button className="btn-new-bewerbung" onClick={onNewBewerbung}>

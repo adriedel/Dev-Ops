@@ -90,7 +90,7 @@
   border: none;
   border-right: 1px solid var(--border);
   cursor: pointer;
-  color: var(--text-muted);
+  color: #9ca3af;
   line-height: 1;
   display: inline-flex;
   align-items: center;
@@ -100,15 +100,10 @@
     background 0.15s;
 }
 
-.theme-btn img {
+.theme-icon {
   width: 18px;
   height: 18px;
   display: block;
-  opacity: 0.65;
-  filter: grayscale(1) brightness(0.65);
-  transition:
-    filter 0.15s,
-    opacity 0.15s;
 }
 
 .theme-btn:last-child {
@@ -120,27 +115,17 @@
 }
 
 /* Sonne aktiv (Light Mode) */
-.theme-btn:first-child.active img {
-  opacity: 1;
-  filter: invert(73%) sepia(59%) saturate(1508%) hue-rotate(359deg)
-    brightness(100%) contrast(95%);
+.theme-btn:first-child.active {
+  color: #f59e0b;
 }
 
 /* Mond aktiv (Dark Mode) */
-.theme-btn:last-child.active img {
-  opacity: 1;
-  filter: invert(61%) sepia(27%) saturate(1033%) hue-rotate(206deg)
-    brightness(100%) contrast(96%);
+.theme-btn:last-child.active {
+  color: #818cf8;
 }
 
-.theme-btn:not(.active) img {
-  opacity: 0.6;
-  filter: grayscale(1) brightness(0.62);
-}
-
-.dark-mode .theme-btn:first-child:not(.active) img {
-  opacity: 0.4;
-  filter: brightness(0) invert(1);
+.dark-mode .theme-btn:first-child:not(.active) {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 /* ── Neue Bewerbung Button ── */
