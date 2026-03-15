@@ -28,7 +28,7 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
               aria-label="Light mode"
               title="Hell"
             >
-              ☀
+              <img src="/sun.svg" alt="Light mode" />
             </button>
             <button
               className={`theme-btn${darkMode ? " active" : ""}`}
@@ -36,7 +36,7 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
               aria-label="Dark mode"
               title="Dunkel"
             >
-              ☽
+              <img src="/moon.svg" alt="Dark mode" />
             </button>
           </div>
           <button className="btn-new-bewerbung" onClick={onNewBewerbung}>
