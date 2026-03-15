@@ -225,7 +225,8 @@
   }
 
   .status-dropdown-menu {
-    width: min(260px, calc(100vw - 24px));
-    right: 0;
+    width: min(260px, calc(100vw - 36px));
+    left: 0;
+    right: auto;
   }
 }
