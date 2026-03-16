@@ -122,6 +122,106 @@
   padding-right: 32px;
 }
 
+.status-select {
+  position: relative;
+}
+
+.status-select-trigger {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.2s,
+    color 0.2s;
+}
+
+.status-select-trigger:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+  outline: none;
+}
+
+.status-select-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-select-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.status-select-chevron {
+  width: 14px;
+  height: 14px;
+  opacity: 0.55;
+  transition: transform 0.2s;
+}
+
+.status-select-chevron.open {
+  transform: rotate(180deg);
+}
+
+.status-select-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+  padding: 6px;
+  z-index: 20;
+}
+
+.status-select-option {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.status-select-option:hover,
+.status-select-option.selected {
+  background: var(--bg-hover);
+}
+
+.status-select-option-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-select-option-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.status-select-check {
+  font-size: 1rem;
+  line-height: 1;
+}
+
 .form-group textarea {
   resize: vertical;
   min-height: 100px;
@@ -211,6 +311,15 @@
   .form-group select,
   .form-group textarea {
     padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .status-select-trigger {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .status-select-option {
     font-size: 0.85rem;
   }
 

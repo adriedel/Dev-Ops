@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import "./BewerbungsModal.css";
-import { STATUS } from "../../utils/constants";
+import { STATUS, STATUS_ICONS, STATUS_LABELS } from "../../utils/constants";
 
 function BewerbungsModal({
   isOpen,
@@ -9,11 +10,62 @@ function BewerbungsModal({
   onChange,
   isEditing,
 }) {
-  if (!isOpen || !formData) return null;
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const statusDropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsStatusOpen(false);
+      return;
+    }
+
+    const handleOutsideClick = (event) => {
+      if (!statusDropdownRef.current?.contains(event.target)) {
+        setIsStatusOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setIsStatusOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit();
+  };
+
+  const statusOptions = [
+    STATUS.IN_PLANUNG,
+    STATUS.BEWORBEN,
+    STATUS.STUFE_WEITER,
+    STATUS.ANGENOMMEN,
+    STATUS.ABGELEHNT,
+    STATUS.KEINE_ANTWORT,
+  ];
+
+  if (!isOpen || !formData) return null;
+
+  const selectedStatus = formData.status || STATUS.BEWORBEN;
+
+  const handleStatusSelect = (status) => {
+    onChange({
+      target: {
+        name: "status",
+        value: status,
+      },
+    });
+    setIsStatusOpen(false);
   };
 
   return (
@@ -71,14 +123,67 @@ function BewerbungsModal({
             </div>
             <div className="form-group">
               <label>Status</label>
-              <select name="status" value={formData.status} onChange={onChange}>
-                <option value={STATUS.IN_PLANUNG}>📝 In Planung</option>
-                <option value={STATUS.BEWORBEN}>✈ Beworben</option>
-                <option value={STATUS.STUFE_WEITER}>→ Stufe weiter</option>
-                <option value={STATUS.ANGENOMMEN}>✓ Angenommen</option>
-                <option value={STATUS.ABGELEHNT}>✗ Abgelehnt</option>
-                <option value={STATUS.KEINE_ANTWORT}>◷ Keine Antwort</option>
-              </select>
+              <div className="status-select" ref={statusDropdownRef}>
+                <button
+                  type="button"
+                  className="status-select-trigger"
+                  onClick={() => setIsStatusOpen((prev) => !prev)}
+                  aria-haspopup="listbox"
+                  aria-expanded={isStatusOpen}
+                >
+                  <span className="status-select-value">
+                    <img
+                      className="status-select-icon"
+                      src={STATUS_ICONS[selectedStatus]}
+                      alt=""
+                      aria-hidden="true"
+                    />
+                    <span>{STATUS_LABELS[selectedStatus]}</span>
+                  </span>
+                  <img
+                    className={`status-select-chevron ${isStatusOpen ? "open" : ""}`}
+                    src="/chevron-down.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {isStatusOpen ? (
+                  <div
+                    className="status-select-menu"
+                    role="listbox"
+                    aria-label="Status auswählen"
+                  >
+                    {statusOptions.map((status) => {
+                      const isSelected = selectedStatus === status;
+
+                      return (
+                        <button
+                          type="button"
+                          key={status}
+                          className={`status-select-option ${isSelected ? "selected" : ""}`}
+                          onClick={() => handleStatusSelect(status)}
+                          role="option"
+                          aria-selected={isSelected}
+                        >
+                          <span className="status-select-option-left">
+                            <img
+                              className="status-select-option-icon"
+                              src={STATUS_ICONS[status]}
+                              alt=""
+                              aria-hidden="true"
+                            />
+                            <span>{STATUS_LABELS[status]}</span>
+                          </span>
+                          {isSelected ? (
+                            <span className="status-select-check">✓</span>
+                          ) : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
 
@@ -127,7 +232,7 @@ function BewerbungsModal({
             />
           </div>
 
-          {formData.status === STATUS.ANGENOMMEN && (
+          {formData.status !== STATUS.ABGELEHNT && (
             <div className="form-group">
               <label>Startdatum</label>
               <input
