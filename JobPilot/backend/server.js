@@ -16,22 +16,53 @@ const parseOrigins = (value) =>
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-const allowedOrigins = new Set([
-  ...parseOrigins(process.env.FRONTEND_URL),
-  ...parseOrigins(process.env.FRONTEND_URLS),
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-]);
+const normalizeOrigin = (value) => {
+  try {
+    return new URL(value).origin.toLowerCase();
+  } catch {
+    return null;
+  }
+};
+
+const stripWww = (hostname) => hostname.replace(/^www\./i, "");
+
+const allowedOrigins = new Set(
+  [
+    ...parseOrigins(process.env.FRONTEND_URL),
+    ...parseOrigins(process.env.FRONTEND_URLS),
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+  ]
+    .map(normalizeOrigin)
+    .filter(Boolean),
+);
+
+const allowedProtocolHostPairs = new Set(
+  [...allowedOrigins].map((origin) => {
+    const url = new URL(origin);
+    return `${url.protocol}//${stripWww(url.hostname)}`;
+  }),
+);
 
 const isAllowedOrigin = (origin) => {
   if (!origin) return true; // Allow non-browser clients (no Origin header).
 
-  if (allowedOrigins.has(origin)) {
+  const normalizedOrigin = normalizeOrigin(origin);
+  if (!normalizedOrigin) return false;
+
+  if (allowedOrigins.has(normalizedOrigin)) {
+    return true;
+  }
+
+  const url = new URL(normalizedOrigin);
+  const protocolHostKey = `${url.protocol}//${stripWww(url.hostname)}`;
+
+  if (allowedProtocolHostPairs.has(protocolHostKey)) {
     return true;
   }
 
   // Allow Vercel preview and production URLs.
-  return /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+  return /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(normalizedOrigin);
 };
 
 // Middleware
