@@ -10,10 +10,40 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const parseOrigins = (value) =>
+  (value || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+const allowedOrigins = new Set([
+  ...parseOrigins(process.env.FRONTEND_URL),
+  ...parseOrigins(process.env.FRONTEND_URLS),
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+]);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // Allow non-browser clients (no Origin header).
+
+  if (allowedOrigins.has(origin)) {
+    return true;
+  }
+
+  // Allow Vercel preview and production URLs.
+  return /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+};
+
 // Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Vite Frontend Port
+    origin: (origin, callback) => {
+      if (isAllowedOrigin(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type"],
   }),
