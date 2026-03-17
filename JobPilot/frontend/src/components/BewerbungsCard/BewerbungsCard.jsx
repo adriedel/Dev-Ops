@@ -35,13 +35,27 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
     setShowDeleteModal(false);
   };
 
+  const statusOptions = [
+    STATUS.IN_PLANUNG,
+    STATUS.BEWORBEN,
+    STATUS.STUFE_WEITER,
+    STATUS.ANGENOMMEN,
+    STATUS.ABGELEHNT,
+    STATUS.KEINE_ANTWORT,
+  ];
+
   return (
     <article className="bewerbung-card" onMouseLeave={() => setShowMenu(false)}>
       <div className="card-header">
         <div className="card-title-section">
           <h3 className="card-position">{bewerbung.position}</h3>
           <div className="card-firma">
-            <span>🏢</span>
+            <img
+              className="meta-icon"
+              src="/building-1-line.svg"
+              alt=""
+              aria-hidden="true"
+            />
             <span>{bewerbung.firma}</span>
           </div>
         </div>
@@ -61,64 +75,31 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
                 className="dropdown-item"
                 onClick={() => onEdit(bewerbung)}
               >
-                <span>✏️</span>
+                <img src="/pencil.svg" alt="" aria-hidden="true" />
                 <span>Bearbeiten</span>
               </button>
               <div className="dropdown-divider" />
-              <button
-                className="dropdown-item"
-                onClick={() => handleStatusChange(STATUS.IN_PLANUNG)}
-              >
-                <img src={STATUS_ICONS[STATUS.IN_PLANUNG]} alt="In Planung" />
-                <span>In Planung</span>
-              </button>
-              <button
-                className="dropdown-item"
-                onClick={() => handleStatusChange(STATUS.BEWORBEN)}
-              >
-                <img src={STATUS_ICONS[STATUS.BEWORBEN]} alt="Beworben" />
-                <span>Beworben</span>
-              </button>
-              <button
-                className="dropdown-item"
-                onClick={() => handleStatusChange(STATUS.STUFE_WEITER)}
-              >
-                <img
-                  src={STATUS_ICONS[STATUS.STUFE_WEITER]}
-                  alt="Stufe weiter"
-                />
-                <span>Stufe weiter</span>
-              </button>
-              <button
-                className="dropdown-item"
-                onClick={() => handleStatusChange(STATUS.ANGENOMMEN)}
-              >
-                <img src={STATUS_ICONS[STATUS.ANGENOMMEN]} alt="Angenommen" />
-                <span>Angenommen</span>
-              </button>
-              <button
-                className="dropdown-item"
-                onClick={() => handleStatusChange(STATUS.ABGELEHNT)}
-              >
-                <img src={STATUS_ICONS[STATUS.ABGELEHNT]} alt="Abgelehnt" />
-                <span>Abgelehnt</span>
-              </button>
-              <button
-                className="dropdown-item"
-                onClick={() => handleStatusChange(STATUS.KEINE_ANTWORT)}
-              >
-                <img
-                  src={STATUS_ICONS[STATUS.KEINE_ANTWORT]}
-                  alt="Keine Antwort"
-                />
-                <span>Keine Antwort</span>
-              </button>
+              {statusOptions.map((status) => {
+                const isCurrentStatus = bewerbung.status === status;
+
+                return (
+                  <button
+                    key={status}
+                    className={`dropdown-item ${isCurrentStatus ? "dropdown-item-current" : ""}`}
+                    onClick={() => handleStatusChange(status)}
+                    disabled={isCurrentStatus}
+                  >
+                    <img src={STATUS_ICONS[status]} alt="" aria-hidden="true" />
+                    <span>{STATUS_LABELS[status]}</span>
+                  </button>
+                );
+              })}
               <div className="dropdown-divider" />
               <button
                 className="dropdown-item dropdown-item-delete"
                 onClick={handleDeleteClick}
               >
-                <span>🗑️</span>
+                <img src="/trash.svg" alt="" aria-hidden="true" />
                 <span>Löschen</span>
               </button>
             </div>
@@ -136,24 +117,44 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
 
       <div className="card-details">
         <div className="detail-item">
-          <span>📅</span>
+          <img
+            className="meta-icon"
+            src="/calendar.svg"
+            alt=""
+            aria-hidden="true"
+          />
           <span>{formatDate(bewerbung.datum)}</span>
         </div>
         {bewerbung.standort && (
           <div className="detail-item">
-            <span>📍</span>
+            <img
+              className="meta-icon"
+              src="/map.svg"
+              alt=""
+              aria-hidden="true"
+            />
             <span>{bewerbung.standort}</span>
           </div>
         )}
         {bewerbung.ansprechpartner && (
           <div className="detail-item">
-            <span>👤</span>
+            <img
+              className="meta-icon"
+              src="/person-2.svg"
+              alt=""
+              aria-hidden="true"
+            />
             <span>{bewerbung.ansprechpartner}</span>
           </div>
         )}
         {bewerbung.link && (
           <div className="detail-item">
-            <span>🔗</span>
+            <img
+              className="meta-icon"
+              src="/external.svg"
+              alt=""
+              aria-hidden="true"
+            />
             <a
               href={bewerbung.link}
               target="_blank"
@@ -175,7 +176,12 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
       {bewerbung.startdatum && bewerbung.status === STATUS.ANGENOMMEN && (
         <div className="card-footer">
           <div className="detail-item">
-            <span>🎯</span>
+            <img
+              className="meta-icon"
+              src="/calendar.svg"
+              alt=""
+              aria-hidden="true"
+            />
             <span>Start am {formatDate(bewerbung.startdatum)}</span>
           </div>
         </div>
