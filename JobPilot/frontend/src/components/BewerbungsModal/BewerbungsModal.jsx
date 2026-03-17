@@ -177,7 +177,7 @@ function BewerbungsModal({
                         <button
                           type="button"
                           key={status}
-                          className={`status-select-option ${isSelected ? "selected" : ""}`}
+                          className={`status-select-option status-option-${status} ${isSelected ? "selected" : ""}`}
                           onClick={() => handleStatusSelect(status)}
                           role="option"
                           aria-selected={isSelected}

@@ -106,6 +106,10 @@
   word-break: break-word;
 }
 
+.delete-icon {
+  color: var(--status-abgelehnt-accent);
+}
+
 .delete-modal-warning {
   color: var(--status-abgelehnt-accent);
   font-size: 0.9rem;

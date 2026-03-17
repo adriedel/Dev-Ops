@@ -93,7 +93,7 @@ function SearchBar({
     <section className="controls">
       <div className="search-wrapper">
         <span className="search-icon">
-          <SearchIcon className="search-icon" aria-hidden="true" />
+          <SearchIcon className="search-icon-svg" aria-hidden="true" />
         </span>
         <input
           type="text"
@@ -135,7 +135,7 @@ function SearchBar({
                 <button
                   type="button"
                   key={option.value}
-                  className={`status-dropdown-option ${isSelected ? "selected" : ""}`}
+                  className={`status-dropdown-option ${option.value !== "alle" ? `status-option-${option.value}` : ""} ${isSelected ? "selected" : ""}`}
                   onClick={() => handleOptionSelect(option.value)}
                   role="option"
                   aria-selected={isSelected}
@@ -151,7 +151,10 @@ function SearchBar({
                   </span>
                   {isSelected ? (
                     <span className="status-dropdown-check">
-                      <CheckIcon className="check-icon" aria-hidden="true" />
+                      <CheckIcon
+                        className="status-check-icon"
+                        aria-hidden="true"
+                      />
                     </span>
                   ) : null}
                 </button>

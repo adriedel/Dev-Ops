@@ -153,32 +153,38 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
             <span>{bewerbung.ansprechpartner}</span>
           </div>
         )}
-        {bewerbung.link && (
-          <div className="detail-item">
-            <ExternalIcon className="meta-icon" aria-hidden="true" />
-            <a
-              href={bewerbung.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="card-link"
-            >
-              Stellenanzeige öffnen
-            </a>
-          </div>
-        )}
       </div>
 
       {bewerbung.notizen && (
-        <div className="card-footer">
+        <div className="card-notes-wrap">
           <p className="card-notizen">{bewerbung.notizen}</p>
         </div>
       )}
 
-      {bewerbung.startdatum && bewerbung.status === STATUS.ANGENOMMEN && (
+      {bewerbung.link && (
+        <div className="detail-item detail-item-link card-link-row">
+          <ExternalIcon className="meta-icon link-icon" aria-hidden="true" />
+          <a
+            href={bewerbung.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card-link"
+          >
+            Stellenanzeige öffnen
+          </a>
+        </div>
+      )}
+
+      {bewerbung.startdatum && bewerbung.status !== STATUS.ABGELEHNT && (
         <div className="card-footer">
           <div className="detail-item">
             <CalendarIcon className="meta-icon" aria-hidden="true" />
-            <span>Start am {formatDate(bewerbung.startdatum)}</span>
+            <span>
+              {bewerbung.status === STATUS.ANGENOMMEN
+                ? "Start am "
+                : "Möglicher Start "}
+              {formatDate(bewerbung.startdatum)}
+            </span>
           </div>
         </div>
       )}

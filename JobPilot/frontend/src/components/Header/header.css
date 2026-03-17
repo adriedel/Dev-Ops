@@ -2,9 +2,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 32px;
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border);
+  padding: 22px 24px 14px;
+  background: transparent;
+  border-bottom: none;
   transition:
     background 0.2s,
     border-color 0.2s;
@@ -18,10 +18,10 @@
 }
 
 .app-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background: var(--blue);
-  border-radius: 12px;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,8 +29,8 @@
 }
 
 .app-logo {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
 .header-text {
@@ -41,16 +41,17 @@
 }
 
 .header-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: clamp(1.9rem, 3vw, 2.9rem);
+  font-weight: 800;
   color: var(--text-primary);
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.05;
   white-space: nowrap;
 }
 
 .header-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   color: var(--text-secondary);
   margin: 0;
   white-space: nowrap;
@@ -59,7 +60,7 @@
 .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-shrink: 0;
 }
 
@@ -68,7 +69,7 @@
   display: flex;
   align-items: center;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   background: var(--bg-surface);
   transition:
@@ -77,7 +78,7 @@
 }
 
 .theme-btn {
-  padding: 8px 12px;
+  padding: 8px 10px;
   background: transparent;
   border: none;
   border-right: 1px solid var(--border);
@@ -125,12 +126,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 11px 24px;
   background: var(--blue);
   color: #ffffff;
   border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 10px;
+  font-size: 0.98rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -149,7 +150,7 @@
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .header {
-    padding: 12px 16px;
+    padding: 14px 16px 12px;
   }
 
   .header-subtitle {
@@ -157,7 +158,7 @@
   }
 
   .header-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   .btn-new-bewerbung {
@@ -206,7 +207,7 @@
   }
 
   .header-title {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .btn-new-bewerbung {

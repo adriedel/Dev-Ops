@@ -1,12 +1,12 @@
 .bewerbung-card {
   background: var(--bg-surface);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 22px;
+  padding: 24px 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
   transition:
     background 0.2s,
     border-color 0.2s,
@@ -39,13 +39,13 @@
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .card-firma {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   font-size: 0.875rem;
   color: var(--text-secondary);
 }
@@ -118,7 +118,7 @@
     color 0.12s;
 }
 
-.dropdown-item img {
+.dropdown-item .meta-icon {
   width: 18px;
   height: 18px;
   object-fit: contain;
@@ -141,7 +141,7 @@
   color: var(--text-secondary);
 }
 
-.dropdown-item-current img {
+.dropdown-item-current .meta-icon {
   opacity: 0.45;
 }
 
@@ -149,7 +149,7 @@
   color: #dc2626;
 }
 
-.dropdown-item-delete img {
+.dropdown-item-delete .meta-icon {
   opacity: 0.9;
 }
 
@@ -169,57 +169,70 @@
 
 /* ── Status-Badge ── */
 .status-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  align-self: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.status-badge img {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
+.status-badge .meta-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 1;
 }
 
 /* Status-Badge Farben – via CSS-Variablen (light + dark automatisch) */
 .status-beworben {
   background: var(--status-beworben-bg);
+  border: 1px solid var(--status-beworben-border);
   color: var(--status-beworben-accent);
 }
 .status-stufe_weiter {
   background: var(--status-stufe_weiter-bg);
+  border: 1px solid var(--status-stufe_weiter-border);
   color: var(--status-stufe_weiter-accent);
 }
 .status-angenommen {
   background: var(--status-angenommen-bg);
+  border: 1px solid var(--status-angenommen-border);
   color: var(--status-angenommen-accent);
 }
 .status-abgelehnt {
   background: var(--status-abgelehnt-bg);
+  border: 1px solid var(--status-abgelehnt-border);
   color: var(--status-abgelehnt-accent);
 }
 .status-keine_antwort {
   background: var(--status-keine_antwort-bg);
+  border: 1px solid var(--status-keine_antwort-border);
   color: var(--status-keine_antwort-accent);
+}
+
+.status-in_planung {
+  background: var(--status-in-planung-bg);
+  border: 1px solid var(--status-in-planung-border);
+  color: var(--status-in-planung-accent);
 }
 
 /* ── Details-Zeile ── */
 .card-details {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 8px 14px;
 }
 
 .detail-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 0.85rem;
   color: var(--text-secondary);
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .card-link {
@@ -228,24 +241,48 @@
   font-size: 0.85rem;
 }
 
-.card-link:hover {
-  text-decoration: underline;
+.detail-item-link {
+  color: var(--blue);
+}
+
+.detail-item-link .card-link {
+  color: inherit;
+}
+
+.detail-item-link .link-icon {
+  color: inherit;
+  opacity: 1;
+}
+
+.card-link-row {
+  margin-top: 2px;
+}
+
+:is(.detail-item, .card-link):hover {
+  color: var(--blue-hover);
 }
 
 /* ── Footer / Notizen ── */
-.card-footer {
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 12px;
+.card-notes-wrap {
+  background: var(--bg-hover);
+  border-radius: 12px;
+  padding: 12px 14px;
 }
 
 .card-notizen {
-  font-size: 0.85rem;
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.4;
   margin: 0;
   display: -webkit-box;
   line-clamp: initial;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.card-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 12px;
 }
