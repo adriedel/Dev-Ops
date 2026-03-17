@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import "./BewerbungsModal.css";
-import { STATUS, STATUS_ICONS, STATUS_LABELS } from "../../utils/constants";
+import { STATUS, STATUS_LABELS } from "../../utils/constants";
+import BeworbenIcon from "../../assets/icons/paperplane-applied.svg?react";
+import StufeWeiterIcon from "../../assets/icons/arrow-step-further.svg?react";
+import AngenommenIcon from "../../assets/icons/check-circle-accepted.svg?react";
+import AbgelehntIcon from "../../assets/icons/cross-circle-denied.svg?react";
+import KeineAntwortIcon from "../../assets/icons/clock-no-answer.svg?react";
+import InPlanungIcon from "../../assets/icons/plan.svg?react";
+import ChevronDownIcon from "../../assets/icons/chevron-down.svg?react";
 
 function BewerbungsModal({
   isOpen,
@@ -54,9 +61,19 @@ function BewerbungsModal({
     STATUS.KEINE_ANTWORT,
   ];
 
+  const STATUS_ICON_COMPONENTS = {
+    [STATUS.IN_PLANUNG]: InPlanungIcon,
+    [STATUS.BEWORBEN]: BeworbenIcon,
+    [STATUS.STUFE_WEITER]: StufeWeiterIcon,
+    [STATUS.ANGENOMMEN]: AngenommenIcon,
+    [STATUS.ABGELEHNT]: AbgelehntIcon,
+    [STATUS.KEINE_ANTWORT]: KeineAntwortIcon,
+  };
+
   if (!isOpen || !formData) return null;
 
   const selectedStatus = formData.status || STATUS.BEWORBEN;
+  const SelectedStatusIcon = STATUS_ICON_COMPONENTS[selectedStatus];
 
   const handleStatusSelect = (status) => {
     onChange({
@@ -132,18 +149,16 @@ function BewerbungsModal({
                   aria-expanded={isStatusOpen}
                 >
                   <span className="status-select-value">
-                    <img
-                      className="status-select-icon"
-                      src={STATUS_ICONS[selectedStatus]}
-                      alt=""
-                      aria-hidden="true"
-                    />
+                    {SelectedStatusIcon && (
+                      <SelectedStatusIcon
+                        className="status-select-icon"
+                        aria-hidden="true"
+                      />
+                    )}
                     <span>{STATUS_LABELS[selectedStatus]}</span>
                   </span>
-                  <img
+                  <ChevronDownIcon
                     className={`status-select-chevron ${isStatusOpen ? "open" : ""}`}
-                    src="/chevron-down.svg"
-                    alt=""
                     aria-hidden="true"
                   />
                 </button>
@@ -156,6 +171,7 @@ function BewerbungsModal({
                   >
                     {statusOptions.map((status) => {
                       const isSelected = selectedStatus === status;
+                      const OptionStatusIcon = STATUS_ICON_COMPONENTS[status];
 
                       return (
                         <button
@@ -167,12 +183,12 @@ function BewerbungsModal({
                           aria-selected={isSelected}
                         >
                           <span className="status-select-option-left">
-                            <img
-                              className="status-select-option-icon"
-                              src={STATUS_ICONS[status]}
-                              alt=""
-                              aria-hidden="true"
-                            />
+                            {OptionStatusIcon && (
+                              <OptionStatusIcon
+                                className="status-select-option-icon"
+                                aria-hidden="true"
+                              />
+                            )}
                             <span>{STATUS_LABELS[status]}</span>
                           </span>
                           {isSelected ? (

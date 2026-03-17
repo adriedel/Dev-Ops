@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import "./DeleteConfirmModal.css";
+import DeleteIcon from "../../assets/icons/danger-broken.svg?react";
 
 function DeleteConfirmModal({ bewerbung, onConfirm, onCancel }) {
   return createPortal(
@@ -13,7 +14,9 @@ function DeleteConfirmModal({ bewerbung, onConfirm, onCancel }) {
         </div>
 
         <div className="delete-modal-body">
-          <div className="delete-warning-icon">⚠️</div>
+          <div className="delete-warning-icon">
+            <DeleteIcon className="delete-icon" aria-hidden="true" />
+          </div>
           <p className="delete-modal-message">
             Möchtest du die folgende Bewerbung wirklich löschen?
           </p>
@@ -56,7 +59,7 @@ function DeleteConfirmModal({ bewerbung, onConfirm, onCancel }) {
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 

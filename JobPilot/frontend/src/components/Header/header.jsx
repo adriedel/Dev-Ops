@@ -1,17 +1,14 @@
 import "./header.css";
 import SunIcon from "../../assets/icons/sun.svg?react";
 import MoonIcon from "../../assets/icons/moon.svg?react";
+import BriefcaseIcon from "../../assets/icons/briefcase-white.svg?react";
 
 function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
   return (
     <header className="header">
       <div className="header-left">
         <div className="app-icon">
-          <img
-            className="app-logo"
-            src="/briefcase-white.svg"
-            alt="Bewerbungstracker Logo"
-          />
+          <BriefcaseIcon className="app-logo" aria-hidden="true" />
         </div>
         <div className="header-text">
           <h1 className="header-title">Bewerbungstracker</h1>
