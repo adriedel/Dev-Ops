@@ -45,9 +45,17 @@
 .card-firma {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+.meta-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.85;
+  flex-shrink: 0;
 }
 
 /* ── Drei-Punkte-Menü ── */
@@ -81,30 +89,33 @@
   right: 0;
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 6px;
-  min-width: 170px;
+  border-radius: 12px;
+  padding: 4px;
+  min-width: 200px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   z-index: 100;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
+  gap: 10px;
+  padding: 7px 10px;
   background: none;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.875rem;
-  color: var(--text-label);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
   text-align: left;
   width: 100%;
-  transition: background 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 }
 
 .dropdown-item img {
@@ -117,8 +128,29 @@
   background: var(--bg-hover);
 }
 
+.dropdown-item:disabled {
+  cursor: default;
+}
+
+.dropdown-item-current {
+  background: var(--bg-hover);
+}
+
+.dropdown-item-current,
+.dropdown-item-current span {
+  color: var(--text-secondary);
+}
+
+.dropdown-item-current img {
+  opacity: 0.45;
+}
+
 .dropdown-item-delete {
   color: #dc2626;
+}
+
+.dropdown-item-delete img {
+  opacity: 0.9;
 }
 
 .dropdown-item-delete:hover {
@@ -132,7 +164,7 @@
 .dropdown-divider {
   height: 1px;
   background: var(--border-subtle);
-  margin: 4px 0;
+  margin: 6px 0;
 }
 
 /* ── Status-Badge ── */
