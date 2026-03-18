@@ -115,11 +115,93 @@
 
 .form-group select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
   cursor: pointer;
-  padding-right: 32px;
+  padding-right: 36px;
+}
+
+.custom-select {
+  position: relative;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.2s,
+    color 0.2s;
+}
+
+.custom-select-trigger:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+  outline: none;
+}
+
+.custom-select-value {
+  display: inline-flex;
+  align-items: center;
+  text-align: left;
+}
+
+.custom-select-chevron {
+  width: 14px;
+  height: 14px;
+  opacity: 0.55;
+  transition: transform 0.2s;
+}
+
+.custom-select-chevron.open {
+  transform: rotate(180deg);
+}
+
+.custom-select-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+  padding: 6px;
+  z-index: 20;
+}
+
+.custom-select-option {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.custom-select-option:hover,
+.custom-select-option.selected {
+  background: var(--bg-hover);
+}
+
+.custom-select-check {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .status-select {
@@ -328,6 +410,10 @@
     gap: 16px;
   }
 
+  .form-row.form-row-salary {
+    grid-template-columns: 1fr;
+  }
+
   .form-group {
     gap: 6px;
   }
@@ -348,7 +434,16 @@
     font-size: 0.85rem;
   }
 
+  .custom-select-trigger {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
   .status-select-option {
+    font-size: 0.85rem;
+  }
+
+  .custom-select-option {
     font-size: 0.85rem;
   }
 

@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import "./BewerbungsModal.css";
-import { STATUS, STATUS_LABELS } from "../../utils/constants";
+import {
+  STATUS,
+  STATUS_LABELS,
+  BEWERBUNGSARTEN,
+  WAEHRUNGEN,
+  WAEHRUNG_LABELS,
+} from "../../utils/constants";
 import BeworbenIcon from "../../assets/icons/paperplane-applied.svg?react";
 import StufeWeiterIcon from "../../assets/icons/arrow-step-further.svg?react";
 import AngenommenIcon from "../../assets/icons/check-circle-accepted.svg?react";
@@ -18,11 +24,17 @@ function BewerbungsModal({
   isEditing,
 }) {
   const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [isBewerbungsartOpen, setIsBewerbungsartOpen] = useState(false);
+  const [isWaehrungOpen, setIsWaehrungOpen] = useState(false);
   const statusDropdownRef = useRef(null);
+  const bewerbungsartDropdownRef = useRef(null);
+  const waehrungDropdownRef = useRef(null);
 
   useEffect(() => {
     if (!isOpen) {
       setIsStatusOpen(false);
+      setIsBewerbungsartOpen(false);
+      setIsWaehrungOpen(false);
       return;
     }
 
@@ -30,11 +42,19 @@ function BewerbungsModal({
       if (!statusDropdownRef.current?.contains(event.target)) {
         setIsStatusOpen(false);
       }
+      if (!bewerbungsartDropdownRef.current?.contains(event.target)) {
+        setIsBewerbungsartOpen(false);
+      }
+      if (!waehrungDropdownRef.current?.contains(event.target)) {
+        setIsWaehrungOpen(false);
+      }
     };
 
     const handleEscape = (event) => {
       if (event.key === "Escape") {
         setIsStatusOpen(false);
+        setIsBewerbungsartOpen(false);
+        setIsWaehrungOpen(false);
       }
     };
 
@@ -83,6 +103,26 @@ function BewerbungsModal({
       },
     });
     setIsStatusOpen(false);
+  };
+
+  const handleBewerbungsartSelect = (bewerbungsart) => {
+    onChange({
+      target: {
+        name: "bewerbungsart",
+        value: bewerbungsart,
+      },
+    });
+    setIsBewerbungsartOpen(false);
+  };
+
+  const handleWaehrungSelect = (waehrung) => {
+    onChange({
+      target: {
+        name: "waehrung",
+        value: waehrung,
+      },
+    });
+    setIsWaehrungOpen(false);
   };
 
   return (
@@ -214,15 +254,126 @@ function BewerbungsModal({
                 onChange={onChange}
               />
             </div>
+
+            <div className="form-group">
+              <label>Bewerbungsart</label>
+              <div className="custom-select" ref={bewerbungsartDropdownRef}>
+                <button
+                  type="button"
+                  className="custom-select-trigger"
+                  onClick={() => {
+                    setIsBewerbungsartOpen((prev) => !prev);
+                    setIsWaehrungOpen(false);
+                    setIsStatusOpen(false);
+                  }}
+                  aria-haspopup="listbox"
+                  aria-expanded={isBewerbungsartOpen}
+                >
+                  <span className="custom-select-value">
+                    {formData.bewerbungsart || BEWERBUNGSARTEN[0]}
+                  </span>
+                  <ChevronDownIcon
+                    className={`custom-select-chevron ${isBewerbungsartOpen ? "open" : ""}`}
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {isBewerbungsartOpen ? (
+                  <div
+                    className="custom-select-menu"
+                    role="listbox"
+                    aria-label="Bewerbungsart auswählen"
+                  >
+                    {BEWERBUNGSARTEN.map((art) => {
+                      const isSelected =
+                        (formData.bewerbungsart || BEWERBUNGSARTEN[0]) === art;
+
+                      return (
+                        <button
+                          key={art}
+                          type="button"
+                          className={`custom-select-option ${isSelected ? "selected" : ""}`}
+                          onClick={() => handleBewerbungsartSelect(art)}
+                          role="option"
+                          aria-selected={isSelected}
+                        >
+                          <span>{art}</span>
+                          {isSelected ? (
+                            <span className="custom-select-check">✓</span>
+                          ) : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          <div className="form-row">
             <div className="form-group">
               <label>Gehalt</label>
               <input
                 type="text"
                 name="gehalt"
-                placeholder="z.B. 50.000 - 60.000 €"
+                placeholder="z.B. 50.000 - 60.000"
                 value={formData.gehalt || ""}
                 onChange={onChange}
               />
+            </div>
+
+            <div className="form-group">
+              <label>Währung</label>
+              <div className="custom-select" ref={waehrungDropdownRef}>
+                <button
+                  type="button"
+                  className="custom-select-trigger"
+                  onClick={() => {
+                    setIsWaehrungOpen((prev) => !prev);
+                    setIsBewerbungsartOpen(false);
+                    setIsStatusOpen(false);
+                  }}
+                  aria-haspopup="listbox"
+                  aria-expanded={isWaehrungOpen}
+                >
+                  <span className="custom-select-value">
+                    {WAEHRUNG_LABELS[formData.waehrung || "EUR"]}
+                  </span>
+                  <ChevronDownIcon
+                    className={`custom-select-chevron ${isWaehrungOpen ? "open" : ""}`}
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {isWaehrungOpen ? (
+                  <div
+                    className="custom-select-menu"
+                    role="listbox"
+                    aria-label="Währung auswählen"
+                  >
+                    {WAEHRUNGEN.map((waehrung) => {
+                      const isSelected =
+                        (formData.waehrung || "EUR") === waehrung;
+
+                      return (
+                        <button
+                          key={waehrung}
+                          type="button"
+                          className={`custom-select-option ${isSelected ? "selected" : ""}`}
+                          onClick={() => handleWaehrungSelect(waehrung)}
+                          role="option"
+                          aria-selected={isSelected}
+                        >
+                          <span>{WAEHRUNG_LABELS[waehrung]}</span>
+                          {isSelected ? (
+                            <span className="custom-select-check">✓</span>
+                          ) : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
 

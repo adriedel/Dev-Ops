@@ -41,6 +41,8 @@ function App() {
     bewerbungsart: "Initiativbewerbung",
     startdatum: "",
     link: "",
+    gehalt: "",
+    waehrung: "EUR",
   });
 
   // Dark Mode Effekt
@@ -128,7 +130,11 @@ function App() {
   const openModal = (bewerbung = null) => {
     if (bewerbung) {
       setEditingBewerbung(bewerbung);
-      setFormData(bewerbung);
+      setFormData({
+        ...bewerbung,
+        gehalt: bewerbung.gehalt || "",
+        waehrung: bewerbung.waehrung || "EUR",
+      });
     } else {
       setEditingBewerbung(null);
       setFormData({
@@ -142,6 +148,8 @@ function App() {
         bewerbungsart: "Initiativbewerbung",
         startdatum: "",
         link: "",
+        gehalt: "",
+        waehrung: "EUR",
       });
     }
     setShowModal(true);

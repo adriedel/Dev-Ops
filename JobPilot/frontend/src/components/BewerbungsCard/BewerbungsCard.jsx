@@ -15,6 +15,7 @@ import MapIcon from "../../assets/icons/map.svg?react";
 import PersonIcon from "../../assets/icons/person-2.svg?react";
 import ExternalIcon from "../../assets/icons/external.svg?react";
 import BuildingIcon from "../../assets/icons/building-1-line.svg?react";
+import GehaltIcon from "../../assets/icons/cash-coin.svg?react";
 
 function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -46,6 +47,16 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
 
   const handleDeleteCancel = () => {
     setShowDeleteModal(false);
+  };
+
+  const formatSalary = (salary, currency) => {
+    const normalizedSalary = `${salary || ""}`.trim();
+    if (!normalizedSalary) {
+      return "Keine Angabe";
+    }
+
+    const normalizedCurrency = (currency || "EUR").toUpperCase();
+    return `${normalizedSalary} ${normalizedCurrency}`;
   };
 
   const statusOptions = [
@@ -147,6 +158,10 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
             <span>{bewerbung.standort}</span>
           </div>
         )}
+        <div className="detail-item">
+          <GehaltIcon className="meta-icon" aria-hidden="true" />
+          <span>{formatSalary(bewerbung.gehalt, bewerbung.waehrung)}</span>
+        </div>
         {bewerbung.ansprechpartner && (
           <div className="detail-item">
             <PersonIcon className="meta-icon" aria-hidden="true" />
