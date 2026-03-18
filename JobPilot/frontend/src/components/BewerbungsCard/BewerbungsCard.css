@@ -236,13 +236,13 @@
 }
 
 .card-link {
-  color: var(--blue);
+  color: var(--link-color);
   text-decoration: none;
   font-size: 0.85rem;
 }
 
 .detail-item-link {
-  color: var(--blue);
+  color: var(--link-color);
 }
 
 .detail-item-link .card-link {
@@ -259,7 +259,7 @@
 }
 
 :is(.detail-item, .card-link):hover {
-  color: var(--blue-hover);
+  color: var(--link-hover-color);
 }
 
 /* ── Footer / Notizen ── */

@@ -19,6 +19,10 @@
   /* Brand */
   --blue: #1e3a8a; /* Button / Hover Blue */
   --blue-hover: #1e40af;
+  --logo-bg: #2f6de7;
+  --brand-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b5fc0 100%);
+  --link-color: #1d4ed8;
+  --link-hover-color: #1e40af;
 
   /* Status – Hintergründe (Badge-BG) */
   --status-beworben-bg: #dbeafe;
@@ -70,6 +74,10 @@
   /* Brand */
   --blue: #1e3a8a;
   --blue-hover: #60a5fa; /* Hover Blue Dark – Figma */
+  --logo-bg: #2f6de7;
+  --brand-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b5fc0 100%);
+  --link-color: #60a5fa;
+  --link-hover-color: #93c5fd;
 
   /* Status – Hintergründe (gedämpft) */
   --status-beworben-bg: rgba(59, 130, 246, 0.15);
@@ -97,6 +105,10 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.5);
   --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.7);
+
+  .app-icon {
+    background: var(--logo-bg);
+  }
 }
 
 /* ── Basis ── */
@@ -106,9 +118,17 @@
   box-sizing: border-box;
 }
 
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 body {
   margin: 0;
   font-family:
+    "Iosevka-Medium",
     "Inter",
     -apple-system,
     BlinkMacSystemFont,
@@ -123,19 +143,29 @@ body {
 }
 
 /* ── Typography – Inter Hierarchie (Figma) ── */
+@font-face {
+  font-family: Iosevka-Medium;
+  src: url(./fonts/IosevkaCharonMono-Medium.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: Iosevka-Bold;
+  src: url(./fonts/IosevkaCharonMono-Bold.ttf) format("truetype");
+}
+
 h1,
-h2,
+h2 {
+  font-family: "Iosevka-Bold";
+  margin: 0;
+}
+
 h3,
 h4,
 h5,
 h6,
 p,
 small {
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
+  font-family: "Iosevka-Medium";
   margin: 0;
 }
 

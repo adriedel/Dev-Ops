@@ -115,6 +115,10 @@
     gap: 10px;
   }
 
+  .gesamt {
+    grid-column: -2 / -1;
+  }
+
   .stat-card {
     padding: 1rem;
   }
@@ -136,6 +140,10 @@
     grid-template-columns: repeat(2, 1fr);
     padding: 12px;
     gap: 8px;
+  }
+
+  .gesamt {
+    grid-column: 2;
   }
 
   .stat-label {
