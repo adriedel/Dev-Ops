@@ -20,10 +20,20 @@ async function initDB() {
       bewerbungsart TEXT,
       startdatum TEXT,
       link TEXT,
+      gehalt TEXT,
+      waehrung TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Für bestehende Datenbanken: Spalte nachrüsten falls sie noch nicht existiert
+  await pool.query(
+    `ALTER TABLE bewerbungen ADD COLUMN IF NOT EXISTS gehalt TEXT`,
+  );
+  await pool.query(
+    `ALTER TABLE bewerbungen ADD COLUMN IF NOT EXISTS waehrung TEXT`,
+  );
 
   console.log("Datenbank initialisiert");
 }

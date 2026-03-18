@@ -155,6 +155,8 @@ app.post("/api/bewerbungen", async (req, res) => {
     bewerbungsart,
     startdatum,
     link,
+    gehalt,
+    waehrung,
   } = req.body;
 
   if (!position || !firma || !status || !datum) {
@@ -165,8 +167,8 @@ app.post("/api/bewerbungen", async (req, res) => {
 
   const query = `
     INSERT INTO bewerbungen
-    (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum, link)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum, link, gehalt, waehrung)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     RETURNING id
   `;
 
@@ -182,6 +184,8 @@ app.post("/api/bewerbungen", async (req, res) => {
       bewerbungsart,
       startdatum,
       link,
+      gehalt,
+      waehrung,
     ]);
     res.status(201).json({
       id: result.rows[0].id,
@@ -206,14 +210,16 @@ app.put("/api/bewerbungen/:id", async (req, res) => {
     bewerbungsart,
     startdatum,
     link,
+    gehalt,
+    waehrung,
   } = req.body;
 
   const query = `
     UPDATE bewerbungen
     SET position = $1, firma = $2, status = $3, datum = $4,
         standort = $5, ansprechpartner = $6, notizen = $7,
-        bewerbungsart = $8, startdatum = $9, link = $10, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $11
+      bewerbungsart = $8, startdatum = $9, link = $10, gehalt = $11, waehrung = $12, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $13
   `;
 
   try {
@@ -228,6 +234,8 @@ app.put("/api/bewerbungen/:id", async (req, res) => {
       bewerbungsart,
       startdatum,
       link,
+      gehalt,
+      waehrung,
       id,
     ]);
     if (result.rowCount === 0) {
