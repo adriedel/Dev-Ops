@@ -37,3 +37,11 @@ export const BEWERBUNGSARTEN = [
   "Stellenausschreibung",
   "Empfehlung",
 ];
+
+export const WAEHRUNGEN = ["EUR", "USD", "CHF"];
+
+export const WAEHRUNG_LABELS = {
+  EUR: "Euro (EUR)",
+  USD: "US-Dollar (USD)",
+  CHF: "Schweizer Franken (CHF)",
+};
