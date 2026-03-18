@@ -1,4 +1,4 @@
-const brcypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const pool = require("./database");
 
@@ -35,8 +35,8 @@ async function register(req, res) {
     }
 
     //Passwort hashen
-    const salt = await brcypt.genSalt(10);
-    const hashedPassword = await brcypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     //User erstellen
     const result = await pool.query(
