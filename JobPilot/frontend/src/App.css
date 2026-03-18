@@ -145,12 +145,14 @@ body {
 /* ── Typography – Inter Hierarchie (Figma) ── */
 @font-face {
   font-family: Iosevka-Medium;
-  src: url(./fonts/IosevkaCharonMono-Medium.ttf) format("truetype");
+  src: url("/fonts/IosevkaCharonMono-Medium.ttf") format("truetype");
+  font-display: swap;
 }
 
 @font-face {
   font-family: Iosevka-Bold;
-  src: url(./fonts/IosevkaCharonMono-Bold.ttf) format("truetype");
+  src: url("/fonts/IosevkaCharonMono-Bold.ttf") format("truetype");
+  font-display: swap;
 }
 
 h1,
