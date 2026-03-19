@@ -153,6 +153,22 @@
   font-weight: 400;
 }
 
+.logout-button {
+  padding: 8px 16px;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s;
+  margin-left: 12px;
+}
+
+.logout-button:hover {
+  background: #cc0000;
+}
+
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .header {

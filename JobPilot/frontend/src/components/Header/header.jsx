@@ -1,9 +1,16 @@
 import "./header.css";
+import { logout } from "../../services/auth";
 import SunIcon from "../../assets/icons/sun.svg?react";
 import MoonIcon from "../../assets/icons/moon.svg?react";
 import BriefcaseIcon from "../../assets/icons/briefcase-white.svg?react";
 
 function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
+  const handleLogout = () => {
+    if (window.confirm("Möchtest du dich wirklich abmelden?")) {
+      logout();
+    }
+  };
+
   return (
     <header className="header">
       <div className="header-left">
@@ -45,6 +52,13 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
             />
           </button>
         </div>
+        <button
+          onClick={handleLogout}
+          className="logout-button"
+          title="Abmelden"
+        >
+          🚪 Logout
+        </button>
         <button className="btn-new-bewerbung" onClick={onNewBewerbung}>
           <span className="btn-plus">+</span> Neue Bewerbung
         </button>
