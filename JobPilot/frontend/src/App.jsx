@@ -5,8 +5,15 @@ import StatCards from "./components/StatCards/StatCards";
 import SearchBar from "./components/SearchBar/SearchBar";
 import BewerbungsCard from "./components/BewerbungsCard/BewerbungsCard";
 import BewerbungsModal from "./components/BewerbungsModal/BewerbungsModal";
-import { bewerbungenApi } from "./services/api";
 import { STATUS } from "./utils/constants";
+
+import {
+  getAll,
+  create,
+  update,
+  deleteBewerbung,
+  getStats,
+} from "./services/api";
 
 function App() {
   const [bewerbungen, setBewerbungen] = useState([]);
@@ -57,7 +64,7 @@ function App() {
 
   const loadBewerbungen = useCallback(async () => {
     try {
-      const data = await bewerbungenApi.getAll();
+      const data = await getAll();
       setBewerbungen(data);
     } catch (error) {
       console.error("Fehler beim Laden der Bewerbungen:", error);
@@ -66,7 +73,7 @@ function App() {
 
   const loadStats = useCallback(async () => {
     try {
-      const data = await bewerbungenApi.getStats();
+      const data = await getStats();
       setStats(data);
     } catch (error) {
       console.error("Fehler beim Laden der Statistiken:", error);
@@ -77,8 +84,8 @@ function App() {
     const fetchInitialData = async () => {
       try {
         const [bewerbungenData, statsData] = await Promise.all([
-          bewerbungenApi.getAll(),
-          bewerbungenApi.getStats(),
+          getAll(),
+          getStats(),
         ]);
         setBewerbungen(bewerbungenData);
         setStats(statsData);
@@ -92,9 +99,9 @@ function App() {
   const handleSubmit = async () => {
     try {
       if (editingBewerbung) {
-        await bewerbungenApi.update(editingBewerbung.id, formData);
+        await update(editingBewerbung.id, formData);
       } else {
-        await bewerbungenApi.create(formData);
+        await create(formData);
       }
       loadBewerbungen();
       loadStats();
@@ -106,7 +113,7 @@ function App() {
 
   const handleDelete = async (id) => {
     try {
-      await bewerbungenApi.delete(id);
+      await deleteBewerbung(id);
       loadBewerbungen();
       loadStats();
     } catch (error) {
@@ -118,7 +125,7 @@ function App() {
     try {
       const bewerbung = bewerbungen.find((b) => b.id === id);
       if (bewerbung) {
-        await bewerbungenApi.update(id, { ...bewerbung, status: newStatus });
+        await update(id, { ...bewerbung, status: newStatus });
         loadBewerbungen();
         loadStats();
       }
