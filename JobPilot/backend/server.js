@@ -119,6 +119,8 @@ app.post("/api/bewerbungen", authenticateToken, async (req, res) => {
     bewerbungsart,
     startdatum,
     link,
+    gehalt,
+    waehrung,
   } = req.body;
 
   const userId = req.userId; // Aus JWT Token
@@ -131,8 +133,8 @@ app.post("/api/bewerbungen", authenticateToken, async (req, res) => {
 
   const query = `
     INSERT INTO bewerbungen
-    (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum, link, user_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+    (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum, link, gehalt, waehrung, user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     RETURNING id
   `;
 
@@ -148,7 +150,9 @@ app.post("/api/bewerbungen", authenticateToken, async (req, res) => {
       bewerbungsart,
       startdatum,
       link,
-      userId, // User ID hinzufügen!
+      gehalt,
+      waehrung,
+      userId,
     ]);
 
     res.status(201).json({
@@ -175,14 +179,17 @@ app.put("/api/bewerbungen/:id", authenticateToken, async (req, res) => {
     bewerbungsart,
     startdatum,
     link,
+    gehalt,
+    waehrung,
   } = req.body;
 
   const query = `
     UPDATE bewerbungen
     SET position = $1, firma = $2, status = $3, datum = $4,
         standort = $5, ansprechpartner = $6, notizen = $7,
-        bewerbungsart = $8, startdatum = $9, link = $10, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $11 AND user_id = $12
+        bewerbungsart = $8, startdatum = $9, link = $10,
+        gehalt = $11, waehrung = $12, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $13 AND user_id = $14
   `;
 
   try {
@@ -197,8 +204,10 @@ app.put("/api/bewerbungen/:id", authenticateToken, async (req, res) => {
       bewerbungsart,
       startdatum,
       link,
+      gehalt,
+      waehrung,
       id,
-      userId, // Nur eigene Bewerbungen!
+      userId,
     ]);
 
     if (result.rowCount === 0) {
