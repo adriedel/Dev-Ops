@@ -20,13 +20,13 @@ export async function register(email, password, name) {
 }
 
 // Login
-export async function login(email, password) {
+export async function login(email, password, rememberMe = false) {
   const response = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, rememberMe }),
   });
 
   const data = await response.json();
@@ -65,7 +65,7 @@ export async function getCurrentUser() {
 export function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  window.location.href = "/login";
+  window.location.href = "/"; // Redirect zur Landing Page
 }
 
 // Check if logged in

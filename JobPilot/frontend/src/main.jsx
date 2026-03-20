@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import App from "./App.jsx";
@@ -13,6 +14,9 @@ function Root() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Landing Page */}
+        <Route path="/" element={<LandingPage />} />
+
         {/* Public Routes */}
         <Route
           path="/login"
@@ -38,18 +42,6 @@ function Root() {
             <ProtectedRoute>
               <App />
             </ProtectedRoute>
-          }
-        />
-
-        {/* Default Route */}
-        <Route
-          path="/"
-          element={
-            isAuthenticated() ? (
-              <Navigate to="/dashboard" replace />
-            ) : (
-              <Navigate to="/login" replace />
-            )
           }
         />
 
