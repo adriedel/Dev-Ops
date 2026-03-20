@@ -1,0 +1,125 @@
+.logout-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.logout-modal-container {
+  background: var(--bg-surface);
+  border-radius: 12px;
+  padding: 0;
+  max-width: 460px;
+  width: 90%;
+  box-shadow: var(--shadow-modal);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.logout-modal-header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logout-modal-header h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.logout-modal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.logout-warning-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.logout-warning-icon .logout-icon {
+  color: var(--status-abgelehnt-accent);
+}
+
+.logout-modal-message {
+  font-size: 1.08rem;
+  color: var(--text-primary);
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.logout-modal-warning {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.logout-modal-footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.logout-modal-button {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-cancel-button {
+  background: var(--bg-app);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.logout-cancel-button:hover {
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+
+.logout-confirm-button {
+  background: #a11919;
+  color: #ffffff;
+}
+
+.logout-confirm-button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.logout-modal-button:active {
+  transform: translateY(0);
+}
