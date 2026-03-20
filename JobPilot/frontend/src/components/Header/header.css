@@ -154,49 +154,67 @@
 }
 
 .logout-button {
-  padding: 8px 16px;
-  background: #ff4444;
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 24px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s;
-  margin-left: 12px;
+  white-space: nowrap;
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-left: 0;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.22);
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    filter 0.15s;
 }
 
 .logout-button:hover {
-  background: #cc0000;
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 12px 22px rgba(220, 38, 38, 0.28);
 }
 
-/* ── Mobile ── */
-@media (max-width: 768px) {
+/* ── Tablet & Compact ── */
+@media (max-width: 890px) {
   .header {
     padding: 14px 16px 12px;
-  }
-
-  .header-subtitle {
-    display: none;
   }
 
   .header-title {
     font-size: 1.5rem;
   }
 
+  .header-subtitle {
+    display: none;
+  }
+
   .btn-new-bewerbung {
+    padding: 9px 14px;
+    font-size: 0.875rem;
+  }
+
+  .logout-button {
     padding: 9px 14px;
     font-size: 0.875rem;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 650px) {
   .header {
     padding: 10px 12px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "left toggle"
-      "button button";
+      "new new"
+      "logout logout";
     align-items: center;
     column-gap: 8px;
     row-gap: 10px;
@@ -217,6 +235,30 @@
     justify-self: end;
   }
 
+  .header-subtitle {
+    display: none;
+  }
+
+  .btn-new-bewerbung {
+    grid-area: new;
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+  }
+
+  .logout-button {
+    grid-area: logout;
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 10px 12px;
+  }
+
   .app-icon {
     width: 44px;
     height: 44px;
@@ -231,11 +273,51 @@
   .header-title {
     font-size: 1.2rem;
   }
+}
 
-  .btn-new-bewerbung {
-    grid-area: button;
-    width: 100%;
-    justify-content: center;
+@media (max-height: 500px) and (orientation: landscape) {
+  .header {
     padding: 10px 16px;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-left {
+    flex: 1;
+    min-width: 0;
+    gap: 10px;
+  }
+
+  .app-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .app-logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .header-title {
+    font-size: 1.15rem;
+    line-height: 1.1;
+  }
+
+  .header-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    max-width: 52%;
+  }
+
+  .theme-btn {
+    padding: 7px 9px;
+  }
+
+  .btn-new-bewerbung,
+  .logout-button {
+    padding: 8px 12px;
+    font-size: 0.82rem;
   }
 }
