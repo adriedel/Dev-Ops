@@ -55,8 +55,22 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
       return "Keine Angabe";
     }
 
+    const formatSingleAmount = (value) => {
+      const compactValue = value.replace(/[\s.]/g, "");
+      return /^\d+$/.test(compactValue)
+        ? new Intl.NumberFormat("de-DE").format(Number(compactValue))
+        : value.trim();
+    };
+
+    // Normalize plain ranges like 50000-60000 or 50000 - 60000.
+    const rangeParts = normalizedSalary.split(/\s*[-–—]\s*/);
+    const formattedSalary =
+      rangeParts.length === 2
+        ? `${formatSingleAmount(rangeParts[0])} - ${formatSingleAmount(rangeParts[1])}`
+        : formatSingleAmount(normalizedSalary);
+
     const normalizedCurrency = (currency || "EUR").toUpperCase();
-    return `${normalizedSalary} ${normalizedCurrency}`;
+    return `${formattedSalary} ${normalizedCurrency}`;
   };
 
   const statusOptions = [
