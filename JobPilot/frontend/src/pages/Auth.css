@@ -21,10 +21,27 @@
   margin-bottom: 32px;
 }
 
-.auth-header h1 {
-  font-size: 2.5rem;
-  margin: 0 0 8px 0;
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.auth-logo {
+  width: 84px;
+  height: 84px;
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.auth-title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  margin: 0;
   color: #1a1a1a;
+  line-height: 1;
 }
 
 .auth-header p {
@@ -127,6 +144,7 @@
 }
 
 :root.dark-mode .auth-header h1,
+:root.dark-mode .auth-title,
 :root.dark-mode .auth-form h2 {
   color: #e0e0e0;
 }
@@ -148,4 +166,19 @@
 
 :root.dark-mode .form-group input:focus {
   border-color: #667eea;
+}
+
+@media (max-width: 560px) {
+  .auth-brand {
+    gap: 10px;
+  }
+
+  .auth-logo {
+    width: 68px;
+    height: 68px;
+  }
+
+  .auth-title {
+    font-size: clamp(2rem, 8vw, 2.6rem);
+  }
 }

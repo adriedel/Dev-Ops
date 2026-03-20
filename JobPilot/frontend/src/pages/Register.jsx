@@ -62,7 +62,14 @@ function Register() {
     <div className="auth-container">
       <div className="auth-box">
         <div className="auth-header">
-          <h1>🚀 JobPilot</h1>
+          <div className="auth-brand">
+            <img
+              className="auth-logo"
+              src="/Logo-JobPilot.svg"
+              alt="JobPilot Logo"
+            />
+            <h1 className="auth-title">JobPilot</h1>
+          </div>
           <p>Dein Bewerbungstracker</p>
         </div>
 
