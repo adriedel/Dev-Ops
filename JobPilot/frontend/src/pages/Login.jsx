@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login as loginAPI } from "../services/auth";
+import ArrowLeftIcon from "../assets/icons/back.svg?react";
 import "./Auth.css";
 
 function Login() {
@@ -9,6 +10,10 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate("/");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +38,9 @@ function Login() {
 
   return (
     <div className="auth-container">
+      <button className="auth-back-button" onClick={handleBack} title="Zurück">
+        <ArrowLeftIcon className="auth-back-icon" aria-hidden="true" />
+      </button>
       <div className="auth-box">
         <div className="auth-header">
           <div className="auth-brand">
