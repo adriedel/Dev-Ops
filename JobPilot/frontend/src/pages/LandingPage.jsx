@@ -1,250 +1,269 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { isAuthenticated } from "../services/auth";
 import "./LandingPage.css";
+import BriefcaseIcon from "../assets/icons/briefcase-white.svg?react";
+import SunIcon from "../assets/icons/sun.svg?react";
+import MoonIcon from "../assets/icons/moon.svg?react";
+import CheckIcon from "../assets/icons/check.svg?react";
+import TrendingIcon from "../assets/icons/trending.svg?react";
+import CalendarIcon from "../assets/icons/calendar.svg?react";
+import PlanIcon from "../assets/icons/plan.svg?react";
+import { isAuthenticated } from "../services/auth";
 
-function LandingPage() {
+function LandingPage({ onEnterApp }) {
   const navigate = useNavigate();
-
-  // Redirect zu Dashboard wenn schon eingeloggt
-  useEffect(() => {
-    if (isAuthenticated()) {
-      navigate("/dashboard");
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    if (saved !== null) {
+      return JSON.parse(saved);
     }
-  }, [navigate]);
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark-mode");
+    } else {
+      document.documentElement.classList.remove("dark-mode");
+    }
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => !prev);
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+  const handleRegister = () => {
+    navigate("/register");
+  };
+
+  const handleEnterApp = () => {
+    if (onEnterApp) {
+      onEnterApp();
+      return;
+    }
+    navigate(isAuthenticated() ? "/dashboard" : "/register");
+  };
+
+  const features = [
+    {
+      icon: <PlanIcon className="feature-icon" />,
+      title: "Alles im Blick",
+      description:
+        "Verwalten Sie alle Ihre Bewerbungen an einem zentralen Ort. Keine verlorenen E-Mails oder vergessenen Termine mehr.",
+    },
+    {
+      icon: <TrendingIcon className="feature-icon" />,
+      title: "Status-Tracking",
+      description:
+        "Verfolgen Sie den Fortschritt jeder Bewerbung - von der Einreichung bis zur finalen Entscheidung.",
+    },
+    {
+      icon: <CalendarIcon className="feature-icon" />,
+      title: "Statistiken",
+      description:
+        "Erhalten Sie einen klaren Überblick über Ihre Bewerbungsaktivitäten mit aussagekräftigen Statistiken.",
+    },
+  ];
+
+  const stats = [
+    { value: "100%", label: "Kostenlos" },
+    { value: "5+", label: "Status-Kategorien" },
+    { value: "24/7", label: "Verfügbar" },
+  ];
 
   return (
     <div className="landing-page">
-      {/* Navbar */}
+      {/* Navigation */}
       <nav className="landing-nav">
-        <div className="nav-container">
-          <div className="nav-logo">
-            <span className="logo-icon">🚀</span>
-            <span className="logo-text">JobPilot</span>
+        <div className="landing-nav-content">
+          <div className="landing-logo">
+            <div className="landing-logo-icon">
+              <BriefcaseIcon className="landing-logo-svg" aria-hidden="true" />
+            </div>
+            <span className="landing-logo-text">JobPilot</span>
           </div>
-          <div className="nav-actions">
-            <button className="nav-link" onClick={() => navigate("/login")}>
+
+          <div className="landing-nav-right">
+            <div className="theme-toggle-group">
+              <button
+                className={`theme-btn${!darkMode ? " active" : ""}`}
+                onClick={() => darkMode && toggleDarkMode()}
+                aria-label="Light mode"
+                title="Hell"
+              >
+                <SunIcon className="theme-icon" aria-hidden="true" />
+              </button>
+              <button
+                className={`theme-btn${darkMode ? " active" : ""}`}
+                onClick={() => !darkMode && toggleDarkMode()}
+                aria-label="Dark mode"
+                title="Dunkel"
+              >
+                <MoonIcon className="theme-icon" aria-hidden="true" />
+              </button>
+            </div>
+            <button className="landing-nav-login" onClick={handleLogin}>
               Anmelden
             </button>
-            <button
-              className="btn-primary"
-              onClick={() => navigate("/register")}
-            >
-              Kostenlos starten
+            <button className="landing-cta-nav" onClick={handleRegister}>
+              Registrieren
             </button>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-content">
-          <h1 className="hero-title">
-            Bewerbungen im Griff.
+      <section className="landing-hero">
+        <div className="landing-hero-content">
+          <div className="landing-hero-badge">
+            <CheckIcon className="badge-icon" />
+            <span>Kostenlos und einfach zu nutzen</span>
+          </div>
+          <h1 className="landing-hero-title">
+            Dein Bewerbungsprozess.
             <br />
-            Erfolg im Blick.
+            <span className="landing-hero-highlight">Organisiert.</span>
           </h1>
-          <p className="hero-subtitle">
-            Der smarte Bewerbungstracker für deine erfolgreiche Jobsuche.
-            Behalte den Überblick, verwalte deine Bewerbungen und erreiche deine
-            Karriereziele.
+          <p className="landing-hero-description">
+            JobPilot hilft dir, den Überblick über all deine Bewerbungen zu
+            behalten. Tracke Status, Termine und Notizen - alles an einem Ort.
           </p>
-          <div className="hero-cta">
-            <button className="btn-hero" onClick={() => navigate("/register")}>
+          <div className="landing-hero-actions">
+            <button className="landing-cta-primary" onClick={handleEnterApp}>
               Kostenlos starten
             </button>
-            <button
-              className="btn-secondary"
-              onClick={() =>
-                document
-                  .getElementById("features")
-                  .scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              Mehr erfahren
+            <button className="landing-cta-secondary" onClick={handleLogin}>
+              Zum Login
             </button>
           </div>
-          <p className="hero-note">
-            ✓ Kostenlos ✓ Keine Kreditkarte nötig ✓ Datenschutz garantiert
-          </p>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section id="features" className="features">
-        <div className="section-container">
-          <h2 className="section-title">Alles, was du brauchst</h2>
-          <p className="section-subtitle">
-            Professionelles Bewerbungsmanagement in einem Tool
-          </p>
-
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">📊</div>
-              <h3>Live Statistiken</h3>
-              <p>
-                Behalte den Überblick mit Echtzeit-Statistiken über deine
-                Bewerbungen und Erfolgsquoten.
-              </p>
+        <div className="landing-hero-visual">
+          <div className="landing-preview-card">
+            <div className="preview-header">
+              <div className="preview-dots">
+                <span className="dot red"></span>
+                <span className="dot yellow"></span>
+                <span className="dot green"></span>
+              </div>
+              <span className="preview-title">Meine Bewerbungen</span>
             </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">🔍</div>
-              <h3>Suche & Filter</h3>
-              <p>
-                Finde jede Bewerbung blitzschnell mit intelligenter Suche und
-                flexiblen Filtern.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">📝</div>
-              <h3>Notizen & Status</h3>
-              <p>
-                Dokumentiere jeden Schritt deiner Bewerbung mit Notizen,
-                Status-Updates und wichtigen Details.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">🌙</div>
-              <h3>Dark Mode</h3>
-              <p>
-                Arbeite komfortabel zu jeder Tageszeit mit automatischem Dark
-                Mode Support.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">📱</div>
-              <h3>Überall verfügbar</h3>
-              <p>
-                Greife von jedem Gerät auf deine Bewerbungen zu - Desktop,
-                Tablet oder Smartphone.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">🔐</div>
-              <h3>Sicher & Privat</h3>
-              <p>
-                Deine Daten sind mit modernster Verschlüsselung geschützt. Nur
-                du hast Zugriff.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="how-it-works">
-        <div className="section-container">
-          <h2 className="section-title">So einfach geht's</h2>
-          <p className="section-subtitle">
-            In 3 Schritten zu deinem organisierten Bewerbungsprozess
-          </p>
-
-          <div className="steps">
-            <div className="step">
-              <div className="step-number">1</div>
-              <h3>Account erstellen</h3>
-              <p>
-                Registriere dich kostenlos in wenigen Sekunden. Keine
-                Kreditkarte nötig.
-              </p>
-            </div>
-
-            <div className="step-arrow">→</div>
-
-            <div className="step">
-              <div className="step-number">2</div>
-              <h3>Bewerbungen hinzufügen</h3>
-              <p>
-                Trage deine Bewerbungen ein und verwalte alle wichtigen
-                Informationen an einem Ort.
-              </p>
-            </div>
-
-            <div className="step-arrow">→</div>
-
-            <div className="step">
-              <div className="step-number">3</div>
-              <h3>Erfolg tracken</h3>
-              <p>
-                Verfolge deinen Fortschritt, behalte den Überblick und erreiche
-                deine Karriereziele.
-              </p>
+            <div className="preview-content">
+              <div className="preview-stat-row">
+                <div className="preview-stat blue">
+                  <span className="preview-stat-value">12</span>
+                  <span className="preview-stat-label">Beworben</span>
+                </div>
+                <div className="preview-stat yellow">
+                  <span className="preview-stat-value">5</span>
+                  <span className="preview-stat-label">Stufe weiter</span>
+                </div>
+                <div className="preview-stat green">
+                  <span className="preview-stat-value">3</span>
+                  <span className="preview-stat-label">Angenommen</span>
+                </div>
+              </div>
+              <div className="preview-cards">
+                <div className="mini-card">
+                  <div className="mini-card-header">
+                    <span className="mini-card-company">Google</span>
+                    <span className="mini-card-status accepted">
+                      Angenommen
+                    </span>
+                  </div>
+                  <span className="mini-card-position">Frontend Developer</span>
+                </div>
+                <div className="mini-card">
+                  <div className="mini-card-header">
+                    <span className="mini-card-company">Microsoft</span>
+                    <span className="mini-card-status progress">
+                      Stufe weiter
+                    </span>
+                  </div>
+                  <span className="mini-card-position">Software Engineer</span>
+                </div>
+                <div className="mini-card">
+                  <div className="mini-card-header">
+                    <span className="mini-card-company">Apple</span>
+                    <span className="mini-card-status applied">Beworben</span>
+                  </div>
+                  <span className="mini-card-position">UX Designer</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="stats-section">
-        <div className="section-container">
-          <div className="stats-grid">
-            <div className="stat">
-              <div className="stat-number">100%</div>
-              <div className="stat-label">Kostenlos</div>
+      <section className="landing-stats">
+        <div className="landing-stats-content">
+          {stats.map((stat, index) => (
+            <div key={index} className="landing-stat-item">
+              <span className="landing-stat-value">{stat.value}</span>
+              <span className="landing-stat-label">{stat.label}</span>
             </div>
-            <div className="stat">
-              <div className="stat-number">🔐</div>
-              <div className="stat-label">DSGVO-konform</div>
-            </div>
-            <div className="stat">
-              <div className="stat-number">📱</div>
-              <div className="stat-label">Responsive</div>
-            </div>
-            <div className="stat">
-              <div className="stat-number">⚡</div>
-              <div className="stat-label">Blitzschnell</div>
-            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="landing-features">
+        <div className="landing-features-content">
+          <div className="landing-features-header">
+            <h2 className="landing-features-title">Alles was du brauchst</h2>
+            <p className="landing-features-subtitle">
+              Einfache Tools, um deinen Bewerbungsprozess zu optimieren
+            </p>
+          </div>
+
+          <div className="landing-features-grid">
+            {features.map((feature, index) => (
+              <div key={index} className="landing-feature-card">
+                <div className="landing-feature-icon">{feature.icon}</div>
+                <h3 className="landing-feature-title">{feature.title}</h3>
+                <p className="landing-feature-description">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="cta-section">
-        <div className="cta-content">
-          <h2>Bereit für den nächsten Karriereschritt?</h2>
-          <p>
-            Starte jetzt kostenlos und bringe Struktur in deine Bewerbungen.
+      {/* CTA Section */}
+      <section className="landing-cta-section">
+        <div className="landing-cta-content">
+          <h2 className="landing-cta-title">
+            Bereit, deine Bewerbungen zu organisieren?
+          </h2>
+          <p className="landing-cta-description">
+            Starte jetzt kostenlos und behalte den Überblick über all deine
+            Karrierechancen.
           </p>
-          <button className="btn-cta" onClick={() => navigate("/register")}>
-            Kostenlos loslegen
+          <button className="landing-cta-button" onClick={handleEnterApp}>
+            Jetzt loslegen
           </button>
-          <p className="cta-note">
-            Keine Kreditkarte erforderlich • Jederzeit kündbar
-          </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="footer-container">
-          <div className="footer-content">
-            <div className="footer-section">
-              <h4>JobPilot</h4>
-              <p>Dein smarter Bewerbungstracker</p>
+      <footer className="landing-footer">
+        <div className="landing-footer-content">
+          <div className="landing-footer-logo">
+            <div className="landing-logo-icon small">
+              <BriefcaseIcon className="landing-logo-svg" aria-hidden="true" />
             </div>
-            <div className="footer-section">
-              <h4>Produkt</h4>
-              <a href="#features">Features</a>
-              <a href="/register">Kostenlos starten</a>
-            </div>
-            <div className="footer-section">
-              <h4>Rechtliches</h4>
-              <a href="/datenschutz">Datenschutz</a>
-              <a href="/impressum">Impressum</a>
-            </div>
-            <div className="footer-section">
-              <h4>Kontakt</h4>
-              <a href="mailto:support@jobpilot.de">Support</a>
-            </div>
+            <span className="landing-logo-text">JobPilot</span>
           </div>
-          <div className="footer-bottom">
-            <p>© 2026 JobPilot. Alle Rechte vorbehalten.</p>
-          </div>
+          <p className="landing-footer-text">
+            Dein persönlicher Bewerbungstracker
+          </p>
         </div>
       </footer>
     </div>
