@@ -12,12 +12,31 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
+// CORS Configuration - Allow multiple origins
+const allowedOrigins = [
+  "http://localhost:5173", // Development
+  "https://jobpilot-jade.vercel.app", // Production (Vercel)
+  "https://www.bewerbungstracker.com", // Custom Domain
+  "https://bewerbungstracker.com", // Custom Domain (ohne www)
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, Postman, curl)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = `CORS not allowed for origin: ${origin}`;
+        console.error(msg);
+        return callback(new Error(msg), false);
+      }
+
+      return callback(null, true);
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   }),
 );
 app.use(bodyParser.json());
