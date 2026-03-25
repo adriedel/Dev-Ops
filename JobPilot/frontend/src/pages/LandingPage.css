@@ -1,0 +1,765 @@
+/* ── Landing Page ── */
+.landing-page {
+  min-height: 100vh;
+  background: var(--bg-app);
+  color: var(--text-primary);
+}
+
+/* ── Navigation ── */
+.landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+
+.landing-nav-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.landing-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.landing-logo-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--brand-gradient);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-logo-icon.small {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.landing-logo-svg {
+  width: 24px;
+  height: 24px;
+}
+
+.landing-logo-icon.small .landing-logo-svg {
+  width: 20px;
+  height: 20px;
+}
+
+.landing-logo-text {
+  font-family: "Iosevka-Bold";
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.landing-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.landing-nav-top-actions {
+  display: flex;
+  align-items: center;
+}
+
+.landing-nav-login {
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.landing-nav-login:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-muted);
+  transform: translateY(-1px);
+}
+
+.landing-cta-nav {
+  padding: 10px 20px;
+  background: var(--brand-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    filter 0.15s;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+}
+
+.landing-cta-nav:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 6px 16px rgba(30, 58, 138, 0.25);
+}
+
+/* ── Hero Section ── */
+.landing-hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.landing-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.landing-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--status-angenommen-bg);
+  border: 1px solid var(--status-angenommen-border);
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.badge-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--status-angenommen-accent);
+}
+
+.landing-hero-badge span {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--status-angenommen-accent);
+}
+
+.landing-hero-title {
+  font-family: "Iosevka-Bold";
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.landing-hero-highlight {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.landing-hero-description {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 500px;
+}
+
+.landing-hero-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.landing-cta-primary {
+  padding: 14px 28px;
+  background: var(--brand-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    filter 0.15s;
+  box-shadow: 0 8px 20px rgba(30, 58, 138, 0.25);
+}
+
+.landing-cta-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 12px 28px rgba(30, 58, 138, 0.3);
+}
+
+.landing-cta-secondary {
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.landing-cta-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-muted);
+}
+
+/* ── Hero Visual ── */
+.landing-hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.landing-preview-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--bg-hover);
+  border-bottom: 1px solid var(--border);
+}
+
+.preview-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot.red {
+  background: #ef4444;
+}
+
+.dot.yellow {
+  background: #f59e0b;
+}
+
+.dot.green {
+  background: #10b981;
+}
+
+.preview-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.preview-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.preview-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.preview-stat {
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.preview-stat.blue {
+  background: var(--status-beworben-bg);
+  border: 1px solid var(--status-beworben-border);
+}
+
+.preview-stat.yellow {
+  background: var(--status-stufe_weiter-bg);
+  border: 1px solid var(--status-stufe_weiter-border);
+}
+
+.preview-stat.green {
+  background: var(--status-angenommen-bg);
+  border: 1px solid var(--status-angenommen-border);
+}
+
+.preview-stat-value {
+  font-family: "Iosevka-Bold";
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.preview-stat-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.preview-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mini-card {
+  padding: 14px 16px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mini-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mini-card-company {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mini-card-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.mini-card-status.accepted {
+  background: var(--status-angenommen-bg);
+  color: var(--status-angenommen-accent);
+}
+
+.mini-card-status.progress {
+  background: var(--status-stufe_weiter-bg);
+  color: var(--status-stufe_weiter-accent);
+}
+
+.mini-card-status.applied {
+  background: var(--status-beworben-bg);
+  color: var(--status-beworben-accent);
+}
+
+.mini-card-position {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ── Stats Section ── */
+.landing-stats {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.landing-stats-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.landing-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.landing-stat-value {
+  font-family: "Iosevka-Bold";
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.landing-stat-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* ── Features Section ── */
+.landing-features {
+  padding: 80px 24px;
+}
+
+.landing-features-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.landing-features-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.landing-features-title {
+  font-family: "Iosevka-Bold";
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px;
+}
+
+.landing-features-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.landing-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.landing-feature-card {
+  padding: 32px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.landing-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+
+.landing-feature-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--status-beworben-bg);
+  border: 1px solid var(--status-beworben-border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--status-beworben-accent);
+}
+
+.landing-feature-title {
+  font-family: "Iosevka-Bold";
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.landing-feature-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── CTA Section ── */
+.landing-cta-section {
+  padding: 80px 24px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+}
+
+.landing-cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.landing-cta-title {
+  font-family: "Iosevka-Bold";
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.landing-cta-description {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.landing-cta-button {
+  padding: 16px 32px;
+  background: var(--brand-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    filter 0.15s;
+  box-shadow: 0 8px 20px rgba(30, 58, 138, 0.25);
+  margin-top: 8px;
+}
+
+.landing-cta-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 12px 28px rgba(30, 58, 138, 0.3);
+}
+
+/* ── Footer ── */
+.landing-footer {
+  padding: 40px 24px;
+  border-top: 1px solid var(--border);
+}
+
+.landing-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.landing-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.landing-footer-text {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Responsive ── */
+
+/* Desktop: Nav explizit einzeilig erzwingen */
+@media (min-width: 601px) {
+  .landing-nav-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .landing-nav-top-actions {
+    margin-left: auto;
+    margin-right: 16px;
+  }
+
+  .landing-nav-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: auto;
+  }
+
+  .landing-nav-login,
+  .landing-cta-nav {
+    width: auto;
+    min-height: unset;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .landing-hero {
+    grid-template-columns: 1fr;
+    padding: 60px 24px;
+    gap: 48px;
+  }
+
+  .landing-hero-content {
+    text-align: center;
+    align-items: center;
+  }
+
+  .landing-hero-description {
+    max-width: 100%;
+  }
+
+  .landing-features-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .landing-nav-content {
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "logo actions"
+      "buttons buttons";
+    align-items: center;
+    row-gap: 12px;
+    column-gap: 12px;
+  }
+
+  .landing-logo {
+    grid-area: logo;
+    min-width: 0;
+  }
+
+  .landing-logo-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .landing-logo-svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .landing-nav-top-actions {
+    grid-area: actions;
+    justify-self: end;
+  }
+
+  .landing-nav-right {
+    grid-area: buttons;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .theme-toggle-group {
+    justify-self: end;
+  }
+
+  .landing-logo-text {
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .landing-nav-login {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 0.95rem;
+    min-height: 44px;
+    border-radius: 12px;
+    justify-content: center;
+  }
+
+  .landing-cta-nav {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 0.95rem;
+    min-height: 44px;
+    border-radius: 12px;
+    box-shadow: 0 8px 18px rgba(30, 58, 138, 0.2);
+    justify-content: center;
+  }
+
+  .landing-hero {
+    padding: 40px 16px;
+  }
+
+  .landing-hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .landing-cta-primary,
+  .landing-cta-secondary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .landing-preview-card {
+    max-width: 100%;
+  }
+
+  .preview-stat-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .preview-stat {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .landing-stats-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 32px 16px;
+  }
+
+  .landing-features {
+    padding: 48px 16px;
+  }
+
+  .landing-feature-card {
+    padding: 24px;
+  }
+
+  .landing-cta-section {
+    padding: 48px 16px;
+  }
+}

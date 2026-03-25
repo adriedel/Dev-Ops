@@ -5,78 +5,19 @@ const pool = require("./database");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./swagger.yaml");
+const authenticateToken = require("./authMiddleware");
+const { register, login, getCurrentUser } = require("./authController");
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const parseOrigins = (value) =>
-  (value || "")
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-
-const normalizeOrigin = (value) => {
-  try {
-    return new URL(value).origin.toLowerCase();
-  } catch {
-    return null;
-  }
-};
-
-const stripWww = (hostname) => hostname.replace(/^www\./i, "");
-
-const allowedOrigins = new Set(
-  [
-    ...parseOrigins(process.env.FRONTEND_URL),
-    ...parseOrigins(process.env.FRONTEND_URLS),
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-  ]
-    .map(normalizeOrigin)
-    .filter(Boolean),
-);
-
-const allowedProtocolHostPairs = new Set(
-  [...allowedOrigins].map((origin) => {
-    const url = new URL(origin);
-    return `${url.protocol}//${stripWww(url.hostname)}`;
-  }),
-);
-
-const isAllowedOrigin = (origin) => {
-  if (!origin) return true; // Allow non-browser clients (no Origin header).
-
-  const normalizedOrigin = normalizeOrigin(origin);
-  if (!normalizedOrigin) return false;
-
-  if (allowedOrigins.has(normalizedOrigin)) {
-    return true;
-  }
-
-  const url = new URL(normalizedOrigin);
-  const protocolHostKey = `${url.protocol}//${stripWww(url.hostname)}`;
-
-  if (allowedProtocolHostPairs.has(protocolHostKey)) {
-    return true;
-  }
-
-  // Allow Vercel preview and production URLs.
-  return /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(normalizedOrigin);
-};
-
 // Middleware
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (isAllowedOrigin(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
-    },
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 app.use(bodyParser.json());
@@ -97,21 +38,40 @@ app.get("/api", (req, res) => {
   res.json({
     status: "ok",
     message: "JobPilot API erreichbar",
-    endpoints: ["/api/bewerbungen", "/api/statistiken"],
+    endpoints: [
+      "/api/bewerbungen",
+      "/api/statistiken",
+      "/api/auth/login",
+      "/api/auth/register",
+    ],
   });
 });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// GET alle Bewerbungen
-app.get("/api/bewerbungen", async (req, res) => {
-  const { status } = req.query;
+// ==================== AUTH ROUTES (UNPROTECTED) ====================
 
-  let query = "SELECT * FROM bewerbungen";
-  let params = [];
+// Register
+app.post("/api/auth/register", register);
+
+// Login
+app.post("/api/auth/login", login);
+
+// Get current user (PROTECTED)
+app.get("/api/auth/me", authenticateToken, getCurrentUser);
+
+// ==================== BEWERBUNGEN ROUTES (PROTECTED) ====================
+
+// GET alle Bewerbungen (NUR für eingeloggten User!)
+app.get("/api/bewerbungen", authenticateToken, async (req, res) => {
+  const { status } = req.query;
+  const userId = req.userId; // Aus JWT Token
+
+  let query = "SELECT * FROM bewerbungen WHERE user_id = $1";
+  let params = [userId];
 
   if (status) {
-    query += " WHERE status = $1";
+    query += " AND status = $2";
     params.push(status);
   }
 
@@ -125,25 +85,29 @@ app.get("/api/bewerbungen", async (req, res) => {
   }
 });
 
-// GET einzelne Bewerbung
-app.get("/api/bewerbungen/:id", async (req, res) => {
+// GET einzelne Bewerbung (NUR für eingeloggten User!)
+app.get("/api/bewerbungen/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
+  const userId = req.userId;
 
   try {
-    const result = await pool.query("SELECT * FROM bewerbungen WHERE id = $1", [
-      id,
-    ]);
+    const result = await pool.query(
+      "SELECT * FROM bewerbungen WHERE id = $1 AND user_id = $2",
+      [id, userId],
+    );
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Bewerbung nicht gefunden" });
     }
+
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST neue Bewerbung erstellen
-app.post("/api/bewerbungen", async (req, res) => {
+// POST neue Bewerbung erstellen (NUR für eingeloggten User!)
+app.post("/api/bewerbungen", authenticateToken, async (req, res) => {
   const {
     position,
     firma,
@@ -159,6 +123,8 @@ app.post("/api/bewerbungen", async (req, res) => {
     waehrung,
   } = req.body;
 
+  const userId = req.userId; // Aus JWT Token
+
   if (!position || !firma || !status || !datum) {
     return res
       .status(400)
@@ -167,8 +133,8 @@ app.post("/api/bewerbungen", async (req, res) => {
 
   const query = `
     INSERT INTO bewerbungen
-    (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum, link, gehalt, waehrung)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    (position, firma, status, datum, standort, ansprechpartner, notizen, bewerbungsart, startdatum, link, gehalt, waehrung, user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     RETURNING id
   `;
 
@@ -186,7 +152,9 @@ app.post("/api/bewerbungen", async (req, res) => {
       link,
       gehalt,
       waehrung,
+      userId,
     ]);
+
     res.status(201).json({
       id: result.rows[0].id,
       message: "Bewerbung erstellt",
@@ -196,9 +164,10 @@ app.post("/api/bewerbungen", async (req, res) => {
   }
 });
 
-// PUT Bewerbung aktualisieren
-app.put("/api/bewerbungen/:id", async (req, res) => {
+// PUT Bewerbung aktualisieren (NUR für eingeloggten User!)
+app.put("/api/bewerbungen/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
+  const userId = req.userId;
   const {
     position,
     firma,
@@ -218,8 +187,9 @@ app.put("/api/bewerbungen/:id", async (req, res) => {
     UPDATE bewerbungen
     SET position = $1, firma = $2, status = $3, datum = $4,
         standort = $5, ansprechpartner = $6, notizen = $7,
-      bewerbungsart = $8, startdatum = $9, link = $10, gehalt = $11, waehrung = $12, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $13
+        bewerbungsart = $8, startdatum = $9, link = $10,
+        gehalt = $11, waehrung = $12, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $13 AND user_id = $14
   `;
 
   try {
@@ -237,88 +207,55 @@ app.put("/api/bewerbungen/:id", async (req, res) => {
       gehalt,
       waehrung,
       id,
+      userId,
     ]);
+
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "Bewerbung nicht gefunden" });
     }
+
     res.json({ message: "Bewerbung aktualisiert" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// DELETE Bewerbung löschen
-app.delete("/api/bewerbungen/:id", async (req, res) => {
+// DELETE Bewerbung löschen (NUR für eingeloggten User!)
+app.delete("/api/bewerbungen/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const client = await pool.connect();
+  const userId = req.userId;
 
   try {
-    await client.query("BEGIN");
-
-    const deleteResult = await client.query(
-      "DELETE FROM bewerbungen WHERE id = $1",
-      [id],
+    const result = await pool.query(
+      "DELETE FROM bewerbungen WHERE id = $1 AND user_id = $2",
+      [id, userId],
     );
 
-    if (deleteResult.rowCount === 0) {
-      await client.query("ROLLBACK");
+    if (result.rowCount === 0) {
       return res.status(404).json({ error: "Bewerbung nicht gefunden" });
     }
 
-    // IDs der verbleibenden Einträge neu nummerieren
-    const { rows } = await client.query(
-      "SELECT id FROM bewerbungen ORDER BY id ASC",
-    );
-
-    if (rows.length === 0) {
-      // Keine Einträge mehr – Sequenz zurücksetzen
-      await client.query("ALTER SEQUENCE bewerbungen_id_seq RESTART WITH 1");
-      console.log("ID-Zähler wurde zurückgesetzt");
-    } else {
-      // Zweistufige Umnummerierung, um UNIQUE-Konflikte zu vermeiden:
-      // Schritt 1: Negative temporäre IDs vergeben
-      for (let i = 0; i < rows.length; i++) {
-        await client.query("UPDATE bewerbungen SET id = $1 WHERE id = $2", [
-          -(i + 1),
-          rows[i].id,
-        ]);
-      }
-      // Schritt 2: Positive sequentielle IDs vergeben
-      for (let i = 0; i < rows.length; i++) {
-        await client.query("UPDATE bewerbungen SET id = $1 WHERE id = $2", [
-          i + 1,
-          -(i + 1),
-        ]);
-      }
-      // Sequenz-Zähler auf den neuen Maximalwert setzen
-      await client.query("SELECT setval('bewerbungen_id_seq', $1)", [
-        rows.length,
-      ]);
-    }
-
-    await client.query("COMMIT");
     res.json({ message: "Bewerbung gelöscht" });
   } catch (err) {
-    await client.query("ROLLBACK");
-    console.error("Fehler beim Löschen:", err.message);
     res.status(500).json({ error: err.message });
-  } finally {
-    client.release();
   }
 });
 
-// GET Statistiken
-app.get("/api/statistiken", async (req, res) => {
+// GET Statistiken (NUR für eingeloggten User!)
+app.get("/api/statistiken", authenticateToken, async (req, res) => {
+  const userId = req.userId;
+
   const query = `
     SELECT
       status,
       COUNT(*)::int AS anzahl
     FROM bewerbungen
+    WHERE user_id = $1
     GROUP BY status
   `;
 
   try {
-    const result = await pool.query(query);
+    const result = await pool.query(query, [userId]);
 
     const stats = {
       beworben: 0,
