@@ -17,7 +17,7 @@ function LandingPage({ onEnterApp }) {
     if (saved !== null) {
       return JSON.parse(saved);
     }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return window.matchMedia("(prefers-color-scheme: light)").matches;
   });
 
   useEffect(() => {
@@ -88,7 +88,7 @@ function LandingPage({ onEnterApp }) {
             <span className="landing-logo-text">JobPilot</span>
           </div>
 
-          <div className="landing-nav-right">
+          <div className="landing-nav-top-actions">
             <div className="theme-toggle-group">
               <button
                 className={`theme-btn${!darkMode ? " active" : ""}`}
@@ -107,6 +107,9 @@ function LandingPage({ onEnterApp }) {
                 <MoonIcon className="theme-icon" aria-hidden="true" />
               </button>
             </div>
+          </div>
+
+          <div className="landing-nav-right">
             <button className="landing-nav-login" onClick={handleLogin}>
               Anmelden
             </button>
