@@ -223,6 +223,85 @@
   transform: scale(1.01);
 }
 
+/* ── Password Wrapper + Toggle ── */
+.password-wrapper {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-app);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s,
+    transform 0.15s;
+}
+
+.password-wrapper:focus-within {
+  border-color: var(--blue);
+  box-shadow:
+    0 0 0 3px var(--status-beworben-bg),
+    0 0 12px rgba(30, 58, 138, 0.2);
+  transform: scale(1.01);
+}
+
+.password-wrapper input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  box-shadow: none;
+  padding-right: 8px;
+  /* Kein eigener :focus-Ring mehr – der Wrapper übernimmt das */
+}
+
+.password-wrapper input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.password-toggle {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.15s;
+  line-height: 0;
+  border-radius: 0 10px 10px 0;
+}
+
+.password-toggle:hover {
+  color: var(--text-primary);
+}
+
+.password-toggle-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Suppress browser-native password/credential decoration buttons */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
 /* ── Error Message ── */
 .error-message {
   background: var(--status-abgelehnt-bg);

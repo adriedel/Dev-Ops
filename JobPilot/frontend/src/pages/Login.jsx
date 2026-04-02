@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login as loginAPI } from "../services/auth";
 import ArrowLeftIcon from "../assets/icons/back.svg?react";
+import EyeIcon from "../assets/icons/eye.svg?react";
+import EyeOffIcon from "../assets/icons/eye-off.svg?react";
 import "./Auth.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -74,16 +77,38 @@ function Login() {
 
           <div className="form-group">
             <label htmlFor="password">Passwort</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••"
-              required
-              autoComplete="current-password"
-              minLength={8}
-            />
+            <div className="password-wrapper">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••••"
+                required
+                autoComplete="current-password"
+                minLength={8}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword((p) => !p)}
+                aria-label={
+                  showPassword ? "Passwort verbergen" : "Passwort anzeigen"
+                }
+              >
+                {showPassword ? (
+                  <EyeOffIcon
+                    className="password-toggle-icon"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <EyeIcon
+                    className="password-toggle-icon"
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>

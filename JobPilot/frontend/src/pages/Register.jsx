@@ -2,9 +2,13 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { register as registerAPI } from "../services/auth";
 import ArrowLeftIcon from "../assets/icons/back.svg?react";
+import EyeIcon from "../assets/icons/eye.svg?react";
+import EyeOffIcon from "../assets/icons/eye-off.svg?react";
 import "./Auth.css";
 
 function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -115,32 +119,78 @@ function Register() {
 
           <div className="form-group">
             <label htmlFor="password">Passwort</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Mindestens 8 Zeichen"
-              required
-              autoComplete="new-password"
-              minLength={8}
-            />
+            <div className="password-wrapper">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Mindestens 8 Zeichen"
+                required
+                autoComplete="new-password"
+                minLength={8}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword((p) => !p)}
+                aria-label={
+                  showPassword ? "Passwort verbergen" : "Passwort anzeigen"
+                }
+              >
+                {showPassword ? (
+                  <EyeOffIcon
+                    className="password-toggle-icon"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <EyeIcon
+                    className="password-toggle-icon"
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="confirmPassword">Passwort bestätigen</label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="••••••••••"
-              required
-              autoComplete="new-password"
-              minLength={8}
-            />
+            <div className="password-wrapper">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="••••••••••"
+                required
+                autoComplete="new-password"
+                minLength={8}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowConfirmPassword((p) => !p)}
+                aria-label={
+                  showConfirmPassword
+                    ? "Passwort verbergen"
+                    : "Passwort anzeigen"
+                }
+              >
+                {showConfirmPassword ? (
+                  <EyeOffIcon
+                    className="password-toggle-icon"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <EyeIcon
+                    className="password-toggle-icon"
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>
