@@ -12,6 +12,7 @@
   z-index: 100;
   background: var(--bg-app);
   border-bottom: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
 
@@ -57,7 +58,7 @@
 }
 
 .landing-logo-text {
-  font-family: "Iosevka-Bold";
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-primary);
@@ -158,7 +159,7 @@
 }
 
 .landing-hero-title {
-  font-family: "Iosevka-Bold";
+  font-family: var(--font-display);
   font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 800;
   line-height: 1.1;
@@ -167,10 +168,17 @@
 }
 
 .landing-hero-highlight {
-  background: var(--brand-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--blue);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .landing-hero-highlight {
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
 }
 
 .landing-hero-description {
@@ -320,7 +328,7 @@
 }
 
 .preview-stat-value {
-  font-family: "Iosevka-Bold";
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -412,7 +420,7 @@
 }
 
 .landing-stat-value {
-  font-family: "Iosevka-Bold";
+  font-family: var(--font-display);
   font-size: 2.5rem;
   font-weight: 800;
   color: var(--text-primary);
@@ -440,7 +448,7 @@
 }
 
 .landing-features-title {
-  font-family: "Iosevka-Bold";
+  font-family: var(--font-display);
   font-size: clamp(1.75rem, 3vw, 2.25rem);
   font-weight: 700;
   color: var(--text-primary);
@@ -495,7 +503,7 @@
 }
 
 .landing-feature-title {
-  font-family: "Iosevka-Bold";
+  font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--text-primary);
@@ -527,7 +535,7 @@
 }
 
 .landing-cta-title {
-  font-family: "Iosevka-Bold";
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 700;
   color: var(--text-primary);

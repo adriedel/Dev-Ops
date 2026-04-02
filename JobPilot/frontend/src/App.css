@@ -1,5 +1,12 @@
 /* ── CSS-Variablen ── */
 :root {
+  --font-body:
+    "Iosevka-Medium", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  --font-display:
+    "Iosevka-Bold", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+
   /* Backgrounds */
   --bg-app: #f8fafc;
   --bg-surface: #ffffff;
@@ -118,25 +125,29 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 button,
 input,
 select,
 textarea {
   font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 body {
   margin: 0;
-  font-family:
-    "Iosevka-Medium",
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
+  font-family: var(--font-body);
   background: var(--bg-app);
   color: var(--text-primary);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
   transition:
     background 0.2s,
     color 0.2s;
@@ -144,20 +155,38 @@ body {
 
 /* ── Typography – Inter Hierarchie (Figma) ── */
 @font-face {
+  font-family: Iosevka-Regular;
+  src:
+    url("/fonts/IosevkaCharonMono-Regular.woff2") format("woff2"),
+    url("/fonts/IosevkaCharonMono-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
   font-family: Iosevka-Medium;
-  src: url("/fonts/IosevkaCharonMono-Medium.ttf") format("truetype");
+  src:
+    url("/fonts/IosevkaCharonMono-Medium.woff2") format("woff2"),
+    url("/fonts/IosevkaCharonMono-Medium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
   font-display: swap;
 }
 
 @font-face {
   font-family: Iosevka-Bold;
-  src: url("/fonts/IosevkaCharonMono-Bold.ttf") format("truetype");
+  src:
+    url("/fonts/IosevkaCharonMono-Bold.woff2") format("woff2"),
+    url("/fonts/IosevkaCharonMono-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
   font-display: swap;
 }
 
 h1,
 h2 {
-  font-family: "Iosevka-Bold";
+  font-family: var(--font-display);
   margin: 0;
 }
 
@@ -167,7 +196,7 @@ h5,
 h6,
 p,
 small {
-  font-family: "Iosevka-Medium";
+  font-family: var(--font-body);
   margin: 0;
 }
 
