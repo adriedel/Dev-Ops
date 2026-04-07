@@ -15,43 +15,75 @@ function Register() {
     password: "",
     confirmPassword: "",
   });
+  const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const handleBack = () => {
     navigate("/");
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+    if (error) setError("");
+  };
+
+  const validateForm = () => {
+    const nextFieldErrors = {};
+    const trimmedEmail = formData.email.trim();
+
+    if (!trimmedEmail) {
+      nextFieldErrors.email = "Bitte gib deine E-Mail-Adresse ein.";
+    } else if (!isValidEmail(trimmedEmail)) {
+      nextFieldErrors.email = "Bitte gib eine gültige E-Mail-Adresse ein.";
+    }
+
+    if (!formData.password) {
+      nextFieldErrors.password = "Bitte gib ein Passwort ein.";
+    } else if (formData.password.length < 8) {
+      nextFieldErrors.password =
+        "Dein Passwort muss mindestens 8 Zeichen lang sein.";
+    }
+
+    if (!formData.confirmPassword) {
+      nextFieldErrors.confirmPassword = "Bitte bestätige dein Passwort.";
+    } else if (formData.password !== formData.confirmPassword) {
+      nextFieldErrors.confirmPassword = "Die Passwörter stimmen nicht überein.";
+    }
+
+    setFieldErrors(nextFieldErrors);
+
+    if (Object.keys(nextFieldErrors).length > 0) {
+      setError("Bitte prüfe die markierten Felder.");
+      return null;
+    }
+
+    return { trimmedEmail };
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Validierung
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwörter stimmen nicht überein");
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setError("Passwort muss mindestens 8 Zeichen lang sein");
-      return;
-    }
+    const validatedData = validateForm();
+    if (!validatedData) return;
 
     setLoading(true);
 
     try {
       const data = await registerAPI(
-        formData.email,
+        validatedData.trimmedEmail,
         formData.password,
-        formData.name,
+        formData.name.trim(),
       );
 
       // Token und User speichern
@@ -85,7 +117,7 @@ function Register() {
           <p>Dein Bewerbungstracker</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <h2>Registrieren</h2>
 
           {error && <div className="error-message">{error}</div>}
@@ -103,7 +135,7 @@ function Register() {
             />
           </div>
 
-          <div className="form-group">
+          <div className={`form-group ${fieldErrors.email ? "has-error" : ""}`}>
             <label htmlFor="email">Email</label>
             <input
               id="email"
@@ -112,12 +144,22 @@ function Register() {
               value={formData.email}
               onChange={handleChange}
               placeholder="deine@email.de"
-              required
               autoComplete="email"
+              aria-invalid={Boolean(fieldErrors.email)}
+              aria-describedby={
+                fieldErrors.email ? "register-email-error" : undefined
+              }
             />
+            {fieldErrors.email && (
+              <p id="register-email-error" className="field-error">
+                {fieldErrors.email}
+              </p>
+            )}
           </div>
 
-          <div className="form-group">
+          <div
+            className={`form-group ${fieldErrors.password ? "has-error" : ""}`}
+          >
             <label htmlFor="password">Passwort</label>
             <div className="password-wrapper">
               <input
@@ -127,9 +169,11 @@ function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Mindestens 8 Zeichen"
-                required
                 autoComplete="new-password"
-                minLength={8}
+                aria-invalid={Boolean(fieldErrors.password)}
+                aria-describedby={
+                  fieldErrors.password ? "register-password-error" : undefined
+                }
               />
               <button
                 type="button"
@@ -152,9 +196,16 @@ function Register() {
                 )}
               </button>
             </div>
+            {fieldErrors.password && (
+              <p id="register-password-error" className="field-error">
+                {fieldErrors.password}
+              </p>
+            )}
           </div>
 
-          <div className="form-group">
+          <div
+            className={`form-group ${fieldErrors.confirmPassword ? "has-error" : ""}`}
+          >
             <label htmlFor="confirmPassword">Passwort bestätigen</label>
             <div className="password-wrapper">
               <input
@@ -164,9 +215,13 @@ function Register() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="••••••••••"
-                required
                 autoComplete="new-password"
-                minLength={8}
+                aria-invalid={Boolean(fieldErrors.confirmPassword)}
+                aria-describedby={
+                  fieldErrors.confirmPassword
+                    ? "register-confirm-password-error"
+                    : undefined
+                }
               />
               <button
                 type="button"
@@ -191,6 +246,11 @@ function Register() {
                 )}
               </button>
             </div>
+            {fieldErrors.confirmPassword && (
+              <p id="register-confirm-password-error" className="field-error">
+                {fieldErrors.confirmPassword}
+              </p>
+            )}
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>

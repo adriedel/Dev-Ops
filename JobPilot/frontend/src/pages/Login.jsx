@@ -10,21 +10,67 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const handleBack = () => {
     navigate("/");
   };
 
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setFieldErrors((prev) => ({ ...prev, email: "" }));
+    if (error) setError("");
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setFieldErrors((prev) => ({ ...prev, password: "" }));
+    if (error) setError("");
+  };
+
+  const validateForm = () => {
+    const nextFieldErrors = {};
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      nextFieldErrors.email = "Bitte gib deine E-Mail-Adresse ein.";
+    } else if (!isValidEmail(trimmedEmail)) {
+      nextFieldErrors.email = "Bitte gib eine gültige E-Mail-Adresse ein.";
+    }
+
+    if (!password) {
+      nextFieldErrors.password = "Bitte gib dein Passwort ein.";
+    } else if (password.length < 8) {
+      nextFieldErrors.password =
+        "Dein Passwort muss mindestens 8 Zeichen lang sein.";
+    }
+
+    setFieldErrors(nextFieldErrors);
+
+    if (Object.keys(nextFieldErrors).length > 0) {
+      setError("Bitte prüfe die markierten Felder.");
+      return null;
+    }
+
+    return { trimmedEmail };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    const validatedData = validateForm();
+    if (!validatedData) return;
+
     setLoading(true);
 
     try {
-      const data = await loginAPI(email, password);
+      const data = await loginAPI(validatedData.trimmedEmail, password);
 
       // Token und User speichern
       localStorage.setItem("token", data.token);
@@ -57,36 +103,46 @@ function Login() {
           <p>Dein Bewerbungstracker</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <h2>Anmelden</h2>
 
           {error && <div className="error-message">{error}</div>}
 
-          <div className="form-group">
+          <div className={`form-group ${fieldErrors.email ? "has-error" : ""}`}>
             <label htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               placeholder="deine@email.de"
-              required
               autoComplete="email"
+              aria-invalid={Boolean(fieldErrors.email)}
+              aria-describedby={fieldErrors.email ? "email-error" : undefined}
             />
+            {fieldErrors.email && (
+              <p id="email-error" className="field-error">
+                {fieldErrors.email}
+              </p>
+            )}
           </div>
 
-          <div className="form-group">
+          <div
+            className={`form-group ${fieldErrors.password ? "has-error" : ""}`}
+          >
             <label htmlFor="password">Passwort</label>
             <div className="password-wrapper">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 placeholder="••••••••••"
-                required
                 autoComplete="current-password"
-                minLength={8}
+                aria-invalid={Boolean(fieldErrors.password)}
+                aria-describedby={
+                  fieldErrors.password ? "password-error" : undefined
+                }
               />
               <button
                 type="button"
@@ -109,6 +165,11 @@ function Login() {
                 )}
               </button>
             </div>
+            {fieldErrors.password && (
+              <p id="password-error" className="field-error">
+                {fieldErrors.password}
+              </p>
+            )}
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>

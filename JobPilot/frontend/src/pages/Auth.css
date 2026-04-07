@@ -314,6 +314,25 @@ input::-webkit-contacts-auto-fill-button {
   font-weight: 500;
 }
 
+.form-group.has-error input,
+.form-group.has-error .password-wrapper {
+  border-color: var(--status-abgelehnt-accent);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.form-group.has-error input:focus,
+.form-group.has-error .password-wrapper:focus-within {
+  border-color: var(--status-abgelehnt-accent);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.16);
+}
+
+.field-error {
+  margin: 8px 2px 0;
+  color: var(--status-abgelehnt-accent);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
 /* ── Auth Button ── */
 .auth-button {
   width: 100%;
