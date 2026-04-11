@@ -2,6 +2,8 @@ export const API_URL =
   import.meta.env.VITE_API_URL ||
   "https://jobpilot-backend-d6yj.onrender.com/api";
 
+export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
+
 export const STATUS = {
   IN_PLANUNG: "in_planung",
   BEWORBEN: "beworben",

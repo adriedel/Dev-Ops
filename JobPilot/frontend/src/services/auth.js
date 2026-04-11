@@ -1,4 +1,10 @@
-import { API_URL } from "../utils/constants";
+import { API_URL, DEMO_MODE } from "../utils/constants";
+
+const DEMO_USER = {
+  id: "demo-user",
+  email: "demo@jobpilot.local",
+  name: "Demo-Zugang",
+};
 
 // Register
 export async function register(email, password, name) {
@@ -40,6 +46,10 @@ export async function login(email, password, rememberMe = false) {
 
 // Get current user
 export async function getCurrentUser() {
+  if (DEMO_MODE) {
+    return DEMO_USER;
+  }
+
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -65,15 +75,19 @@ export async function getCurrentUser() {
 export function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  window.location.href = "/"; // Redirect zur Landing Page
+  window.location.href = DEMO_MODE ? "/dashboard" : "/";
 }
 
 // Check if logged in
 export function isAuthenticated() {
-  return !!localStorage.getItem("token");
+  return DEMO_MODE || !!localStorage.getItem("token");
 }
 
 // Get token
 export function getToken() {
+  if (DEMO_MODE) {
+    return localStorage.getItem("token") || "demo-token";
+  }
+
   return localStorage.getItem("token");
 }
