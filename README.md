@@ -1,94 +1,143 @@
-# JobPilot - Bewerbungstracker
+# JobPilot – Bewerbungstracker
 
-Ein moderner Full-Stack Bewerbungstracker zum Verwalten und Tracken von Bewerbungen mit Statusverfolgung, Statistiken und Dark Mode.
+JobPilot ist eine im Rahmen des DevOps-Projekts entwickelte Full-Stack-Webanwendung zur strukturierten Verwaltung und Nachverfolgung von Bewerbungsprozessen. Ziel des Systems ist es, Bewerbungen zentral zu erfassen, Bearbeitungsstände transparent abzubilden und eine übersichtliche Grundlage für die persönliche Organisation des Bewerbungsmanagements bereitzustellen.
 
-JobPilot Screenshot:
+<img width="1281" height="741" alt="JobPilot Screenshot" src="https://github.com/user-attachments/assets/8410d3c9-23c1-4af2-831c-264c41951100" />
 
-<img width="2302" height="1689" alt="image" src="https://github.com/user-attachments/assets/0ce6f7d5-11a1-4d58-9c8d-45efe65edb4c" />
+---
 
-## ✨ Features
+## 📌 Projektstatus
 
-- **Dashboard mit Statistiken** - Behalte den Überblick über alle Bewerbungsstatus
-- **Status-Tracking** - 5 Bewerbungsstatus: Beworben, Stufe weiter, Angenommen, Abgelehnt, Keine Antwort
-- **Suche & Filter** - Finde schnell Bewerbungen nach Firma, Position oder Standort
-- **CRUD-Operationen** - Erstellen, Bearbeiten, Löschen von Bewerbungen
-- **Dark Mode** - Hell/Dunkel-Umschaltung mit lokalem Speicher & Systemerkennung
-- **Schneller Status-Wechsel** - Dropdown-Menü direkt auf der Karte
-- **Link zur Stellenanzeige** - Direkter Link zur Ausschreibung pro Bewerbung
-- **Responsive Design** - Funktioniert auf Desktop und Mobile
+- **Phase 1 umgesetzt**: Registrierung, Anmeldung, geschützte Routen, Dashboard, CRUD-Funktionalität und statistische Auswertung
+- **Phase 2 derzeit noch nicht implementiert**
+- **Docker- und CI/CD-Setup vorbereitet**, um das Projekt frühzeitig containerisiert demonstrieren und im weiteren Verlauf gezielt ausbauen zu können
 
-## Tech Stack
+---
 
-### Frontend
+## ✨ Funktionen
 
-- **React 19** - UI Library
-- **Vite 7** - Build Tool & Dev Server
-- **CSS3** - Styling (kein Framework, komponentenbasierte CSS-Dateien)
-- **Fetch API** - HTTP Requests
+- **Login & Registrierung** mit JWT-basierter Authentifizierung
+- **Geschütztes Dashboard** für persönliche Bewerbungsdaten
+- **Status-Tracking** für verschiedene Phasen im Bewerbungsprozess
+- **CRUD-Funktionen** zum Erstellen, Bearbeiten und Löschen von Bewerbungen
+- **Suche & Filter** nach Firma, Position oder Standort
+- **Statistiken** zur schnellen Übersicht
+- **Dark Mode** mit Speicherung der Benutzereinstellung
+- **Responsive UI** für Desktop und Mobile
+- **Demo-Modus für Docker**, damit die Anwendung ohne Login präsentiert werden kann
 
-### Backend
+---
 
-- **Node.js** - Runtime
-- **Express.js 5** - Web Framework
-- **SQLite3** - Datenbank (lokale Entwicklung)
-- **CORS** - Cross-Origin Resource Sharing
+## 🧰 Tech Stack
 
-## Projektstruktur
+| Bereich   | Technologie                                  |
+| --------- | -------------------------------------------- |
+| Frontend  | `React 19`, `Vite 7`, `CSS3`                 |
+| Backend   | `Node.js`, `Express.js 5`                    |
+| Datenbank | `PostgreSQL`                                 |
+| Auth      | `JWT`, `bcryptjs`                            |
+| DevOps    | `Docker`, `Docker Compose`, `GitHub Actions` |
+| API-Doku  | `Swagger`                                    |
 
+---
+
+## 📁 Projektstruktur
+
+```text
+Dev-Ops/
+├── README.md
+├── .github/
+│   └── workflows/
+│       └── jobpilot-ci.yml
+└── JobPilot/
+    ├── docker-compose.yml
+    ├── backend/
+    │   ├── Dockerfile
+    │   ├── authController.js
+    │   ├── authMiddleware.js
+    │   ├── database.js
+    │   ├── migrate.js
+    │   ├── server.js
+    │   ├── swagger.yaml
+    │   └── package.json
+    └── frontend/
+        ├── Dockerfile
+        ├── nginx.conf
+        ├── package.json
+        └── src/
+            ├── App.jsx
+            ├── main.jsx
+            ├── components/
+            ├── pages/
+            ├── services/
+            └── utils/
 ```
-JobPilot/
-├── backend/
-│   ├── database.js          # SQLite Datenbankverbindung & Schema
-│   ├── server.js            # Express Server mit REST API
-│   ├── bewerbungen.db       # SQLite Datenbankdatei
-│   └── package.json         # Backend Dependencies
-│
-└── frontend/
-    ├── index.html           # HTML Entry Point
-    ├── vite.config.js       # Vite Konfiguration
-    ├── package.json         # Frontend Dependencies
-    └── src/
-        ├── main.jsx         # React Entry Point
-        ├── App.jsx          # Hauptkomponente (State & Logik)
-        ├── App.css          # App-weite Styles
-        ├── index.css        # Globale Styles
-        ├── components/
-        │   ├── Header/
-        │   │   ├── header.jsx
-        │   │   └── header.css
-        │   ├── StatCards/
-        │   │   ├── StatCards.jsx
-        │   │   └── StatCards.css
-        │   ├── SearchBar/
-        │   │   ├── SearchBar.jsx
-        │   │   └── SearchBar.css
-        │   ├── BewerbungsCard/
-        │   │   ├── BewerbungsCard.jsx
-        │   │   └── BewerbungsCard.css
-        │   └── BewerbungsModal/
-        │       ├── BewerbungsModal.jsx
-        │       └── BewerbungsModal.css
-        ├── services/
-        │   └── api.js       # API Service Layer (Fetch-Wrapper)
-        └── utils/
-            └── constants.js # Status-Konstanten, Labels & Icons
-```
 
-## Installation & Lokale Entwicklung
+---
 
-### Voraussetzungen
+## 🚀 Anwendung starten
 
-- Node.js (v18 oder höher)
-- npm
+### Option A: Docker-Demo für Präsentation und Abgabe
 
-### 1. Repository klonen
+Diese Variante ist insbesondere für die Vorführung im Rahmen der Lehrveranstaltung geeignet, da die Anwendung ohne zusätzliche lokale Konfigurationsschritte unmittelbar gestartet werden kann.
 
 ```bash
-git clone https://github.com/DEIN-USERNAME/jobpilot.git
-cd jobpilot
+cd JobPilot
+docker compose up --build
 ```
 
-### 2. Backend starten
+Danach ist die Anwendung erreichbar unter:
+
+- **Frontend:** `http://localhost:8080`
+- **Backend:** `http://localhost:3001`
+- **Health-Check:** `http://localhost:3001/health`
+
+### Einordnung des Demo-Modus im Docker-Setup
+
+Für die **Präsentation und Bewertung** wurde bewusst ein **Demo-Modus** vorgesehen, damit die Anwendung unmittelbar eingesehen werden kann, **ohne zuvor einen Registrierungs- oder Loginprozess durchlaufen zu müssen**. Dies erleichtert die Vorführung der bereits implementierten Kernfunktionalitäten erheblich.
+
+Gleichzeitig bleibt der **vollständige Login-/Register-Prozess** fester Bestandteil des Projekts, da die Anwendung **perspektivisch für die tatsächliche eigene Nutzung vorgesehen** ist. Die Authentifizierung wurde somit nicht entfernt, sondern durch einen optionalen Präsentationsmodus ergänzt.
+
+#### Demo-Modus aktivieren (für Präsentation)
+
+In `JobPilot/docker-compose.yml` den folgenden Wert setzen:
+
+```yml
+VITE_DEMO_MODE: "true"
+```
+
+Anschließend neu bauen und starten:
+
+```bash
+docker compose build frontend
+docker compose up -d
+```
+
+> Die Anwendung öffnet sich dann direkt im Dashboard – ohne Registrierung oder Login.
+
+#### Regulärer Betrieb mit Authentifizierung (Standard)
+
+In `JobPilot/docker-compose.yml` ist standardmäßig der reguläre Betrieb aktiv:
+
+```yml
+VITE_DEMO_MODE: "false"
+```
+
+In diesem Modus wird bei Aufruf der Anwendung zunächst die Landing Page angezeigt. Ohne gültige Anmeldung wird der Zugriff auf das Dashboard durch einen geschützten Route-Guard verhindert. Eine Registrierung oder ein Login ist erforderlich.
+
+> **Hinweis:** Da `VITE_DEMO_MODE` eine Build-Time-Variable ist, die beim `npm run build` fest in den JavaScript-Bundle eingeschrieben wird, muss nach jeder Änderung des Wertes zwingend `docker compose build frontend` ausgeführt werden, bevor die Änderung wirksam wird. Anschließend kann es erforderlich sein, im Browser einen Hard Refresh durchzuführen (**Cmd + Shift + R** auf macOS), um sicherzustellen, dass nicht eine ältere Version aus dem Browser-Cache geladen wird.
+
+---
+
+### Option B: Lokale Entwicklung ohne Docker
+
+#### Voraussetzungen
+
+- `Node.js` ab Version 18
+- `npm`
+- `Docker Desktop` oder eine laufende PostgreSQL-Instanz
+
+#### 1. Backend starten
 
 ```bash
 cd JobPilot/backend
@@ -96,9 +145,9 @@ npm install
 npm start
 ```
 
-Backend läuft auf `http://localhost:3001`
+Das Backend läuft danach auf `http://localhost:3001`.
 
-### 3. Frontend starten
+#### 2. Frontend starten
 
 ```bash
 cd JobPilot/frontend
@@ -106,133 +155,179 @@ npm install
 npm run dev
 ```
 
-Frontend läuft auf `http://localhost:5173`
+Das Frontend läuft danach auf `http://localhost:5173`.
 
-### 4. App öffnen
+#### 3. Optional: lokales Backend im Frontend verwenden
 
-```
-http://localhost:5173
-```
+Falls du lokal gegen dein eigenes Backend testen möchtest, kannst du in der Datei `JobPilot/frontend/.env.local` setzen:
 
-## API Dokumentation
-
-### Endpoints
-
-#### Bewerbungen
-
-| Methode  | Endpoint                           | Beschreibung               |
-| -------- | ---------------------------------- | -------------------------- |
-| `GET`    | `/api/bewerbungen`                 | Alle Bewerbungen abrufen   |
-| `GET`    | `/api/bewerbungen?status=beworben` | Nach Status filtern        |
-| `GET`    | `/api/bewerbungen/:id`             | Einzelne Bewerbung abrufen |
-| `POST`   | `/api/bewerbungen`                 | Neue Bewerbung erstellen   |
-| `PUT`    | `/api/bewerbungen/:id`             | Bewerbung aktualisieren    |
-| `DELETE` | `/api/bewerbungen/:id`             | Bewerbung löschen          |
-
-#### Statistiken
-
-| Methode | Endpoint           | Beschreibung                |
-| ------- | ------------------ | --------------------------- |
-| `GET`   | `/api/statistiken` | Zähler nach Status & Gesamt |
-
-### Beispiel Request
-
-```javascript
-// Neue Bewerbung erstellen
-POST /api/bewerbungen
-Content-Type: application/json
-
-{
-  "position": "Frontend Developer",   // Pflichtfeld
-  "firma": "Example GmbH",           // Pflichtfeld
-  "status": "beworben",              // Pflichtfeld
-  "datum": "2026-02-18",             // Pflichtfeld
-  "standort": "München",
-  "ansprechpartner": "Max Mustermann",
-  "notizen": "Erstes Gespräch am 25.02.",
-  "bewerbungsart": "Stellenausschreibung",
-  "startdatum": "",
-  "link": "https://jobs.example.com/123"
-}
+```env
+VITE_API_URL=http://localhost:3001/api
 ```
 
-### Datenbankschema
+---
 
-Detailliertere Ansicht: https://adriedel.github.io/html-preview-DevOps/
+## 🔐 Demo-Modus vs. echter Login
 
-Tabelle `bewerbungen`:
+| Einsatz                          | Einstellung              | Verhalten                                                         |
+| -------------------------------- | ------------------------ | ----------------------------------------------------------------- |
+| **Präsentation / Bewertung**     | `VITE_DEMO_MODE="true"`  | App öffnet direkt das Dashboard, kein Login erforderlich          |
+| **Regulärer Betrieb (Standard)** | `VITE_DEMO_MODE="false"` | Landing Page → Registrierung oder Anmeldung → Dashboard (mit JWT) |
 
-| Spalte            | Typ      | Pflicht | Beschreibung                |
-| ----------------- | -------- | ------- | --------------------------- |
-| `id`              | INTEGER  | -       | Primary Key, Auto-increment |
-| `position`        | TEXT     | Ja      | Stellenbezeichnung          |
-| `firma`           | TEXT     | Ja      | Unternehmen                 |
-| `status`          | TEXT     | Ja      | Bewerbungsstatus            |
-| `datum`           | TEXT     | Ja      | Bewerbungsdatum             |
-| `standort`        | TEXT     | Nein    | Arbeitsort                  |
-| `ansprechpartner` | TEXT     | Nein    | Kontaktperson               |
-| `notizen`         | TEXT     | Nein    | Freitext-Notizen            |
-| `bewerbungsart`   | TEXT     | Nein    | z.B. Initiativbewerbung     |
-| `startdatum`      | TEXT     | Nein    | Startdatum (bei Annahme)    |
-| `link`            | TEXT     | Nein    | URL zur Stellenanzeige      |
-| `created_at`      | DATETIME | -       | Automatisch gesetzt         |
-| `updated_at`      | DATETIME | -       | Automatisch aktualisiert    |
+> Da es sich um eine **Build-Time-Variable** handelt, muss nach jeder Änderung ein Rebuild des Frontend-Images erfolgen: `docker compose build frontend`. Ein anschließender Hard Refresh im Browser (Cmd + Shift + R) stellt sicher, dass keine veraltete Version aus dem Browser-Cache geladen wird.
 
-### Status-Werte
+---
 
-| Wert            | Anzeige       | Icon |
-| --------------- | ------------- | ---- |
-| `beworben`      | Beworben      | ✈️   |
-| `stufe_weiter`  | Stufe weiter  | ➡️   |
-| `angenommen`    | Angenommen    | ✅   |
-| `abgelehnt`     | Abgelehnt     | ❌   |
-| `keine_antwort` | Keine Antwort | 🕐   |
+## 🧪 End-to-End-Tests (Playwright)
 
-## Komponenten-Übersicht
+Für das Projekt wurden **automatisierte End-to-End-Tests** mit [Playwright](https://playwright.dev/) implementiert. Die Tests befinden sich im Verzeichnis `JobPilot/e2e/` und decken die gesamte Benutzeroberfläche ab – von der Landing Page über Authentifizierung bis hin zur vollständigen CRUD-Funktionalität.
 
-### Header
+### Teststruktur
 
-Logo, Titel, Hell/Dunkel-Umschalter und "Neue Bewerbung"-Button.
+| Testprojekt     | Browser           | Modus      | Beschreibung                                       |
+| --------------- | ----------------- | ---------- | -------------------------------------------------- |
+| `demo-chromium` | Chromium          | Demo-Modus | Alle CRUD-, Filter- und Statistik-Tests            |
+| `demo-firefox`  | Firefox           | Demo-Modus | Cross-Browser-Abdeckung der Kernfunktionalitäten   |
+| `demo-mobile`   | Chromium (Mobile) | Demo-Modus | Responsive-Verhalten auf mobilen Viewports         |
+| `auth-chromium` | Chromium          | Auth-Modus | Login, Registrierung und geschützte Routen         |
+| `visual`        | Chromium          | Demo-Modus | Visuelle Regressionstests mit Screenshot-Vergleich |
 
-### StatCards
+### Tests ausführen
 
-6 Statistik-Karten mit Zählern: Beworben, Stufe weiter, Angenommen, Abgelehnt, Keine Antwort, Gesamt.
-
-### SearchBar
-
-Texteingabe für die Suche (Firma, Position, Standort) und Status-Filter-Dropdown.
-
-### BewerbungsCard
-
-Karte für eine einzelne Bewerbung mit:
-
-- Position & Firma
-- Status-Badge mit Icon
-- Datum, Standort, Ansprechpartner, Link zur Stellenanzeige
-- Notizen
-- Startdatum (nur bei Status "Angenommen")
-- Drei-Punkte-Menü: Bearbeiten, Status direkt wechseln, Löschen
-
-### BewerbungsModal
-
-Formular zum Erstellen/Bearbeiten mit Feldern für Firma, Position, Datum, Status, Standort, Gehalt, Link, Ansprechpartner, Startdatum (bei Annahme) und Notizen.
-
-## Entwicklung
-
-### Scripts
-
-**Backend:**
+Voraussetzung: Dependencies und Browser einmalig installieren.
 
 ```bash
-npm start        # Server starten (node server.js)
-npm run dev      # Server mit Nodemon (Auto-Reload)
+cd JobPilot/e2e
+npm install
+npm run install:browsers   # Lädt Chromium und Firefox herunter
 ```
 
-**Frontend:**
+Danach:
 
 ```bash
-npm run dev      # Development Server (http://localhost:5173)
-npm run build    # Production Build
-npm run preview  # Preview Production Build
-npm run lint     # ESLint Code-Qualität prüfen
+npm test                   # Alle 80 funktionalen Tests (4 Projekte)
+npm run test:visual        # Visuelle Regressionstests (7 Tests)
+npm run test:update-snapshots  # Baseline-Screenshots neu generieren
 ```
+
+> Die Tests starten automatisch einen lokalen Vite-Entwicklungsserver. Es muss kein Frontend vorab manuell gestartet werden.
+
+### Testabdeckung (80 Tests)
+
+- **Navigation & Routing**: Landing Page, Login, Registrierung, geschützte Routen, 404-Handling
+- **CRUD-Operationen**: Erstellen, Bearbeiten, Löschen von Bewerbungen inkl. Formularvalidierung
+- **Suche & Filter**: Freitextsuche, Statusfilter, Kombinationsfilter
+- **Statistiken**: Korrekte Darstellung der Status-Zähler nach Datenänderungen
+- **Dark Mode**: Umschaltung und Persistenz über `localStorage`
+- **Authentifizierung**: Login, Logout, Registrierung, Route-Guards
+- **Cross-Browser / Mobile**: Firefox und Chromium Mobile
+
+---
+
+## 🔄 CI/CD-Pipeline
+
+Für das Projekt wurde eine GitHub-Actions-Pipeline in `.github/workflows/jobpilot-ci.yml` eingerichtet.
+
+### Die Pipeline führt automatisch aus:
+
+1. **Checkout des Repositories**
+2. **Node.js Setup**
+3. **Installation der Frontend-Dependencies**
+4. **Linting des Frontends** (ESLint)
+5. **Production Build des Frontends**
+6. **Syntax-Check des Backends**
+7. **Build der Docker-Images**
+8. Optional: **Push der Container-Images nach GHCR** bei Push auf `main`
+
+Damit werden zentrale DevOps-Schritte wie **Build, Qualitätssicherung und Bereitstellung der Laufzeitumgebung** in strukturierter Form automatisiert abgedeckt.
+
+---
+
+## 🌐 API-Übersicht
+
+### Auth
+
+| Methode | Endpoint             | Beschreibung               |
+| ------- | -------------------- | -------------------------- |
+| `POST`  | `/api/auth/register` | Benutzer registrieren      |
+| `POST`  | `/api/auth/login`    | Benutzer anmelden          |
+| `GET`   | `/api/auth/me`       | Aktuellen Benutzer abrufen |
+
+### Bewerbungen
+
+| Methode  | Endpoint               | Beschreibung               |
+| -------- | ---------------------- | -------------------------- |
+| `GET`    | `/api/bewerbungen`     | Alle Bewerbungen abrufen   |
+| `GET`    | `/api/bewerbungen/:id` | Einzelne Bewerbung abrufen |
+| `POST`   | `/api/bewerbungen`     | Neue Bewerbung erstellen   |
+| `PUT`    | `/api/bewerbungen/:id` | Bewerbung aktualisieren    |
+| `DELETE` | `/api/bewerbungen/:id` | Bewerbung löschen          |
+
+### Statistiken
+
+| Methode | Endpoint           | Beschreibung                      |
+| ------- | ------------------ | --------------------------------- |
+| `GET`   | `/api/statistiken` | Status-Zähler und Gesamtübersicht |
+
+Zusätzlich steht die Swagger-Dokumentation bereit unter:
+
+```text
+http://localhost:3001/api-docs
+```
+
+---
+
+## 🗃️ Datenmodell
+
+Die zentrale Tabelle `bewerbungen` enthält unter anderem folgende Felder:
+
+- `position`
+- `firma`
+- `status`
+- `datum`
+- `standort`
+- `ansprechpartner`
+- `notizen`
+- `bewerbungsart`
+- `startdatum`
+- `link`
+- `gehalt`
+- `waehrung`
+- `user_id`
+
+Dadurch können Bewerbungen **benutzerbezogen getrennt gespeichert** und im regulären Anwendungsbetrieb authentifiziert verwaltet werden.
+
+---
+
+## 🛠️ Nützliche Skripte
+
+### Backend
+
+```bash
+npm start        # Startet den Express-Server
+npm run dev      # Startet den Server mit Nodemon
+npm run migrate  # Führt die Datenbankmigration aus
+```
+
+### Frontend
+
+```bash
+npm run dev      # Startet den Vite-Dev-Server
+npm run build    # Erstellt den Production-Build
+npm run lint     # Prüft den Code mit ESLint
+npm run preview  # Zeigt den Production-Build lokal an
+```
+
+---
+
+## ✅ Fazit
+
+JobPilot verbindet die in **Phase 1 entwickelte Webanwendung** mit einem **strukturierten Docker-Setup**, einer **vorbereiteten CI/CD-Pipeline** sowie einer **umfassenden automatisierten Testabdeckung**. Dadurch ist das Projekt nicht nur lokal lauffähig, sondern kann reproduzierbar demonstriert und in weiteren Entwicklungsphasen zielgerichtet erweitert werden.
+
+Für die Abgabe ist insbesondere hervorzuheben:
+
+- Die Anwendung ist **containerisiert** und damit reproduzierbar ausführbar
+- Sie lässt sich mittels **Docker Compose** mit geringem Aufwand starten
+- Eine **CI/CD-Pipeline** für Build- und Prüfprozesse ist vorbereitet
+- **80 automatisierte End-to-End-Tests** mit Playwright sichern Funktionalität, Authentifizierung, Cross-Browser-Verhalten und visuelle Korrektheit ab
+- Der **Login-Prozess bleibt für die spätere reale Nutzung erhalten**, während der **Demo-Modus** die Präsentation ohne vorherige Registrierung ermöglicht
