@@ -13,12 +13,15 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // CORS Configuration - Allow multiple origins
-const allowedOrigins = [
-  "http://localhost:5173", // Development
+const configuredOrigins = [
   "https://jobpilot-jade.vercel.app", // Production (Vercel)
   "https://www.bewerbungstracker.com", // Custom Domain
   "https://bewerbungstracker.com", // Custom Domain (ohne www)
+  ...(process.env.FRONTEND_URLS
+    ? process.env.FRONTEND_URLS.split(",").map((origin) => origin.trim())
+    : []),
 ];
+const allowedOrigins = new Set(configuredOrigins.filter(Boolean));
 
 app.use(
   cors({
@@ -26,13 +29,16 @@ app.use(
       // Allow requests with no origin (like mobile apps, Postman, curl)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg = `CORS not allowed for origin: ${origin}`;
-        console.error(msg);
-        return callback(new Error(msg), false);
+      const isLocalhostOrigin =
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+
+      if (isLocalhostOrigin || allowedOrigins.has(origin)) {
+        return callback(null, true);
       }
 
-      return callback(null, true);
+      const msg = `CORS not allowed for origin: ${origin}`;
+      console.error(msg);
+      return callback(new Error(msg), false);
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -296,6 +302,13 @@ app.get("/api/statistiken", authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server läuft auf Port ${PORT}`);
-});
+pool
+  .initDB()
+  .catch((error) => {
+    console.error("Fehler bei der Datenbankinitialisierung:", error);
+  })
+  .finally(() => {
+    app.listen(PORT, () => {
+      console.log(`Server läuft auf Port ${PORT}`);
+    });
+  });

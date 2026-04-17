@@ -7,15 +7,21 @@ import Register from "./pages/Register";
 import App from "./App.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { isAuthenticated } from "./services/auth";
+import { DEMO_MODE } from "./utils/constants";
 import "./index.css";
 
 // Root Component mit Routing
-function Root() {
+export function Root() {
   return (
     <BrowserRouter>
       <Routes>
         {/* Landing Page */}
-        <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/"
+          element={
+            DEMO_MODE ? <Navigate to="/dashboard" replace /> : <LandingPage />
+          }
+        />
 
         {/* Public Routes */}
         <Route

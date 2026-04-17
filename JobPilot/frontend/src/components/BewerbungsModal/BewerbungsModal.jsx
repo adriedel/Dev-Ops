@@ -32,10 +32,7 @@ function BewerbungsModal({
 
   useEffect(() => {
     if (!isOpen) {
-      setIsStatusOpen(false);
-      setIsBewerbungsartOpen(false);
-      setIsWaehrungOpen(false);
-      return;
+      return undefined;
     }
 
     const handleOutsideClick = (event) => {
@@ -67,8 +64,20 @@ function BewerbungsModal({
     };
   }, [isOpen]);
 
+  const resetDropdowns = () => {
+    setIsStatusOpen(false);
+    setIsBewerbungsartOpen(false);
+    setIsWaehrungOpen(false);
+  };
+
+  const handleClose = () => {
+    resetDropdowns();
+    onClose();
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    resetDropdowns();
     onSubmit();
   };
 
@@ -126,7 +135,7 @@ function BewerbungsModal({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">
@@ -134,7 +143,7 @@ function BewerbungsModal({
           </h2>
           <button
             className="modal-close"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Schließen"
           >
             ×
