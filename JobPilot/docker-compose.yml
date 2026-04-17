@@ -37,7 +37,7 @@ services:
       args:
         VITE_API_URL: http://localhost:3001/api
         # Für die Abgabe/Demo direkt ohne Login sichtbar.
-        # Auf "false" setzen, wenn du den echten Auth-Flow zeigen willst.
+        # Auf "false" setzen, wenn die Demo-Funktionalität nicht benötigt wird.
         VITE_DEMO_MODE: "true"
     restart: unless-stopped
     depends_on:
