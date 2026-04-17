@@ -178,9 +178,9 @@ VITE_API_URL=http://localhost:3001/api
 
 ---
 
-## 🧪 End-to-End-Tests (Playwright)
+## 🧪 End-to-End-Tests (Playwright) _(CI-Integration ausstehend)_
 
-Für das Projekt wurden **automatisierte End-to-End-Tests** mit [Playwright](https://playwright.dev/) implementiert. Die Tests befinden sich im Verzeichnis `JobPilot/e2e/` und decken die gesamte Benutzeroberfläche ab – von der Landing Page über Authentifizierung bis hin zur vollständigen CRUD-Funktionalität.
+Für das Projekt wurden **automatisierte End-to-End-Tests** mit [Playwright](https://playwright.dev/) implementiert. Die Tests befinden sich im Verzeichnis `JobPilot/e2e/` und decken die gesamte Benutzeroberfläche ab – von der Landing Page über Authentifizierung bis hin zur vollständigen CRUD-Funktionalität. Die lokale Ausführung ist vollständig funktionsfähig; die Einbindung in die CI/CD-Pipeline ist für einen nachfolgenden Schritt vorgesehen.
 
 ### Teststruktur
 
