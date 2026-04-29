@@ -6,7 +6,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import App from "./App.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { isAuthenticated } from "./services/auth";
 import { DEMO_MODE } from "./utils/constants";
 import "./index.css";
 
@@ -24,22 +23,8 @@ export function Root() {
         />
 
         {/* Public Routes */}
-        <Route
-          path="/login"
-          element={
-            isAuthenticated() ? <Navigate to="/dashboard" replace /> : <Login />
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            isAuthenticated() ? (
-              <Navigate to="/dashboard" replace />
-            ) : (
-              <Register />
-            )
-          }
-        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Protected Routes */}
         <Route
