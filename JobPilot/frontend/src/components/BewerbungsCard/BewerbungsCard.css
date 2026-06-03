@@ -18,6 +18,7 @@
 .bewerbung-card:hover {
   box-shadow: var(--shadow-card);
   transform: translateY(-2px);
+  z-index: 1;
 }
 
 /* ── Header (Titel + Menü) ── */
