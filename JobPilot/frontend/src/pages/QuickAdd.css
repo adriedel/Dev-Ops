@@ -1,0 +1,297 @@
+/* ── Root / Wrapper ── */
+.qa-root {
+  min-height: 100vh;
+  background: var(--bg-app);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: var(--font-body);
+}
+
+/* ── Card ── */
+.qa-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--blue);
+  border-radius: 14px;
+  box-shadow: var(--shadow-modal);
+  width: 100%;
+  max-width: 420px;
+  padding: 24px 24px 20px;
+  box-sizing: border-box;
+}
+
+/* ── Header ── */
+.qa-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.qa-logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.qa-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.qa-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin: 0 0 18px;
+}
+
+/* ── Form ── */
+.qa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.qa-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.qa-row--split {
+  flex-direction: row;
+  gap: 10px;
+}
+
+.qa-row--split .qa-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.qa-row--split .qa-field--narrow {
+  flex: 0 0 90px;
+}
+
+/* ── Field ── */
+.qa-field {
+  margin-bottom: 12px;
+}
+
+.qa-field--grow {
+  flex: 1;
+}
+
+.qa-field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-label);
+  margin-bottom: 4px;
+}
+
+.qa-field input,
+.qa-field select,
+.qa-field textarea {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.qa-field input::placeholder,
+.qa-field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.qa-field input:focus,
+.qa-field select:focus,
+.qa-field textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px var(--status-beworben-bg);
+}
+
+.qa-field select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.qa-field textarea {
+  resize: vertical;
+  min-height: 64px;
+}
+
+/* ── Password wrap ── */
+.qa-pw-wrap {
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.qa-pw-wrap:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px var(--status-beworben-bg);
+}
+
+.qa-pw-wrap input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  padding-right: 6px;
+  box-shadow: none;
+}
+
+.qa-pw-wrap input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.qa-pw-toggle {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.15s;
+}
+
+.qa-pw-toggle:hover {
+  color: var(--text-primary);
+}
+
+.qa-pw-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* ── Error ── */
+.qa-error {
+  background: var(--status-abgelehnt-bg);
+  color: var(--status-abgelehnt-accent);
+  border-left: 3px solid var(--status-abgelehnt-accent);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+/* ── Buttons ── */
+.qa-btn-primary {
+  background: var(--brand-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+  transition: transform 0.15s, filter 0.15s, box-shadow 0.15s;
+}
+
+.qa-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 18px rgba(30, 58, 138, 0.35);
+}
+
+.qa-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.qa-btn-primary:active:not(:disabled) {
+  transform: none;
+}
+
+.qa-btn-secondary {
+  background: var(--bg-app);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.qa-btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--blue);
+  color: var(--text-primary);
+}
+
+/* ── Actions row ── */
+.qa-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* ── Success state ── */
+.qa-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 48px 24px;
+  min-height: 100vh;
+}
+
+.qa-success-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--status-angenommen-bg);
+  border: 2px solid var(--status-angenommen-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--status-angenommen-accent);
+}
+
+.qa-success h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.qa-success p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.qa-close-hint {
+  color: var(--text-muted) !important;
+  font-size: 0.82rem !important;
+}
