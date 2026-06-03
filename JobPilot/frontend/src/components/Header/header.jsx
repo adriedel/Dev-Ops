@@ -71,7 +71,7 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
             title="Abmelden"
           >
             <LogoutIcon className="logout-icon" aria-hidden="true" />
-            Logout
+            Abmelden
           </button>
           <button className="btn-new-bewerbung" onClick={onNewBewerbung}>
             <span className="btn-plus">+</span> Neue Bewerbung
