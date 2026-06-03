@@ -227,12 +227,13 @@
 
 .detail-item {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   font-size: 0.85rem;
   color: var(--text-secondary);
-  white-space: nowrap;
   min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .card-link {
