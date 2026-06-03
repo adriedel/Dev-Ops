@@ -1,0 +1,301 @@
+/* ── Page ── */
+.bm-page {
+  min-height: 100vh;
+  background: var(--bg-app);
+  font-family: var(--font-body);
+  position: relative;
+  padding: 40px 20px 60px;
+  box-sizing: border-box;
+}
+
+/* ── Back button ── */
+.bm-back {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  width: 42px;
+  height: 42px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  z-index: 50;
+}
+
+.bm-back:hover {
+  background: var(--bg-hover);
+  border-color: var(--blue);
+  transform: translateX(-2px);
+}
+
+.bm-back-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* ── Content wrapper ── */
+.bm-content {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ── Hero ── */
+.bm-hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-top: 8px;
+}
+
+.bm-logo {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.bm-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.bm-lead {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Drag section ── */
+.bm-drag-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--blue);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.bm-drag-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  margin: 0 0 16px;
+}
+
+.bm-drag-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bm-bookmarklet-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: grab;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(30, 58, 138, 0.3);
+  transition: box-shadow 0.15s, transform 0.15s, filter 0.15s;
+  user-select: none;
+}
+
+.bm-bookmarklet-btn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+  transform: translateY(-1px);
+}
+
+.bm-bookmarklet-btn:active {
+  cursor: grabbing;
+  transform: none;
+}
+
+.bm-copy-btn {
+  background: var(--bg-app);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.bm-copy-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--blue);
+  color: var(--text-primary);
+}
+
+.bm-drag-hint {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin: 12px 0 0;
+}
+
+/* ── Section title ── */
+.bm-section-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 16px;
+}
+
+/* ── Steps ── */
+.bm-steps {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.bm-step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bm-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.bm-step-num {
+  width: 28px;
+  height: 28px;
+  background: var(--brand-gradient);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.bm-step-body strong {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.bm-step-body p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Supported sites ── */
+.bm-sites {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.bm-sites-text {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin: 0 0 14px;
+}
+
+.bm-site-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bm-site-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.bm-site-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bm-site-dot--auto {
+  background: var(--status-angenommen-accent);
+}
+
+.bm-site-dot--manual {
+  background: var(--status-stufe_weiter-accent);
+}
+
+/* ── Info box ── */
+.bm-info {
+  background: var(--status-beworben-bg);
+  border: 1px solid var(--status-beworben-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.bm-info strong {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.bm-info p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .bm-page {
+    padding: 56px 16px 40px;
+  }
+
+  .bm-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .bm-back {
+    top: 16px;
+    left: 16px;
+  }
+}
