@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./header.css";
 import { logout } from "../../services/auth";
 import SunIcon from "../../assets/icons/sun.svg?react";
 import MoonIcon from "../../assets/icons/moon.svg?react";
 import BriefcaseIcon from "../../assets/icons/briefcase-white.svg?react";
 import LogoutIcon from "../../assets/icons/logout.svg?react";
+import ExternalIcon from "../../assets/icons/external.svg?react";
 import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
 
 function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     setIsLogoutModalOpen(true);
@@ -39,6 +42,14 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
         </div>
 
         <div className="header-right">
+          <button
+            className="btn-bookmarklet"
+            onClick={() => navigate("/bookmarklet")}
+            title="Bookmarklet installieren"
+          >
+            <ExternalIcon className="btn-bookmarklet-icon" aria-hidden="true" />
+            Bookmarklet
+          </button>
           <div className="theme-toggle-group">
             <button
               className={`theme-btn${!darkMode ? " active" : ""}`}

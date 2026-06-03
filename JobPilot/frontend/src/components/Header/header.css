@@ -124,6 +124,37 @@
   color: rgba(255, 255, 255, 0.72);
 }
 
+/* ── Bookmarklet Button ── */
+.btn-bookmarklet {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn-bookmarklet:hover {
+  background: var(--bg-hover);
+  border-color: var(--blue);
+  color: var(--text-primary);
+}
+
+.btn-bookmarklet-icon {
+  width: 14px;
+  height: 14px;
+  display: block;
+  flex-shrink: 0;
+}
+
 /* ── Neue Bewerbung Button ── */
 .btn-new-bewerbung {
   display: flex;
@@ -217,6 +248,10 @@
 }
 
 @media (max-width: 650px) {
+  .btn-bookmarklet {
+    display: none;
+  }
+
   .header {
     padding: 10px 12px;
     display: grid;
