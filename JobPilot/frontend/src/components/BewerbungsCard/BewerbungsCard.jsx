@@ -117,7 +117,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
             <div className="dropdown-menu">
               <button
                 className="dropdown-item"
-                onClick={() => onEdit(bewerbung)}
+                onClick={() => { setShowMenu(false); onEdit(bewerbung); }}
               >
                 <PencilIcon className="meta-icon" aria-hidden="true" />
                 <span>Bearbeiten</span>

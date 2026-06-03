@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import "./BewerbungsModal.css";
 import {
   STATUS,
@@ -134,7 +135,7 @@ function BewerbungsModal({
     setIsWaehrungOpen(false);
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -441,7 +442,8 @@ function BewerbungsModal({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
