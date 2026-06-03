@@ -23,7 +23,10 @@
   justify-content: center;
   cursor: pointer;
   color: var(--text-primary);
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.15s;
   z-index: 50;
 }
 
@@ -115,7 +118,10 @@
   cursor: grab;
   text-decoration: none;
   box-shadow: 0 4px 14px rgba(30, 58, 138, 0.3);
-  transition: box-shadow 0.15s, transform 0.15s, filter 0.15s;
+  transition:
+    box-shadow 0.15s,
+    transform 0.15s,
+    filter 0.15s;
   user-select: none;
 }
 
@@ -130,6 +136,13 @@
   transform: none;
 }
 
+.bm-bookmarklet-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
+}
+
 .bm-copy-btn {
   background: var(--bg-app);
   color: var(--text-secondary);
@@ -140,7 +153,10 @@
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
 }
 
 .bm-copy-btn:hover {

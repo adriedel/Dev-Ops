@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowLeftIcon from "../assets/icons/back.svg?react";
+import PinIcon from "../assets/icons/pin.svg?react";
 import "./BookmarkletInstall.css";
 
 function buildBookmarkletCode(origin) {
@@ -92,15 +93,17 @@ function BookmarkletInstall() {
           <div>
             <h1 className="bm-heading">Bookmarklet installieren</h1>
             <p className="bm-lead">
-              Speichere Stellenanzeigen mit einem Klick direkt in deinen JobPilot-Tracker —
-              von jeder Website aus.
+              Speichere Stellenanzeigen mit einem Klick direkt in deinen
+              JobPilot-Tracker — von jeder Website aus.
             </p>
           </div>
         </div>
 
         {/* Draggable bookmarklet */}
         <div className="bm-drag-section">
-          <p className="bm-drag-label">Diesen Button in deine Lesezeichen-Leiste ziehen:</p>
+          <p className="bm-drag-label">
+            Diesen Button in deine Lesezeichen-Leiste ziehen:
+          </p>
           <div className="bm-drag-row">
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a
@@ -111,14 +114,20 @@ function BookmarkletInstall() {
               onClick={(e) => e.preventDefault()}
               title="In Lesezeichen-Leiste ziehen"
             >
-              📌 Job merken
+              <PinIcon className="bm-bookmarklet-icon" aria-hidden="true" />
+              Job merken
             </a>
-            <button className="bm-copy-btn" onClick={handleCopy} title="Code kopieren">
+            <button
+              className="bm-copy-btn"
+              onClick={handleCopy}
+              title="Code kopieren"
+            >
               {copied ? "✓ Kopiert" : "Code kopieren"}
             </button>
           </div>
           <p className="bm-drag-hint">
-            Tipp: Den Button einfach per Drag &amp; Drop in die Lesezeichen-Leiste ziehen.
+            Tipp: Den Button einfach per Drag &amp; Drop in die
+            Lesezeichen-Leiste ziehen.
           </p>
         </div>
 
@@ -142,7 +151,8 @@ function BookmarkletInstall() {
         <div className="bm-sites">
           <h2 className="bm-section-title">Automatische Firmenerkennung</h2>
           <p className="bm-sites-text">
-            Auf diesen Seiten wird die Firma automatisch aus der Seite ausgelesen:
+            Auf diesen Seiten wird die Firma automatisch aus der Seite
+            ausgelesen:
           </p>
           <div className="bm-site-list">
             {SUPPORTED_SITES.map((site) => (
@@ -167,10 +177,11 @@ function BookmarkletInstall() {
         <div className="bm-info">
           <strong>Wie funktioniert das?</strong>
           <p>
-            Ein Bookmarklet ist ein Lesezeichen mit JavaScript-Code statt einer URL.
-            Beim Klick öffnet es ein kleines JobPilot-Fenster mit den vorausgefüllten Stellendaten —
-            du überprüfst kurz, ergänzt Notizen und klickst auf Speichern.
-            Kein Plugin, kein Store, läuft in jedem Browser.
+            Ein Bookmarklet ist ein Lesezeichen mit JavaScript-Code statt einer
+            URL. Beim Klick öffnet es ein kleines JobPilot-Fenster mit den
+            vorausgefüllten Stellendaten — du überprüfst kurz, ergänzt Notizen
+            und klickst auf Speichern. Kein Plugin, kein Store, läuft in jedem
+            Browser.
           </p>
         </div>
       </div>
