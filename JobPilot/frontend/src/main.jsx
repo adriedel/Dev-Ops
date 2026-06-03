@@ -5,6 +5,8 @@ import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import App from "./App.jsx";
+import QuickAdd from "./pages/QuickAdd";
+import BookmarkletInstall from "./pages/BookmarkletInstall";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { DEMO_MODE } from "./utils/constants";
 import "./index.css";
@@ -35,6 +37,10 @@ export function Root() {
             </ProtectedRoute>
           }
         />
+
+        {/* Bookmarklet Routes */}
+        <Route path="/quick-add" element={<QuickAdd />} />
+        <Route path="/bookmarklet" element={<BookmarkletInstall />} />
 
         {/* 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
