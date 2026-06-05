@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./BewerbungsCard.css";
-import { STATUS, STATUS_LABELS } from "../../utils/constants";
+import { STATUS } from "../../utils/constants";
 import DeleteConfirmModal from "../DeleteConfirmModal/DeleteConfirmModal";
 import BeworbenIcon from "../../assets/icons/paperplane-applied.svg?react";
 import StufeWeiterIcon from "../../assets/icons/arrow-step-further.svg?react";
@@ -20,10 +21,11 @@ import GehaltIcon from "../../assets/icons/cash-coin.svg?react";
 function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("de-DE", {
+    return date.toLocaleDateString(i18n.language === "de" ? "de-DE" : "en-GB", {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -52,7 +54,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
   const formatSalary = (salary, currency) => {
     const normalizedSalary = `${salary || ""}`.trim();
     if (!normalizedSalary) {
-      return "Keine Angabe";
+      return t("card.noSalary");
     }
 
     const formatSingleAmount = (value) => {
@@ -120,7 +122,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
                 onClick={() => { setShowMenu(false); onEdit(bewerbung); }}
               >
                 <PencilIcon className="meta-icon" aria-hidden="true" />
-                <span>Bearbeiten</span>
+                <span>{t("card.edit")}</span>
               </button>
               <div className="dropdown-divider" />
               {statusOptions.map((status) => {
@@ -137,7 +139,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
                     {StatusIcon && (
                       <StatusIcon className="meta-icon" aria-hidden="true" />
                     )}
-                    <span>{STATUS_LABELS[status]}</span>
+                    <span>{t(`status.${status}`)}</span>
                   </button>
                 );
               })}
@@ -147,7 +149,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
                 onClick={handleDeleteClick}
               >
                 <TrashIcon className="meta-icon" aria-hidden="true" />
-                <span>Löschen</span>
+                <span>{t("card.delete")}</span>
               </button>
             </div>
           )}
@@ -158,7 +160,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
         {CurrentStatusIcon && (
           <CurrentStatusIcon className="meta-icon" aria-hidden="true" />
         )}
-        <span>{STATUS_LABELS[bewerbung.status]}</span>
+        <span>{t(`status.${bewerbung.status}`)}</span>
       </div>
 
       <div className="card-details">
@@ -199,7 +201,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
             rel="noopener noreferrer"
             className="card-link"
           >
-            Stellenanzeige öffnen
+            {t("card.openListing")}
           </a>
         </div>
       )}
@@ -210,8 +212,8 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
             <CalendarIcon className="meta-icon" aria-hidden="true" />
             <span>
               {bewerbung.status === STATUS.ANGENOMMEN
-                ? "Start am "
-                : "Möglicher Start "}
+                ? t("card.startOn")
+                : t("card.possibleStart")}
               {formatDate(bewerbung.startdatum)}
             </span>
           </div>

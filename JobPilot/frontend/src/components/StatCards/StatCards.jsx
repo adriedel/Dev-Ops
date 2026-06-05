@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import "./StatCards.css";
 import BeworbenIcon from "../../assets/icons/paperplane-applied.svg?react";
 import StufeWeiterIcon from "../../assets/icons/arrow-step-further.svg?react";
@@ -8,6 +9,8 @@ import InPlanungIcon from "../../assets/icons/plan.svg?react";
 import GesamtIcon from "../../assets/icons/trending.svg?react";
 
 function StatCards({ stats }) {
+  const { t } = useTranslation();
+
   return (
     <section className="stats-container">
       <section className="stat-card in_planung">
@@ -15,14 +18,14 @@ function StatCards({ stats }) {
           <InPlanungIcon />
         </div>
         <div className="stat-number">{stats.in_planung ?? 0}</div>
-        <div className="stat-label">In Planung</div>
+        <div className="stat-label">{t("status.in_planung")}</div>
       </section>
       <section className="stat-card beworben">
         <div className="stat-icon">
           <BeworbenIcon />
         </div>
         <div className="stat-number">{stats.beworben ?? 0}</div>
-        <div className="stat-label">Beworben</div>
+        <div className="stat-label">{t("status.beworben")}</div>
       </section>
 
       <section className="stat-card stufe_weiter">
@@ -30,7 +33,7 @@ function StatCards({ stats }) {
           <StufeWeiterIcon />
         </div>
         <div className="stat-number">{stats.stufe_weiter ?? 0}</div>
-        <div className="stat-label">Stufe weiter</div>
+        <div className="stat-label">{t("status.stufe_weiter")}</div>
       </section>
 
       <section className="stat-card angenommen">
@@ -38,7 +41,7 @@ function StatCards({ stats }) {
           <AngenommenIcon />
         </div>
         <div className="stat-number">{stats.angenommen ?? 0}</div>
-        <div className="stat-label">Angenommen</div>
+        <div className="stat-label">{t("status.angenommen")}</div>
       </section>
 
       <section className="stat-card abgelehnt">
@@ -46,7 +49,7 @@ function StatCards({ stats }) {
           <AbgelehntIcon />
         </div>
         <div className="stat-number">{stats.abgelehnt ?? 0}</div>
-        <div className="stat-label">Abgelehnt</div>
+        <div className="stat-label">{t("status.abgelehnt")}</div>
       </section>
 
       <section className="stat-card keine_antwort">
@@ -54,7 +57,7 @@ function StatCards({ stats }) {
           <KeineAntwortIcon />
         </div>
         <div className="stat-number">{stats.keine_antwort ?? 0}</div>
-        <div className="stat-label">Keine Antwort</div>
+        <div className="stat-label">{t("status.keine_antwort")}</div>
       </section>
 
       <section className="stat-card gesamt">
@@ -62,7 +65,7 @@ function StatCards({ stats }) {
           <GesamtIcon />
         </div>
         <div className="stat-number">{stats.gesamt ?? 0}</div>
-        <div className="stat-label">Gesamt</div>
+        <div className="stat-label">{t("statCards.total")}</div>
       </section>
     </section>
   );

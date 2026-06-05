@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./SearchBar.css";
 import { STATUS } from "../../utils/constants";
 import BeworbenIcon from "../../assets/icons/paperplane-applied.svg?react";
@@ -18,44 +19,45 @@ function SearchBar({
   filterStatus,
   onFilterChange,
 }) {
+  const { t } = useTranslation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const statusOptions = useMemo(
     () => [
-      { value: "alle", label: "Alle Status", icon: null },
+      { value: "alle", label: t("filters.all"), icon: null },
       {
         value: STATUS.IN_PLANUNG,
-        label: "In Planung",
+        label: t("status.in_planung"),
         icon: InPlanungIcon,
       },
       {
         value: STATUS.BEWORBEN,
-        label: "Beworben",
+        label: t("status.beworben"),
         icon: BeworbenIcon,
       },
       {
         value: STATUS.STUFE_WEITER,
-        label: "Stufe weiter",
+        label: t("status.stufe_weiter"),
         icon: StufeWeiterIcon,
       },
       {
         value: STATUS.ANGENOMMEN,
-        label: "Angenommen",
+        label: t("status.angenommen"),
         icon: AngenommenIcon,
       },
       {
         value: STATUS.ABGELEHNT,
-        label: "Abgelehnt",
+        label: t("status.abgelehnt"),
         icon: AbgelehntIcon,
       },
       {
         value: STATUS.KEINE_ANTWORT,
-        label: "Keine Antwort",
+        label: t("status.keine_antwort"),
         icon: KeineAntwortIcon,
       },
     ],
-    [],
+    [t],
   );
 
   const selectedOption =
@@ -98,7 +100,7 @@ function SearchBar({
         <input
           type="text"
           className="search-input"
-          placeholder="Suche nach Firma oder Position..."
+          placeholder={t("searchBar.placeholder")}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
         />

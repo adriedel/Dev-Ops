@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import "./BewerbungsModal.css";
 import {
   STATUS,
@@ -24,6 +25,7 @@ function BewerbungsModal({
   onChange,
   isEditing,
 }) {
+  const { t } = useTranslation();
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isBewerbungsartOpen, setIsBewerbungsartOpen] = useState(false);
   const [isWaehrungOpen, setIsWaehrungOpen] = useState(false);
@@ -140,12 +142,12 @@ function BewerbungsModal({
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">
-            {isEditing ? "Bewerbung bearbeiten" : "Neue Bewerbung"}
+            {isEditing ? t("modal.editApplication") : t("modal.addApplication")}
           </h2>
           <button
             className="modal-close"
             onClick={handleClose}
-            aria-label="Schließen"
+            aria-label={t("modal.close")}
           >
             ×
           </button>
@@ -154,22 +156,22 @@ function BewerbungsModal({
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="form-row">
             <div className="form-group">
-              <label>Unternehmen *</label>
+              <label>{t("modal.company")} *</label>
               <input
                 type="text"
                 name="firma"
-                placeholder="z.B. SAP"
+                placeholder={t("modal.companyPlaceholder")}
                 value={formData.firma}
                 onChange={onChange}
                 required
               />
             </div>
             <div className="form-group">
-              <label>Position *</label>
+              <label>{t("modal.position")} *</label>
               <input
                 type="text"
                 name="position"
-                placeholder="z.B. Frontend Developer"
+                placeholder={t("modal.positionPlaceholder")}
                 value={formData.position}
                 onChange={onChange}
                 required
@@ -179,7 +181,7 @@ function BewerbungsModal({
 
           <div className="form-row">
             <div className="form-group">
-              <label>Bewerbungsdatum *</label>
+              <label>{t("modal.date")} *</label>
               <input
                 type="date"
                 name="datum"
@@ -189,7 +191,7 @@ function BewerbungsModal({
               />
             </div>
             <div className="form-group">
-              <label>Status</label>
+              <label>{t("modal.status")}</label>
               <div className="status-select" ref={statusDropdownRef}>
                 <button
                   type="button"
@@ -205,7 +207,7 @@ function BewerbungsModal({
                         aria-hidden="true"
                       />
                     )}
-                    <span>{STATUS_LABELS[selectedStatus]}</span>
+                    <span>{t(`status.${selectedStatus}`)}</span>
                   </span>
                   <ChevronDownIcon
                     className={`status-select-chevron ${isStatusOpen ? "open" : ""}`}
@@ -217,7 +219,7 @@ function BewerbungsModal({
                   <div
                     className="status-select-menu"
                     role="listbox"
-                    aria-label="Status auswählen"
+                    aria-label={t("modal.status")}
                   >
                     {statusOptions.map((status) => {
                       const isSelected = selectedStatus === status;
@@ -239,7 +241,7 @@ function BewerbungsModal({
                                 aria-hidden="true"
                               />
                             )}
-                            <span>{STATUS_LABELS[status]}</span>
+                            <span>{t(`status.${status}`)}</span>
                           </span>
                           {isSelected ? (
                             <span className="status-select-check">✓</span>
@@ -255,18 +257,18 @@ function BewerbungsModal({
 
           <div className="form-row">
             <div className="form-group">
-              <label>Arbeitsort</label>
+              <label>{t("modal.location")}</label>
               <input
                 type="text"
                 name="standort"
-                placeholder="z.B. Berlin, Remote"
+                placeholder={t("modal.locationPlaceholder")}
                 value={formData.standort}
                 onChange={onChange}
               />
             </div>
 
             <div className="form-group">
-              <label>Bewerbungsart</label>
+              <label>{t("modal.applicationMethod")}</label>
               <div className="custom-select" ref={bewerbungsartDropdownRef}>
                 <button
                   type="button"
@@ -280,7 +282,7 @@ function BewerbungsModal({
                   aria-expanded={isBewerbungsartOpen}
                 >
                   <span className="custom-select-value">
-                    {formData.bewerbungsart || BEWERBUNGSARTEN[0]}
+                    {t(`applicationMethod.${(formData.bewerbungsart || BEWERBUNGSARTEN[0]).toLowerCase()}`)}
                   </span>
                   <ChevronDownIcon
                     className={`custom-select-chevron ${isBewerbungsartOpen ? "open" : ""}`}
@@ -292,7 +294,7 @@ function BewerbungsModal({
                   <div
                     className="custom-select-menu"
                     role="listbox"
-                    aria-label="Bewerbungsart auswählen"
+                    aria-label={t("modal.applicationMethod")}
                   >
                     {BEWERBUNGSARTEN.map((art) => {
                       const isSelected =
@@ -307,7 +309,7 @@ function BewerbungsModal({
                           role="option"
                           aria-selected={isSelected}
                         >
-                          <span>{art}</span>
+                          <span>{t(`applicationMethod.${art.toLowerCase()}`)}</span>
                           {isSelected ? (
                             <span className="custom-select-check">✓</span>
                           ) : null}
@@ -322,18 +324,18 @@ function BewerbungsModal({
 
           <div className="form-row">
             <div className="form-group">
-              <label>Gehalt</label>
+              <label>{t("modal.salary")}</label>
               <input
                 type="text"
                 name="gehalt"
-                placeholder="z.B. 50.000 - 60.000"
+                placeholder={t("modal.salaryPlaceholder")}
                 value={formData.gehalt || ""}
                 onChange={onChange}
               />
             </div>
 
             <div className="form-group">
-              <label>Währung</label>
+              <label>{t("modal.currency")}</label>
               <div className="custom-select" ref={waehrungDropdownRef}>
                 <button
                   type="button"
@@ -359,7 +361,7 @@ function BewerbungsModal({
                   <div
                     className="custom-select-menu"
                     role="listbox"
-                    aria-label="Währung auswählen"
+                    aria-label={t("modal.currency")}
                   >
                     {WAEHRUNGEN.map((waehrung) => {
                       const isSelected =
@@ -388,7 +390,7 @@ function BewerbungsModal({
           </div>
 
           <div className="form-group">
-            <label>Link zur Stellenanzeige</label>
+            <label>{t("modal.link")}</label>
             <input
               type="text"
               name="link"
@@ -399,11 +401,11 @@ function BewerbungsModal({
           </div>
 
           <div className="form-group">
-            <label>Ansprechpartner</label>
+            <label>{t("modal.contact")}</label>
             <input
               type="text"
               name="ansprechpartner"
-              placeholder="Name des Ansprechpartners"
+              placeholder={t("modal.contactPlaceholder")}
               value={formData.ansprechpartner}
               onChange={onChange}
             />
@@ -411,7 +413,7 @@ function BewerbungsModal({
 
           {formData.status !== STATUS.ABGELEHNT && (
             <div className="form-group">
-              <label>Startdatum</label>
+              <label>{t("modal.startDate")}</label>
               <input
                 type="date"
                 name="startdatum"
@@ -422,10 +424,10 @@ function BewerbungsModal({
           )}
 
           <div className="form-group">
-            <label>Notizen</label>
+            <label>{t("modal.notes")}</label>
             <textarea
               name="notizen"
-              placeholder="Gesprächsnotizen, wichtige Infos..."
+              placeholder={t("modal.notesPlaceholder")}
               value={formData.notizen}
               onChange={onChange}
               rows={4}
@@ -434,10 +436,10 @@ function BewerbungsModal({
 
           <div className="form-actions">
             <button type="button" className="btn-cancel" onClick={onClose}>
-              Abbrechen
+              {t("modal.cancel")}
             </button>
             <button type="submit" className="btn-submit">
-              {isEditing ? "Speichern" : "Hinzufügen"}
+              {isEditing ? t("modal.save") : t("modal.addApplication")}
             </button>
           </div>
         </form>

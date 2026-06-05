@@ -1,0 +1,135 @@
+{
+  "header": {
+    "title": "Bewerbungstracker",
+    "subtitle": "Behalten Sie den Überblick über Ihre Bewerbungen",
+    "bookmarklet": "Bookmarklet installieren",
+    "logout": "Abmelden"
+  },
+  "searchBar": {
+    "placeholder": "Firma oder Position suchen..."
+  },
+  "statCards": {
+    "total": "Gesamt",
+    "applied": "Beworben",
+    "nextRound": "Nächste Stufe",
+    "accepted": "Angenommen",
+    "rejected": "Abgelehnt",
+    "noResponse": "Keine Antwort",
+    "inPlanning": "In Planung"
+  },
+  "filters": {
+    "all": "Alle",
+    "applied": "Beworben",
+    "nextRound": "Nächste Stufe",
+    "accepted": "Angenommen",
+    "rejected": "Abgelehnt",
+    "noResponse": "Keine Antwort",
+    "inPlanning": "In Planung"
+  },
+  "modal": {
+    "addApplication": "Bewerbung hinzufügen",
+    "editApplication": "Bewerbung bearbeiten",
+    "position": "Position",
+    "company": "Firma/Unternehmen",
+    "status": "Status",
+    "date": "Bewerbungsdatum",
+    "location": "Standort",
+    "contact": "Ansprechpartner",
+    "notes": "Notizen",
+    "applicationMethod": "Bewerbungsart",
+    "startDate": "Startdatum",
+    "link": "Link",
+    "salary": "Gehalt",
+    "currency": "Währung",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "deleteConfirm": "Möchten Sie diese Bewerbung wirklich löschen?",
+    "required": "Dieses Feld ist erforderlich",
+    "close": "Schließen",
+    "companyPlaceholder": "z.B. SAP",
+    "positionPlaceholder": "z.B. Frontend Developer",
+    "locationPlaceholder": "z.B. Berlin, Remote",
+    "salaryPlaceholder": "z.B. 50.000 - 60.000",
+    "contactPlaceholder": "Name des Ansprechpartners",
+    "notesPlaceholder": "Gesprächsnotizen, wichtige Infos..."
+  },
+  "buttons": {
+    "newApplication": "Neue Bewerbung",
+    "yes": "Ja",
+    "no": "Nein",
+    "confirm": "Bestätigen",
+    "close": "Schließen"
+  },
+  "status": {
+    "in_planung": "In Planung",
+    "beworben": "Beworben",
+    "stufe_weiter": "Stufe weiter",
+    "angenommen": "Angenommen",
+    "abgelehnt": "Abgelehnt",
+    "keine_antwort": "Keine Antwort"
+  },
+  "messages": {
+    "loading": "Lädt...",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolgreich gespeichert",
+    "deleted": "Erfolgreich gelöscht",
+    "noApplications": "Keine Bewerbungen gefunden"
+  },
+  "bookmarklet": {
+    "title": "Bookmarklet installieren",
+    "description": "Speichere Stellenanzeigen mit einem Klick direkt in deinen JobPilot-Tracker — von jeder Website aus.",
+    "instructions": "Diesen Button in deine Lesezeichen-Leiste ziehen:",
+    "dragHint": "Tipp: Den Button einfach per Drag & Drop in die Lesezeichen-Liste ziehen.",
+    "howTo": "So geht's",
+    "step1": "Lesezeichen-Leiste einblenden",
+    "step1Hint": "Falls sie noch nicht sichtbar ist: Strg+Shift+B (Windows) bzw. Cmd+Shift+B (Mac).",
+    "step2": "Button in die Leiste ziehen",
+    "step2Hint": "Ziehe den \"Job merken\"-Button unten per Drag & Drop in deine Lesezeichen-Leiste.",
+    "step3": "Auf einer Stellenanzeige nutzen",
+    "step3Hint": "Öffne eine Stelle auf LinkedIn, Indeed, Stepstone o.ä. und klicke \"Job merken\" — ein Fenster öffnet sich mit den vorausgefüllten Daten.",
+    "autoCompany": "Automatische Firmenerkennung",
+    "autoCompanyHint": "Auf diesen Seiten wird die Firma automatisch aus der Seite ausgelesen:",
+    "howItWorks": "Wie funktioniert das?",
+    "howItWorksHint": "Ein Bookmarklet ist ein Lesezeichen mit JavaScript-Code statt einer URL. Bei Klick öffnet es ein kleines JobPilot-Fenster mit den vorausgefüllten Daten — du überprüfst kurz, ergänzt Notizen und klickst auf Speichern. Kein Plugin, kein Store, läuft in jedem Browser.",
+    "jobMarkButton": "Job merken",
+    "copyCode": "Code kopieren",
+    "back": "Zurück",
+    "copied": "✓ Kopiert",
+    "allOthers": "Alle anderen",
+    "urlCaptured": "URL + Titel werden übernommen",
+    "dragTo": "In Lesezeichen-Leiste ziehen"
+  },
+  "card": {
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "openListing": "Stellenanzeige öffnen",
+    "noSalary": "Keine Angabe",
+    "startOn": "Start am ",
+    "possibleStart": "Möglicher Start "
+  },
+  "applicationMethod": {
+    "initiativbewerbung": "Initiativbewerbung",
+    "stellenausschreibung": "Stellenausschreibung",
+    "empfehlung": "Empfehlung"
+  },
+  "deleteModal": {
+    "title": "Bewerbung löschen?",
+    "message": "Möchtest du die folgende Bewerbung wirklich löschen?",
+    "warning": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "positionLabel": "Position",
+    "companyLabel": "Firma",
+    "locationLabel": "Standort"
+  },
+  "logoutModal": {
+    "title": "Abmelden?",
+    "message": "Möchtest du dich wirklich von deinem Konto abmelden?",
+    "hint": "Du kannst dich jederzeit wieder anmelden.",
+    "cancel": "Abbrechen",
+    "confirm": "Logout"
+  },
+  "language": "Deutsch",
+  "darkMode": "Dunkler Modus"
+}
