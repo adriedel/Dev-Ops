@@ -1,0 +1,135 @@
+{
+  "header": {
+    "title": "Application Tracker",
+    "subtitle": "Keep track of all your job applications",
+    "bookmarklet": "Install Bookmarklet",
+    "logout": "Logout"
+  },
+  "searchBar": {
+    "placeholder": "Search company or position..."
+  },
+  "statCards": {
+    "total": "Total",
+    "applied": "Applied",
+    "nextRound": "Next Round",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "noResponse": "No Response",
+    "inPlanning": "In Planning"
+  },
+  "filters": {
+    "all": "All",
+    "applied": "Applied",
+    "nextRound": "Next Round",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "noResponse": "No Response",
+    "inPlanning": "In Planning"
+  },
+  "modal": {
+    "addApplication": "Add Application",
+    "editApplication": "Edit Application",
+    "position": "Position",
+    "company": "Company",
+    "status": "Status",
+    "date": "Application Date",
+    "location": "Location",
+    "contact": "Contact Person",
+    "notes": "Notes",
+    "applicationMethod": "Application Method",
+    "startDate": "Start Date",
+    "link": "Link",
+    "salary": "Salary",
+    "currency": "Currency",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this application?",
+    "required": "This field is required",
+    "close": "Close",
+    "companyPlaceholder": "e.g. SAP",
+    "positionPlaceholder": "e.g. Frontend Developer",
+    "locationPlaceholder": "e.g. Berlin, Remote",
+    "salaryPlaceholder": "e.g. 50,000 - 60,000",
+    "contactPlaceholder": "Contact person's name",
+    "notesPlaceholder": "Meeting notes, important info..."
+  },
+  "buttons": {
+    "newApplication": "New Application",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "status": {
+    "in_planung": "In Planning",
+    "beworben": "Applied",
+    "stufe_weiter": "Next Round",
+    "angenommen": "Accepted",
+    "abgelehnt": "Rejected",
+    "keine_antwort": "No Response"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Successfully saved",
+    "deleted": "Successfully deleted",
+    "noApplications": "No applications found"
+  },
+  "bookmarklet": {
+    "title": "Install Bookmarklet",
+    "description": "Save job postings with one click directly to your JobPilot Tracker — from any website.",
+    "instructions": "Drag this button to your bookmarks bar:",
+    "dragHint": "Tip: Simply drag and drop the button into your bookmarks list.",
+    "howTo": "How it works",
+    "step1": "Show bookmarks bar",
+    "step1Hint": "If not visible yet: Ctrl+Shift+B (Windows) or Cmd+Shift+B (Mac).",
+    "step2": "Drag button to bar",
+    "step2Hint": "Drag the \"Mark Job\" button below via Drag & Drop to your bookmarks bar.",
+    "step3": "Use on job postings",
+    "step3Hint": "Open a posting on LinkedIn, Indeed, Stepstone etc. and click \"Mark Job\" — a window opens with pre-filled data.",
+    "autoCompany": "Automatic Company Recognition",
+    "autoCompanyHint": "The company is automatically detected from these sites:",
+    "howItWorks": "How does it work?",
+    "howItWorksHint": "A bookmarklet is a bookmark with JavaScript code instead of a URL. When clicked, it opens a small JobPilot window with pre-filled data — you verify it quickly, add notes, and click Save. No plugin, no store, works in every browser.",
+    "jobMarkButton": "Mark Job",
+    "copyCode": "Copy Code",
+    "back": "Back",
+    "copied": "✓ Copied",
+    "allOthers": "All others",
+    "urlCaptured": "URL + title are captured",
+    "dragTo": "Drag to bookmarks bar"
+  },
+  "card": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "openListing": "Open Job Posting",
+    "noSalary": "Not specified",
+    "startOn": "Start on ",
+    "possibleStart": "Possible start "
+  },
+  "applicationMethod": {
+    "initiativbewerbung": "Unsolicited Application",
+    "stellenausschreibung": "Job Posting",
+    "empfehlung": "Referral"
+  },
+  "deleteModal": {
+    "title": "Delete Application?",
+    "message": "Do you really want to delete the following application?",
+    "warning": "This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "positionLabel": "Position",
+    "companyLabel": "Company",
+    "locationLabel": "Location"
+  },
+  "logoutModal": {
+    "title": "Sign out?",
+    "message": "Do you really want to sign out of your account?",
+    "hint": "You can sign in again at any time.",
+    "cancel": "Cancel",
+    "confirm": "Logout"
+  },
+  "language": "English",
+  "darkMode": "Dark Mode"
+}
