@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./header.css";
 import { logout } from "../../services/auth";
 import SunIcon from "../../assets/icons/sun.svg?react";
@@ -11,6 +12,7 @@ import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
 
 function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -26,6 +28,11 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
     logout();
   };
 
+  const toggleLanguage = () => {
+    const newLang = i18n.language === "de" ? "en" : "de";
+    i18n.changeLanguage(newLang);
+  };
+
   return (
     <>
       <header className="header">
@@ -34,10 +41,8 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
             <BriefcaseIcon className="app-logo" aria-hidden="true" />
           </div>
           <div className="header-text">
-            <h1 className="header-title">Bewerbungstracker</h1>
-            <p className="header-subtitle">
-              Behalten Sie den Überblick über Ihre Bewerbungen
-            </p>
+            <h1 className="header-title">{t("header.title")}</h1>
+            <p className="header-subtitle">{t("header.subtitle")}</p>
           </div>
         </div>
 
@@ -45,10 +50,10 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
           <button
             className="btn-bookmarklet"
             onClick={() => navigate("/bookmarklet")}
-            title="Bookmarklet installieren"
+            title={t("header.bookmarklet")}
           >
             <ExternalIcon className="btn-bookmarklet-icon" aria-hidden="true" />
-            Bookmarklet
+            {t("header.bookmarklet")}
           </button>
           <div className="theme-toggle-group">
             <button
@@ -77,15 +82,38 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
             </button>
           </div>
           <button
+            className="language-toggle"
+            onClick={toggleLanguage}
+            title={
+              i18n.language === "de"
+                ? "Switch to English"
+                : "Zu Deutsch wechseln"
+            }
+            aria-label={
+              i18n.language === "de" ? "Switch to English" : "Switch to German"
+            }
+          >
+            <img
+              src={
+                i18n.language === "de"
+                  ? "/flags/flag-for-germany.svg"
+                  : "/flags/flag-for-united-kingdom.svg"
+              }
+              alt={i18n.language === "de" ? "Deutsch" : "English"}
+              className="language-flag"
+            />
+            <span className="language-code">{i18n.language.toUpperCase()}</span>
+          </button>
+          <button
             onClick={handleLogout}
             className="logout-button"
-            title="Abmelden"
+            title={t("header.logout")}
           >
             <LogoutIcon className="logout-icon" aria-hidden="true" />
-            Abmelden
+            {t("header.logout")}
           </button>
           <button className="btn-new-bewerbung" onClick={onNewBewerbung}>
-            <span className="btn-plus">+</span> Neue Bewerbung
+            <span className="btn-plus">+</span> {t("buttons.newApplication")}
           </button>
         </div>
       </header>
