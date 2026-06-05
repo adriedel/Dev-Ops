@@ -2,9 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 24px 14px;
-  background: transparent;
-  border-bottom: none;
+  padding: 16px 24px;
   transition:
     background 0.2s,
     border-color 0.2s;
@@ -20,13 +18,17 @@
 .app-icon {
   width: 54px;
   height: 54px;
-  background: var(--blue);
-  border-radius: 16px;
+  background: var(--brand-gradient);
+  border-radius: 14px;
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .app-logo {
@@ -44,20 +46,22 @@
 }
 
 .header-title {
-  font-size: clamp(1.9rem, 3vw, 2.9rem);
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
   font-weight: 800;
   color: var(--text-primary);
   margin: 0;
   line-height: 1.05;
   white-space: nowrap;
+  letter-spacing: -0.5px;
 }
 
 .header-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin: 0;
   white-space: nowrap;
+  opacity: 0.8;
 }
 
 .header-right {
@@ -71,17 +75,24 @@
 .theme-toggle-group {
   display: flex;
   align-items: center;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
   background: var(--bg-surface);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
   transition:
     background 0.2s,
-    border-color 0.2s;
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.dark-mode .theme-toggle-group {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .theme-btn {
-  padding: 8px 10px;
+  padding: 9px 12px;
   background: transparent;
   border: none;
   border-right: 1px solid var(--border);
@@ -124,28 +135,100 @@
   color: rgba(255, 255, 255, 0.72);
 }
 
+/* ── Language Toggle ── */
+.language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.language-toggle:hover {
+  background: var(--bg-hover);
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.dark-mode .language-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .language-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.language-flag {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.language-code {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  min-width: 28px;
+}
+
 /* ── Bookmarklet Button ── */
 .btn-bookmarklet {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 16px;
+  padding: 10px 16px;
   background: var(--bg-surface);
   color: var(--text-secondary);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
 }
 
 .btn-bookmarklet:hover {
   background: var(--bg-hover);
   border-color: var(--blue);
-  color: var(--text-primary);
+  color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.dark-mode .btn-bookmarklet {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .btn-bookmarklet:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--blue);
+  color: var(--blue);
 }
 
 .btn-bookmarklet-icon {
@@ -169,17 +252,22 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 8px 18px rgba(30, 58, 138, 0.22);
+  box-shadow: 0 6px 16px rgba(30, 58, 138, 0.18);
   transition:
     transform 0.15s,
     box-shadow 0.15s,
     filter 0.15s;
+  font-family: inherit;
 }
 
 .btn-new-bewerbung:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-  box-shadow: 0 12px 22px rgba(30, 58, 138, 0.28);
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 10px 24px rgba(30, 58, 138, 0.24);
+}
+
+.btn-new-bewerbung:active {
+  transform: translateY(0px);
 }
 
 .btn-plus {
@@ -202,17 +290,22 @@
   font-size: 0.98rem;
   font-weight: 600;
   margin-left: 0;
-  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.22);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.18);
   transition:
     transform 0.15s,
     box-shadow 0.15s,
     filter 0.15s;
+  font-family: inherit;
 }
 
 .logout-button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-  box-shadow: 0 12px 22px rgba(220, 38, 38, 0.28);
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.24);
+}
+
+.logout-button:active {
+  transform: translateY(0px);
 }
 
 .logout-button .logout-icon {
@@ -255,11 +348,11 @@
   .header {
     padding: 10px 12px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     grid-template-areas:
-      "left toggle"
-      "new new"
-      "logout logout";
+      "left toggle language"
+      "new new new"
+      "logout logout logout";
     align-items: center;
     column-gap: 8px;
     row-gap: 10px;
@@ -277,6 +370,11 @@
   .theme-toggle-group {
     grid-area: toggle;
     margin-left: 0;
+    justify-self: end;
+  }
+
+  .language-toggle {
+    grid-area: language;
     justify-self: end;
   }
 
