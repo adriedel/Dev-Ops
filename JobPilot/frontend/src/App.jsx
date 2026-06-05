@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import "./App.css";
 import Header from "./components/Header/header";
 import StatCards from "./components/StatCards/StatCards";
@@ -16,6 +17,7 @@ import {
 } from "./services/api";
 
 function App() {
+  const { t } = useTranslation();
   const [bewerbungen, setBewerbungen] = useState([]);
   const [stats, setStats] = useState({
     beworben: 0,

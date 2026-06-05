@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import ArrowLeftIcon from "../assets/icons/back.svg?react";
 import PinIcon from "../assets/icons/pin.svg?react";
 import "./BookmarkletInstall.css";
@@ -33,37 +34,20 @@ function buildBookmarkletCode(origin) {
   );
 }
 
-const STEPS = [
-  {
-    num: "1",
-    title: "Lesezeichen-Leiste einblenden",
-    text: "Falls sie noch nicht sichtbar ist: Strg+Shift+B (Windows) bzw. Cmd+Shift+B (Mac).",
-  },
-  {
-    num: "2",
-    title: "Button in die Leiste ziehen",
-    text: 'Ziehe den "Job merken"-Button unten per Drag & Drop in deine Lesezeichen-Leiste.',
-  },
-  {
-    num: "3",
-    title: "Auf einer Stellenanzeige nutzen",
-    text: 'Öffne eine Stelle auf LinkedIn, Indeed, Stepstone o.ä. und klicke "Job merken" — ein Fenster öffnet sich mit den vorausgefüllten Daten.',
-  },
-];
-
 const SUPPORTED_SITES = [
   { name: "LinkedIn", url: "linkedin.com" },
   { name: "Indeed", url: "indeed.com" },
   { name: "Stepstone", url: "stepstone.de" },
   { name: "XING", url: "xing.com" },
   { name: "Arbeitsagentur", url: "arbeitsagentur.de" },
-  { name: "Alle anderen", url: null },
+  { name: null, url: null },
 ];
 
 function BookmarkletInstall() {
   const navigate = useNavigate();
   const linkRef = useRef(null);
   const [copied, setCopied] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (linkRef.current) {
@@ -81,9 +65,15 @@ function BookmarkletInstall() {
     });
   };
 
+  const steps = [
+    { num: "1", title: t("bookmarklet.step1"), text: t("bookmarklet.step1Hint") },
+    { num: "2", title: t("bookmarklet.step2"), text: t("bookmarklet.step2Hint") },
+    { num: "3", title: t("bookmarklet.step3"), text: t("bookmarklet.step3Hint") },
+  ];
+
   return (
     <div className="bm-page">
-      <button className="bm-back" onClick={() => navigate(-1)} title="Zurück">
+      <button className="bm-back" onClick={() => navigate(-1)} title={t("bookmarklet.back")}>
         <ArrowLeftIcon className="bm-back-icon" aria-hidden="true" />
       </button>
 
@@ -91,19 +81,13 @@ function BookmarkletInstall() {
         <div className="bm-hero">
           <img src="/Logo-JobPilot.svg" alt="JobPilot" className="bm-logo" />
           <div>
-            <h1 className="bm-heading">Bookmarklet installieren</h1>
-            <p className="bm-lead">
-              Speichere Stellenanzeigen mit einem Klick direkt in deinen
-              JobPilot-Tracker — von jeder Website aus.
-            </p>
+            <h1 className="bm-heading">{t("bookmarklet.title")}</h1>
+            <p className="bm-lead">{t("bookmarklet.description")}</p>
           </div>
         </div>
 
-        {/* Draggable bookmarklet */}
         <div className="bm-drag-section">
-          <p className="bm-drag-label">
-            Diesen Button in deine Lesezeichen-Leiste ziehen:
-          </p>
+          <p className="bm-drag-label">{t("bookmarklet.instructions")}</p>
           <div className="bm-drag-row">
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a
@@ -112,30 +96,26 @@ function BookmarkletInstall() {
               className="bm-bookmarklet-btn"
               draggable="true"
               onClick={(e) => e.preventDefault()}
-              title="In Lesezeichen-Leiste ziehen"
+              title={t("bookmarklet.dragTo")}
             >
               <PinIcon className="bm-bookmarklet-icon" aria-hidden="true" />
-              Job merken
+              {t("bookmarklet.jobMarkButton")}
             </a>
             <button
               className="bm-copy-btn"
               onClick={handleCopy}
-              title="Code kopieren"
+              title={t("bookmarklet.copyCode")}
             >
-              {copied ? "✓ Kopiert" : "Code kopieren"}
+              {copied ? t("bookmarklet.copied") : t("bookmarklet.copyCode")}
             </button>
           </div>
-          <p className="bm-drag-hint">
-            Tipp: Den Button einfach per Drag &amp; Drop in die
-            Lesezeichen-Leiste ziehen.
-          </p>
+          <p className="bm-drag-hint">{t("bookmarklet.dragHint")}</p>
         </div>
 
-        {/* Steps */}
         <div className="bm-steps">
-          <h2 className="bm-section-title">So geht's</h2>
+          <h2 className="bm-section-title">{t("bookmarklet.howTo")}</h2>
           <div className="bm-step-list">
-            {STEPS.map((step) => (
+            {steps.map((step) => (
               <div key={step.num} className="bm-step">
                 <div className="bm-step-num">{step.num}</div>
                 <div className="bm-step-body">
@@ -147,16 +127,12 @@ function BookmarkletInstall() {
           </div>
         </div>
 
-        {/* Supported sites */}
         <div className="bm-sites">
-          <h2 className="bm-section-title">Automatische Firmenerkennung</h2>
-          <p className="bm-sites-text">
-            Auf diesen Seiten wird die Firma automatisch aus der Seite
-            ausgelesen:
-          </p>
+          <h2 className="bm-section-title">{t("bookmarklet.autoCompany")}</h2>
+          <p className="bm-sites-text">{t("bookmarklet.autoCompanyHint")}</p>
           <div className="bm-site-list">
             {SUPPORTED_SITES.map((site) => (
-              <div key={site.name} className="bm-site-chip">
+              <div key={site.name ?? "others"} className="bm-site-chip">
                 {site.url ? (
                   <>
                     <span className="bm-site-dot bm-site-dot--auto" />
@@ -165,7 +141,7 @@ function BookmarkletInstall() {
                 ) : (
                   <>
                     <span className="bm-site-dot bm-site-dot--manual" />
-                    {site.name} — URL + Titel werden übernommen
+                    {t("bookmarklet.allOthers")} — {t("bookmarklet.urlCaptured")}
                   </>
                 )}
               </div>
@@ -173,16 +149,9 @@ function BookmarkletInstall() {
           </div>
         </div>
 
-        {/* Info box */}
         <div className="bm-info">
-          <strong>Wie funktioniert das?</strong>
-          <p>
-            Ein Bookmarklet ist ein Lesezeichen mit JavaScript-Code statt einer
-            URL. Beim Klick öffnet es ein kleines JobPilot-Fenster mit den
-            vorausgefüllten Stellendaten — du überprüfst kurz, ergänzt Notizen
-            und klickst auf Speichern. Kein Plugin, kein Store, läuft in jedem
-            Browser.
-          </p>
+          <strong>{t("bookmarklet.howItWorks")}</strong>
+          <p>{t("bookmarklet.howItWorksHint")}</p>
         </div>
       </div>
     </div>
