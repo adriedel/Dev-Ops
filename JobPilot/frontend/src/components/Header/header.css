@@ -281,7 +281,7 @@
   justify-content: center;
   gap: 8px;
   padding: 11px 24px;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, var(--danger-light) 0%, var(--danger) 100%);
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -289,7 +289,7 @@
   white-space: nowrap;
   font-size: 0.98rem;
   font-weight: 600;
-  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.18);
+  box-shadow: 0 6px 16px var(--danger-shadow);
   transition:
     transform 0.15s,
     box-shadow 0.15s,
@@ -300,7 +300,7 @@
 .logout-button:hover {
   transform: translateY(-2px);
   filter: brightness(1.08);
-  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.24);
+  box-shadow: 0 10px 24px var(--danger-shadow);
 }
 
 .logout-button:active {
@@ -407,36 +407,53 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 16px;
+  padding: 12px 16px;
   border-radius: 10px;
-  border: 1.5px solid transparent;
-  background: var(--bg-app);
+  border: 1.5px solid var(--border);
+  background: var(--bg-surface);
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 600;
   font-family: inherit;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   width: 100%;
   text-align: left;
-  transition:
-    background 0.15s,
-    border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
 }
 
 .mobile-menu-item:hover {
   background: var(--bg-hover);
-  border-color: var(--border);
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.dark-mode .mobile-menu-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .mobile-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--blue);
+  color: var(--blue);
 }
 
 .mobile-menu-new {
   background: var(--brand-gradient);
   color: #ffffff;
+  border-color: rgba(30, 58, 138, 0.35);
   box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
 }
 
 .mobile-menu-new:hover {
-  filter: brightness(1.06);
-  border-color: transparent;
+  filter: brightness(1.08);
+  background: var(--brand-gradient);
+  color: #ffffff;
+  border-color: rgba(30, 58, 138, 0.6);
+  box-shadow: 0 6px 18px rgba(30, 58, 138, 0.3);
+  transform: translateY(-1px);
 }
 
 .mobile-menu-plus {
@@ -445,17 +462,23 @@
 }
 
 .mobile-menu-logout {
-  color: #ef4444;
+  color: var(--danger);
+  border-color: var(--danger-border);
 }
 
 .mobile-menu-logout:hover {
-  background: #fef2f2;
-  border-color: #fecaca;
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.dark-mode .mobile-menu-logout {
+  border-color: var(--danger-border);
 }
 
 .dark-mode .mobile-menu-logout:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.3);
+  background: var(--danger-bg);
+  border-color: var(--danger);
 }
 
 .mobile-menu-icon {
