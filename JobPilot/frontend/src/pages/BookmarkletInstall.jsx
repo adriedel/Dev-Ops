@@ -89,7 +89,6 @@ function BookmarkletInstall() {
         <div className="bm-drag-section">
           <p className="bm-drag-label">{t("bookmarklet.instructions")}</p>
           <div className="bm-drag-row">
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a
               ref={linkRef}
               href="#"

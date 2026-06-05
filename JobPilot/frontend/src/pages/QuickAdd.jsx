@@ -1,7 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect } from "react";
 import { login as loginAPI } from "../services/auth";
 import { create } from "../services/api";
-import { STATUS, STATUS_LABELS, BEWERBUNGSARTEN, WAEHRUNGEN, WAEHRUNG_LABELS } from "../utils/constants";
+import {
+  STATUS,
+  STATUS_LABELS,
+  BEWERBUNGSARTEN,
+  WAEHRUNGEN,
+  WAEHRUNG_LABELS,
+} from "../utils/constants";
 import EyeIcon from "../assets/icons/eye.svg?react";
 import EyeOffIcon from "../assets/icons/eye-off.svg?react";
 import "./QuickAdd.css";
@@ -11,7 +17,9 @@ function QuickAdd() {
 
   const [darkMode] = useState(() => {
     const saved = localStorage.getItem("darkMode");
-    return saved !== null ? JSON.parse(saved) : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return saved !== null
+      ? JSON.parse(saved)
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
   useEffect(() => {
@@ -89,7 +97,12 @@ function QuickAdd() {
           <h2>Gespeichert!</h2>
           <p>
             <strong>{formData.position}</strong>
-            {formData.firma && <> bei <strong>{formData.firma}</strong></>}
+            {formData.firma && (
+              <>
+                {" "}
+                bei <strong>{formData.firma}</strong>
+              </>
+            )}
           </p>
           <p className="qa-close-hint">Fenster schließt automatisch…</p>
           <button className="qa-btn-secondary" onClick={() => window.close()}>
@@ -108,7 +121,9 @@ function QuickAdd() {
             <img src="/Logo-JobPilot.svg" alt="JobPilot" className="qa-logo" />
             <h1 className="qa-title">JobPilot</h1>
           </div>
-          <p className="qa-subtitle">Melde dich an, um diese Stelle zu speichern.</p>
+          <p className="qa-subtitle">
+            Melde dich an, um diese Stelle zu speichern.
+          </p>
 
           <form onSubmit={handleLogin} className="qa-form">
             {loginError && <div className="qa-error">{loginError}</div>}
@@ -143,18 +158,25 @@ function QuickAdd() {
                   type="button"
                   className="qa-pw-toggle"
                   onClick={() => setShowPassword((p) => !p)}
-                  aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
-                >
-                  {showPassword
-                    ? <EyeOffIcon className="qa-pw-icon" aria-hidden="true" />
-                    : <EyeIcon className="qa-pw-icon" aria-hidden="true" />
+                  aria-label={
+                    showPassword ? "Passwort verbergen" : "Passwort anzeigen"
                   }
+                >
+                  {showPassword ? (
+                    <EyeOffIcon className="qa-pw-icon" aria-hidden="true" />
+                  ) : (
+                    <EyeIcon className="qa-pw-icon" aria-hidden="true" />
+                  )}
                 </button>
               </div>
             </div>
 
-            <button type="submit" className="qa-btn-primary" disabled={loginLoading}>
-              {loginLoading ? "Wird geladen…" : "Anmelden & speichern"}
+            <button
+              type="submit"
+              className="qa-btn-primary"
+              disabled={loginLoading}
+            >
+              {loginLoading ? "Wird geladenâ€¦" : "Anmelden & speichern"}
             </button>
           </form>
         </div>
@@ -162,7 +184,9 @@ function QuickAdd() {
     );
   }
 
-  const statusOptions = Object.entries(STATUS_LABELS).filter(([k]) => k !== STATUS.GESAMT);
+  const statusOptions = Object.entries(STATUS_LABELS).filter(
+    ([k]) => k !== STATUS.GESAMT,
+  );
 
   return (
     <div className="qa-root">
@@ -207,9 +231,16 @@ function QuickAdd() {
           <div className="qa-row qa-row--split">
             <div className="qa-field">
               <label htmlFor="qa-status">Status</label>
-              <select id="qa-status" name="status" value={formData.status} onChange={handleChange}>
+              <select
+                id="qa-status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+              >
                 {statusOptions.map(([k, v]) => (
-                  <option key={k} value={k}>{v}</option>
+                  <option key={k} value={k}>
+                    {v}
+                  </option>
                 ))}
               </select>
             </div>
@@ -228,9 +259,16 @@ function QuickAdd() {
           <div className="qa-row qa-row--split">
             <div className="qa-field">
               <label htmlFor="qa-bewerbungsart">Bewerbungsart</label>
-              <select id="qa-bewerbungsart" name="bewerbungsart" value={formData.bewerbungsart} onChange={handleChange}>
+              <select
+                id="qa-bewerbungsart"
+                name="bewerbungsart"
+                value={formData.bewerbungsart}
+                onChange={handleChange}
+              >
                 {BEWERBUNGSARTEN.map((art) => (
-                  <option key={art} value={art}>{art}</option>
+                  <option key={art} value={art}>
+                    {art}
+                  </option>
                 ))}
               </select>
             </div>
@@ -258,10 +296,17 @@ function QuickAdd() {
               />
             </div>
             <div className="qa-field qa-field--narrow">
-              <label htmlFor="qa-waehrung">Währung</label>
-              <select id="qa-waehrung" name="waehrung" value={formData.waehrung} onChange={handleChange}>
+              <label htmlFor="qa-waehrung">WÃ¤hrung</label>
+              <select
+                id="qa-waehrung"
+                name="waehrung"
+                value={formData.waehrung}
+                onChange={handleChange}
+              >
                 {WAEHRUNGEN.map((w) => (
-                  <option key={w} value={w}>{w}</option>
+                  <option key={w} value={w}>
+                    {w}
+                  </option>
                 ))}
               </select>
             </div>
@@ -291,10 +336,18 @@ function QuickAdd() {
           </div>
 
           <div className="qa-actions">
-            <button type="button" className="qa-btn-secondary" onClick={() => window.close()}>
+            <button
+              type="button"
+              className="qa-btn-secondary"
+              onClick={() => window.close()}
+            >
               Abbrechen
             </button>
-            <button type="submit" className="qa-btn-primary" disabled={saveLoading}>
+            <button
+              type="submit"
+              className="qa-btn-primary"
+              disabled={saveLoading}
+            >
               {saveLoading ? "Speichern…" : "Speichern"}
             </button>
           </div>
