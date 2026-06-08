@@ -9,25 +9,32 @@ const authenticateToken = require("./authMiddleware");
 const { register, login, getCurrentUser } = require("./authController");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
 
-const uploadsDir = path.join(__dirname, "uploads", "avatars");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const avatarStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
-    cb(null, `${req.userId}_${Date.now()}${ext}`);
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+const uploadToCloudinary = (buffer, publicId) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        public_id: publicId,
+        folder: "avatars",
+        overwrite: true,
+        resource_type: "image",
+        transformation: [{ width: 300, height: 300, crop: "fill", gravity: "face" }],
+      },
+      (error, result) => (error ? reject(error) : resolve(result)),
+    );
+    stream.end(buffer);
+  });
+
 const uploadAvatar = multer({
-  storage: avatarStorage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const allowed = ["image/jpeg", "image/png", "image/gif", "image/webp"];
@@ -101,8 +108,6 @@ app.get("/api", (req, res) => {
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Static file serving for uploaded avatars
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ==================== AUTH ROUTES (UNPROTECTED) ====================
 
@@ -141,25 +146,14 @@ app.post(
     if (!req.file) {
       return res.status(400).json({ error: "Kein Bild hochgeladen" });
     }
-
-    // Delete old image file if it exists
     try {
-      const current = await pool.query(
-        "SELECT profile_image_url FROM users WHERE id = $1",
-        [req.userId],
+      const cloudResult = await uploadToCloudinary(
+        req.file.buffer,
+        `user_${req.userId}`,
       );
-      const oldUrl = current.rows[0]?.profile_image_url;
-      if (oldUrl) {
-        const oldPath = path.join(__dirname, oldUrl);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
-    } catch (_e) { /* ignore cleanup errors */ }
-
-    const imageUrl = `/uploads/avatars/${req.file.filename}`;
-    try {
       const result = await pool.query(
         "UPDATE users SET profile_image_url = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, created_at",
-        [imageUrl, req.userId],
+        [cloudResult.secure_url, req.userId],
       );
       res.json({ user: result.rows[0] });
     } catch (err) {
@@ -171,15 +165,7 @@ app.post(
 // Delete profile image (PROTECTED)
 app.delete("/api/auth/profile/image", authenticateToken, async (req, res) => {
   try {
-    const current = await pool.query(
-      "SELECT profile_image_url FROM users WHERE id = $1",
-      [req.userId],
-    );
-    const imageUrl = current.rows[0]?.profile_image_url;
-    if (imageUrl) {
-      const filePath = path.join(__dirname, imageUrl);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    }
+    await cloudinary.uploader.destroy(`avatars/user_${req.userId}`);
     await pool.query(
       "UPDATE users SET profile_image_url = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = $1",
       [req.userId],
