@@ -7,15 +7,13 @@ function VerifyEmailConfirm() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
-  const [status, setStatus] = useState("loading"); // loading | success | error
-  const [errorMsg, setErrorMsg] = useState("");
+  const [status, setStatus] = useState(() => (token ? "loading" : "error"));
+  const [errorMsg, setErrorMsg] = useState(() =>
+    token ? "" : "Kein Verifizierungstoken gefunden.",
+  );
 
   useEffect(() => {
-    if (!token) {
-      setStatus("error");
-      setErrorMsg("Kein Verifizierungstoken gefunden.");
-      return;
-    }
+    if (!token) return;
 
     verifyEmail(token)
       .then(() => setStatus("success"))
