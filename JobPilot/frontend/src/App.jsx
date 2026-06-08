@@ -37,6 +37,20 @@ function App() {
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const handleUserUpdate = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  };
+
   const [formData, setFormData] = useState({
     position: "",
     firma: "",
@@ -206,6 +220,8 @@ function App() {
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
           onNewBewerbung={() => openModal()}
+          user={user}
+          onUserUpdate={handleUserUpdate}
         />
         <div className="stat-cards">
           <StatCards stats={stats} />

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./header.css";
 import { logout } from "../../services/auth";
+import { API_BASE_URL } from "../../utils/constants";
 import SunIcon from "../../assets/icons/sun.svg?react";
 import MoonIcon from "../../assets/icons/moon.svg?react";
 import BriefcaseIcon from "../../assets/icons/briefcase-white.svg?react";
@@ -10,12 +11,58 @@ import LogoutIcon from "../../assets/icons/logout.svg?react";
 import ExternalIcon from "../../assets/icons/external.svg?react";
 import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
 
-function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
+function getInitials(name) {
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function getAvatarUrl(user) {
+  if (user?.profile_image_url) {
+    return `${API_BASE_URL}${user.profile_image_url}`;
+  }
+  const seed = encodeURIComponent(user?.name || user?.email || "user");
+  return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+}
+
+function UserAvatar({ user, size = 36 }) {
+  const [imgError, setImgError] = useState(false);
+  const avatarUrl = getAvatarUrl(user);
+
+  if (imgError) {
+    return (
+      <span
+        className="user-avatar-initials"
+        style={{ width: size, height: size, fontSize: size * 0.38 }}
+      >
+        {getInitials(user?.name)}
+      </span>
+    );
+  }
+
+  return (
+    <img
+      src={avatarUrl}
+      alt={user?.name || "Avatar"}
+      className="user-avatar-img"
+      style={{ width: size, height: size }}
+      onError={() => setImgError(true)}
+    />
+  );
+}
+
+function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { i18n, t } = useTranslation();
   const navigate = useNavigate();
   const headerRef = useRef(null);
+  const userMenuRef = useRef(null);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -28,8 +75,20 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    if (!isUserMenuOpen) return;
+    const handleOutsideClick = (e) => {
+      if (!userMenuRef.current?.contains(e.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [isUserMenuOpen]);
+
   const handleLogout = () => {
     setIsMenuOpen(false);
+    setIsUserMenuOpen(false);
     setIsLogoutModalOpen(true);
   };
 
@@ -45,6 +104,12 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
   const toggleLanguage = () => {
     const newLang = i18n.language === "de" ? "en" : "de";
     i18n.changeLanguage(newLang);
+  };
+
+  const goToProfile = () => {
+    setIsMenuOpen(false);
+    setIsUserMenuOpen(false);
+    navigate("/profile");
   };
 
   return (
@@ -107,18 +172,56 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
             <span className="language-code">{i18n.language.toUpperCase()}</span>
           </button>
 
-          <button
-            onClick={handleLogout}
-            className="logout-button"
-            title={t("header.logout")}
-          >
-            <LogoutIcon className="logout-icon" aria-hidden="true" />
-            {t("header.logout")}
-          </button>
-
           <button className="btn-new-bewerbung" onClick={onNewBewerbung}>
             <span className="btn-plus">+</span> {t("buttons.newApplication")}
           </button>
+
+          {/* User avatar + dropdown */}
+          <div className="user-menu" ref={userMenuRef}>
+            <button
+              className={`user-avatar-btn${isUserMenuOpen ? " open" : ""}`}
+              onClick={() => setIsUserMenuOpen((v) => !v)}
+              aria-label={t("profile.myProfile")}
+              aria-expanded={isUserMenuOpen}
+              title={user?.name || user?.email || t("profile.myProfile")}
+            >
+              <UserAvatar user={user} size={36} />
+            </button>
+
+            {isUserMenuOpen && (
+              <div className="user-dropdown" role="menu">
+                <div className="user-dropdown-header">
+                  <UserAvatar user={user} size={40} />
+                  <div className="user-dropdown-info">
+                    <span className="user-dropdown-name">
+                      {user?.name || t("profile.myProfile")}
+                    </span>
+                    <span className="user-dropdown-email">{user?.email}</span>
+                  </div>
+                </div>
+                <hr className="user-dropdown-divider" />
+                <button
+                  className="user-dropdown-item"
+                  onClick={goToProfile}
+                  role="menuitem"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  {t("profile.myProfile")}
+                </button>
+                <button
+                  className="user-dropdown-item user-dropdown-logout"
+                  onClick={handleLogout}
+                  role="menuitem"
+                >
+                  <LogoutIcon width="16" height="16" aria-hidden="true" />
+                  {t("header.logout")}
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Hamburger — only rendered / visible via CSS on mobile */}
           <button
@@ -142,6 +245,16 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung }) {
             >
               <span className="mobile-menu-plus">+</span>
               {t("buttons.newApplication")}
+            </button>
+            <button
+              className="mobile-menu-item"
+              onClick={goToProfile}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mobile-menu-icon" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              {t("profile.myProfile")}
             </button>
             <button
               className="mobile-menu-item"
