@@ -6,7 +6,15 @@ const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./swagger.yaml");
 const authenticateToken = require("./authMiddleware");
-const { register, login, getCurrentUser } = require("./authController");
+const {
+  register,
+  login,
+  getCurrentUser,
+  verifyEmail,
+  resendVerification,
+  forgotPassword,
+  resetPassword,
+} = require("./authController");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
@@ -116,6 +124,14 @@ app.post("/api/auth/register", register);
 
 // Login
 app.post("/api/auth/login", login);
+
+// E-Mail-Verifizierung
+app.get("/api/auth/verify-email", verifyEmail);
+app.post("/api/auth/resend-verification", resendVerification);
+
+// Passwort vergessen / zurücksetzen
+app.post("/api/auth/forgot-password", forgotPassword);
+app.post("/api/auth/reset-password", resetPassword);
 
 // Get current user (PROTECTED)
 app.get("/api/auth/me", authenticateToken, getCurrentUser);

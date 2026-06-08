@@ -57,6 +57,36 @@ async function initDB() {
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_image_url TEXT`,
   );
 
+  // E-Mail-Verifizierung
+  await pool.query(
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMP`,
+  );
+  await pool.query(
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verification_token TEXT`,
+  );
+  await pool.query(
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verification_token_expires TIMESTAMP`,
+  );
+
+  // Bestehende User (vor der E-Mail-Verifizierung angelegt) automatisch als verifiziert markieren
+  await pool.query(
+    `UPDATE users SET email_verified_at = created_at WHERE email_verified_at IS NULL AND email_verification_token IS NULL`,
+  );
+
+  // Passwort-Reset-Tokens
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS password_reset_tokens (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      token_hash TEXT UNIQUE NOT NULL,
+      expires_at TIMESTAMP NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await pool.query(
+    `CREATE INDEX IF NOT EXISTS idx_prt_user_id ON password_reset_tokens(user_id)`,
+  );
+
   console.log("Datenbank initialisiert");
 }
 

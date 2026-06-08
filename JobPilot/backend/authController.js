@@ -1,18 +1,23 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const pool = require("./database");
+const { sendVerificationEmail, sendPasswordResetEmail } = require("./emailService");
 
 const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret_token";
 const JWT_EXPIRES_IN = "2d";
 
+function hashToken(token) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
 async function register(req, res) {
   const { email, password, name } = req.body;
 
-  //Validierung
   if (!email || !password) {
     return res
       .status(400)
-      .json({ message: "Email, Passwort und Name sind erforderlich" });
+      .json({ message: "Email und Passwort sind erforderlich" });
   }
 
   if (password.length < 8) {
@@ -22,7 +27,6 @@ async function register(req, res) {
   }
 
   try {
-    //Prüfen, ob User bereits existiert
     const existingUser = await pool.query(
       "SELECT id FROM users WHERE email = $1",
       [email.toLowerCase()],
@@ -34,32 +38,30 @@ async function register(req, res) {
       });
     }
 
-    //Passwort hashen
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    //User erstellen
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
     const result = await pool.query(
-      `INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, created_at`,
-      [email.toLowerCase(), hashedPassword, name || null],
+      `INSERT INTO users (email, password_hash, name, email_verification_token, email_verification_token_expires)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, email, name, created_at`,
+      [email.toLowerCase(), hashedPassword, name || null, verificationToken, tokenExpires],
     );
 
     const user = result.rows[0];
 
-    //JWT Token erstellen
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
-    });
+    try {
+      await sendVerificationEmail(user.email, user.name, verificationToken);
+    } catch (emailErr) {
+      console.error("Fehler beim Senden der Verifizierungs-E-Mail:", emailErr);
+    }
 
     res.status(201).json({
-      message: "Registrierung erfolgreich",
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        created_at: user.created_at,
-      },
+      message: "Registrierung erfolgreich. Bitte bestätige deine E-Mail-Adresse.",
+      email: user.email,
     });
   } catch (err) {
     console.error("Fehler bei der Registrierung:", err);
@@ -67,11 +69,9 @@ async function register(req, res) {
   }
 }
 
-// Login
 async function login(req, res) {
   const { email, password } = req.body;
 
-  // Validierung
   if (!email || !password) {
     return res
       .status(400)
@@ -79,9 +79,8 @@ async function login(req, res) {
   }
 
   try {
-    // User finden
     const result = await pool.query(
-      "SELECT id, email, password_hash, name FROM users WHERE email = $1",
+      "SELECT id, email, password_hash, name, email_verified_at FROM users WHERE email = $1",
       [email.toLowerCase()],
     );
 
@@ -91,14 +90,19 @@ async function login(req, res) {
 
     const user = result.rows[0];
 
-    // Passwort prüfen
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
-
     if (!isValidPassword) {
       return res.status(401).json({ error: "Ungültige Email oder Passwort" });
     }
 
-    // JWT Token erstellen
+    if (!user.email_verified_at) {
+      return res.status(403).json({
+        error: "Bitte bestätige zuerst deine E-Mail-Adresse.",
+        code: "EMAIL_NOT_VERIFIED",
+        email: user.email,
+      });
+    }
+
     const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
       expiresIn: JWT_EXPIRES_IN,
     });
@@ -118,7 +122,169 @@ async function login(req, res) {
   }
 }
 
-// Get current user info
+async function verifyEmail(req, res) {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).json({ error: "Ungültiger Token" });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT id FROM users
+       WHERE email_verification_token = $1
+         AND email_verification_token_expires > NOW()
+         AND email_verified_at IS NULL`,
+      [token],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Ungültiger oder abgelaufener Verifizierungslink" });
+    }
+
+    await pool.query(
+      `UPDATE users
+       SET email_verified_at = CURRENT_TIMESTAMP,
+           email_verification_token = NULL,
+           email_verification_token_expires = NULL,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = $1`,
+      [result.rows[0].id],
+    );
+
+    res.json({ message: "E-Mail-Adresse erfolgreich bestätigt" });
+  } catch (err) {
+    console.error("Verify email error:", err);
+    res.status(500).json({ error: "Fehler bei der Verifizierung" });
+  }
+}
+
+async function resendVerification(req, res) {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "E-Mail-Adresse ist erforderlich" });
+  }
+
+  try {
+    const result = await pool.query(
+      "SELECT id, email, name, email_verified_at FROM users WHERE email = $1",
+      [email.toLowerCase()],
+    );
+
+    // Immer Success zurückgeben (verhindert E-Mail-Enumeration)
+    if (result.rows.length === 0 || result.rows[0].email_verified_at) {
+      return res.json({ message: "Falls ein unbestätigter Account existiert, wurde eine neue E-Mail gesendet." });
+    }
+
+    const user = result.rows[0];
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await pool.query(
+      `UPDATE users
+       SET email_verification_token = $1,
+           email_verification_token_expires = $2
+       WHERE id = $3`,
+      [verificationToken, tokenExpires, user.id],
+    );
+
+    try {
+      await sendVerificationEmail(user.email, user.name, verificationToken);
+    } catch (emailErr) {
+      console.error("Fehler beim Senden:", emailErr);
+    }
+
+    res.json({ message: "Falls ein unbestätigter Account existiert, wurde eine neue E-Mail gesendet." });
+  } catch (err) {
+    console.error("Resend verification error:", err);
+    res.status(500).json({ error: "Interner Serverfehler" });
+  }
+}
+
+async function forgotPassword(req, res) {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "E-Mail-Adresse ist erforderlich" });
+  }
+
+  const genericResponse = { message: "Falls ein Account mit dieser E-Mail existiert, wurde ein Zurücksetzen-Link gesendet." };
+
+  try {
+    const result = await pool.query(
+      "SELECT id, email, name FROM users WHERE email = $1 AND email_verified_at IS NOT NULL",
+      [email.toLowerCase()],
+    );
+
+    if (result.rows.length === 0) {
+      return res.json(genericResponse);
+    }
+
+    const user = result.rows[0];
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const tokenHash = hashToken(resetToken);
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+    await pool.query("DELETE FROM password_reset_tokens WHERE user_id = $1", [user.id]);
+    await pool.query(
+      "INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) VALUES ($1, $2, $3)",
+      [user.id, tokenHash, expiresAt],
+    );
+
+    try {
+      await sendPasswordResetEmail(user.email, user.name, resetToken);
+    } catch (emailErr) {
+      console.error("Fehler beim Senden:", emailErr);
+    }
+
+    res.json(genericResponse);
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    res.status(500).json({ error: "Interner Serverfehler" });
+  }
+}
+
+async function resetPassword(req, res) {
+  const { token, password } = req.body;
+
+  if (!token || !password) {
+    return res.status(400).json({ error: "Token und Passwort sind erforderlich" });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ error: "Das Passwort muss mindestens 8 Zeichen lang sein" });
+  }
+
+  try {
+    const tokenHash = hashToken(token);
+
+    const result = await pool.query(
+      `SELECT user_id FROM password_reset_tokens WHERE token_hash = $1 AND expires_at > NOW()`,
+      [tokenHash],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Ungültiger oder abgelaufener Zurücksetzen-Link" });
+    }
+
+    const userId = result.rows[0].user_id;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    await pool.query(
+      "UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
+      [hashedPassword, userId],
+    );
+    await pool.query("DELETE FROM password_reset_tokens WHERE user_id = $1", [userId]);
+
+    res.json({ message: "Passwort erfolgreich zurückgesetzt" });
+  } catch (err) {
+    console.error("Reset password error:", err);
+    res.status(500).json({ error: "Interner Serverfehler" });
+  }
+}
+
 async function getCurrentUser(req, res) {
   try {
     const result = await pool.query(
@@ -141,4 +307,8 @@ module.exports = {
   register,
   login,
   getCurrentUser,
+  verifyEmail,
+  resendVerification,
+  forgotPassword,
+  resetPassword,
 };
