@@ -30,6 +30,9 @@ services:
       DATABASE_URL: postgresql://jobpilot:jobpilot@db:5432/jobpilot
       JWT_SECRET: docker_demo_secret_change_me
       FRONTEND_URLS: http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173
+      FRONTEND_URL: http://localhost:8080
+      FROM_EMAIL: onboarding@resend.dev
+      # RESEND_API_KEY wird aus backend/.env geladen (via env_file)
     ports:
       - "3001:3001"
 

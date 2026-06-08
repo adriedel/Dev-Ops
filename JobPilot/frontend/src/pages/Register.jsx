@@ -86,12 +86,8 @@ function Register() {
         formData.name.trim(),
       );
 
-      // Token und User speichern
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // Redirect zum Dashboard
-      navigate("/dashboard");
+      // Kein Token speichern – E-Mail muss zuerst bestätigt werden
+      navigate(`/verify-email?email=${encodeURIComponent(data.email)}`);
     } catch (err) {
       setError(err.message || "Registrierung fehlgeschlagen");
     } finally {

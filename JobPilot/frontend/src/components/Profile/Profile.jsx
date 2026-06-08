@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   getCurrentUser,
@@ -8,6 +8,7 @@ import {
   deleteProfileImage,
   changeEmail,
   changePassword,
+  forgotPassword,
 } from "../../services/auth";
 import { API_BASE_URL } from "../../utils/constants";
 import "./Profile.css";
@@ -222,7 +223,16 @@ function ChangePasswordModal({ onClose, onSuccess, t }) {
         </div>
 
         <div className="profile-modal-body">
-          {error && <div className="profile-modal-error">{error}</div>}
+          {error && (
+            <div className="profile-modal-error">
+              {error}
+              <div style={{ marginTop: "6px", fontSize: "0.82rem" }}>
+                <Link to="/forgot-password" style={{ color: "inherit", textDecoration: "underline" }}>
+                  Passwort vergessen?
+                </Link>
+              </div>
+            </div>
+          )}
 
           <div className="profile-field">
             <label className="profile-label">{t("profile.currentPassword")}</label>
@@ -295,6 +305,7 @@ export default function Profile() {
   const [feedback, setFeedback] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [resetStatus, setResetStatus] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
     getCurrentUser()
@@ -527,12 +538,38 @@ export default function Profile() {
               <label className="profile-label">{t("profile.password")}</label>
               <div className="profile-value-row">
                 <span className="profile-pw-dots">••••••••••••</span>
-                <button
-                  className="profile-change-btn"
-                  onClick={() => setShowPasswordModal(true)}
-                >
-                  {t("profile.change")}
-                </button>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <button
+                    className="profile-change-btn"
+                    onClick={() => setShowPasswordModal(true)}
+                  >
+                    {t("profile.change")}
+                  </button>
+                  <button
+                    className="profile-change-btn"
+                    disabled={resetStatus === "sending" || resetStatus === "sent"}
+                    onClick={async () => {
+                      if (!user?.email) return;
+                      setResetStatus("sending");
+                      try {
+                        await forgotPassword(user.email);
+                        setResetStatus("sent");
+                        showFeedback("Reset-Link wurde an deine E-Mail gesendet.");
+                        setTimeout(() => setResetStatus("idle"), 10000);
+                      } catch {
+                        setResetStatus("error");
+                        setTimeout(() => setResetStatus("idle"), 4000);
+                      }
+                    }}
+                    style={{ opacity: resetStatus === "sent" ? 0.6 : 1 }}
+                  >
+                    {resetStatus === "sending"
+                      ? "Wird gesendet…"
+                      : resetStatus === "sent"
+                      ? "Link gesendet ✓"
+                      : "Per E-Mail zurücksetzen"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
