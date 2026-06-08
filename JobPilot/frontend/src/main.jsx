@@ -6,6 +6,7 @@ import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import App from "./App.jsx";
+import Profile from "./components/Profile/Profile";
 import QuickAdd from "./pages/QuickAdd";
 import BookmarkletInstall from "./pages/BookmarkletInstall";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -35,6 +36,16 @@ export function Root() {
           element={
             <ProtectedRoute>
               <App />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Profile Route */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
