@@ -5,6 +5,10 @@ import "./i18n";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import VerifyEmail from "./pages/VerifyEmail";
+import VerifyEmailConfirm from "./pages/VerifyEmailConfirm";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import App from "./App.jsx";
 import Profile from "./components/Profile/Profile";
 import QuickAdd from "./pages/QuickAdd";
@@ -29,6 +33,10 @@ export function Root() {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/verify-email/confirm" element={<VerifyEmailConfirm />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Protected Routes */}
         <Route

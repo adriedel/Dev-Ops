@@ -19,10 +19,10 @@ export async function register(email, password, name) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error || "Registrierung fehlgeschlagen");
+    throw new Error(data.message || data.error || "Registrierung fehlgeschlagen");
   }
 
-  return data;
+  return data; // { message, email }
 }
 
 // Login
@@ -38,7 +38,10 @@ export async function login(email, password, rememberMe = false) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error || "Login fehlgeschlagen");
+    const err = new Error(data.error || "Login fehlgeschlagen");
+    if (data.code) err.code = data.code;
+    if (data.email) err.email = data.email;
+    throw err;
   }
 
   return data;
@@ -173,5 +176,51 @@ export async function deleteProfileImage() {
   });
   const data = await parseJSON(response);
   if (!response.ok) throw new Error(data.error || "Fehler beim Löschen");
+  return data;
+}
+
+// Verify email with token from URL
+export async function verifyEmail(token) {
+  const response = await fetch(
+    `${API_URL}/auth/verify-email?token=${encodeURIComponent(token)}`,
+  );
+  const data = await parseJSON(response);
+  if (!response.ok) throw new Error(data.error || "Verifizierung fehlgeschlagen");
+  return data;
+}
+
+// Resend verification email
+export async function resendVerification(email) {
+  const response = await fetch(`${API_URL}/auth/resend-verification`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  const data = await parseJSON(response);
+  if (!response.ok) throw new Error(data.error || "Fehler beim erneuten Senden");
+  return data;
+}
+
+// Request password reset email
+export async function forgotPassword(email) {
+  const response = await fetch(`${API_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  const data = await parseJSON(response);
+  if (!response.ok) throw new Error(data.error || "Fehler beim Anfordern");
+  return data;
+}
+
+// Set new password using reset token
+export async function resetPassword(token, password) {
+  const response = await fetch(`${API_URL}/auth/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, password }),
+  });
+  const data = await parseJSON(response);
+  if (!response.ok) throw new Error(data.error || "Fehler beim Zurücksetzen");
   return data;
 }

@@ -302,6 +302,18 @@ input::-webkit-contacts-auto-fill-button {
   right: 0;
 }
 
+/* ── Success Message ── */
+.success-message {
+  background: var(--status-angenommen-bg, #dcfce7);
+  color: var(--status-angenommen-accent, #16a34a);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border-left: 3px solid var(--status-angenommen-accent, #16a34a);
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 /* ── Error Message ── */
 .error-message {
   background: var(--status-abgelehnt-bg);

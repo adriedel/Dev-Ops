@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { login as loginAPI } from "../services/auth";
 import ArrowLeftIcon from "../assets/icons/back.svg?react";
 import EyeIcon from "../assets/icons/eye.svg?react";
@@ -13,7 +13,10 @@ function Login() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const resetSuccess = searchParams.get("reset") === "success";
 
   const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -72,14 +75,17 @@ function Login() {
     try {
       const data = await loginAPI(validatedData.trimmedEmail, password);
 
-      // Token und User speichern
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Redirect zum Dashboard
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message || "Login fehlgeschlagen");
+      if (err.code === "EMAIL_NOT_VERIFIED") {
+        setUnverifiedEmail(err.email);
+        setError("Bitte bestätige zuerst deine E-Mail-Adresse.");
+      } else {
+        setError(err.message || "Login fehlgeschlagen");
+      }
     } finally {
       setLoading(false);
     }
@@ -106,7 +112,27 @@ function Login() {
         <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <h2>Anmelden</h2>
 
-          {error && <div className="error-message">{error}</div>}
+          {resetSuccess && (
+            <div className="success-message">
+              Passwort erfolgreich zurückgesetzt! Du kannst dich jetzt anmelden.
+            </div>
+          )}
+
+          {error && (
+            <div className="error-message">
+              {error}
+              {unverifiedEmail && (
+                <p style={{ marginTop: "8px", marginBottom: 0, fontSize: "0.85rem" }}>
+                  <Link
+                    to={`/verify-email?email=${encodeURIComponent(unverifiedEmail)}`}
+                    style={{ color: "inherit", textDecoration: "underline" }}
+                  >
+                    Neue Bestätigungs-E-Mail anfordern
+                  </Link>
+                </p>
+              )}
+            </div>
+          )}
 
           <div className={`form-group ${fieldErrors.email ? "has-error" : ""}`}>
             <label htmlFor="email">Email</label>
@@ -170,6 +196,12 @@ function Login() {
                 {fieldErrors.password}
               </p>
             )}
+          </div>
+
+          <div style={{ textAlign: "right", marginTop: "-8px", marginBottom: "16px" }}>
+            <Link to="/forgot-password" style={{ fontSize: "0.88rem", color: "var(--blue)" }}>
+              Passwort vergessen?
+            </Link>
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>
