@@ -87,7 +87,7 @@ function Register() {
       );
 
       // Kein Token speichern – E-Mail muss zuerst bestätigt werden
-      navigate(`/verify-email?email=${encodeURIComponent(data.email)}`);
+      navigate(`/verify-email?email=${encodeURIComponent(validatedData.trimmedEmail)}`);
     } catch (err) {
       setError(err.message || "Registrierung fehlgeschlagen");
     } finally {
