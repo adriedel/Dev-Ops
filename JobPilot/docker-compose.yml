@@ -23,6 +23,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - ./backend/.env
     environment:
       PORT: 3001
       DATABASE_URL: postgresql://jobpilot:jobpilot@db:5432/jobpilot
