@@ -92,6 +92,15 @@ export function getToken() {
   return localStorage.getItem("token");
 }
 
+async function parseJSON(response) {
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error("Server nicht erreichbar oder antwortet nicht korrekt");
+  }
+}
+
 // Update profile name
 export async function updateProfile(name) {
   const token = getToken();
@@ -103,7 +112,7 @@ export async function updateProfile(name) {
     },
     body: JSON.stringify({ name }),
   });
-  const data = await response.json();
+  const data = await parseJSON(response);
   if (!response.ok) throw new Error(data.error || "Fehler beim Speichern");
   return data.user;
 }
@@ -118,7 +127,7 @@ export async function uploadProfileImage(file) {
     headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
-  const data = await response.json();
+  const data = await parseJSON(response);
   if (!response.ok) throw new Error(data.error || "Fehler beim Upload");
   return data.user;
 }
@@ -134,7 +143,7 @@ export async function changeEmail(email) {
     },
     body: JSON.stringify({ email }),
   });
-  const data = await response.json();
+  const data = await parseJSON(response);
   if (!response.ok) throw new Error(data.error || "Fehler beim Ändern der E-Mail");
   return data.user;
 }
@@ -150,7 +159,7 @@ export async function changePassword(currentPassword, newPassword) {
     },
     body: JSON.stringify({ currentPassword, newPassword }),
   });
-  const data = await response.json();
+  const data = await parseJSON(response);
   if (!response.ok) throw new Error(data.error || "Fehler beim Ändern des Passworts");
   return data;
 }
@@ -162,7 +171,7 @@ export async function deleteProfileImage() {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
   });
-  const data = await response.json();
+  const data = await parseJSON(response);
   if (!response.ok) throw new Error(data.error || "Fehler beim Löschen");
   return data;
 }

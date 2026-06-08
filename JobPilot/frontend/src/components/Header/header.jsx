@@ -23,7 +23,8 @@ function getInitials(name) {
 
 function getAvatarUrl(user) {
   if (user?.profile_image_url) {
-    return `${API_BASE_URL}${user.profile_image_url}`;
+    const url = user.profile_image_url;
+    return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
   }
   const seed = encodeURIComponent(user?.name || user?.email || "user");
   return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
