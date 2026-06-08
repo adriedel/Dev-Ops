@@ -7,7 +7,41 @@ const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./swagger.yaml");
 const authenticateToken = require("./authMiddleware");
 const { register, login, getCurrentUser } = require("./authController");
+const bcrypt = require("bcryptjs");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const uploadToCloudinary = (buffer, publicId) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        public_id: publicId,
+        folder: "avatars",
+        overwrite: true,
+        resource_type: "image",
+        transformation: [{ width: 300, height: 300, crop: "fill", gravity: "face" }],
+      },
+      (error, result) => (error ? reject(error) : resolve(result)),
+    );
+    stream.end(buffer);
+  });
+
+const uploadAvatar = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else cb(new Error("Nur JPEG, PNG, GIF und WebP erlaubt"));
+  },
+});
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -74,6 +108,7 @@ app.get("/api", (req, res) => {
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+
 // ==================== AUTH ROUTES (UNPROTECTED) ====================
 
 // Register
@@ -84,6 +119,123 @@ app.post("/api/auth/login", login);
 
 // Get current user (PROTECTED)
 app.get("/api/auth/me", authenticateToken, getCurrentUser);
+
+// Update profile name (PROTECTED)
+app.put("/api/auth/profile", authenticateToken, async (req, res) => {
+  const { name } = req.body;
+  if (!name || !name.trim()) {
+    return res.status(400).json({ error: "Name ist erforderlich" });
+  }
+  try {
+    const result = await pool.query(
+      "UPDATE users SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, created_at",
+      [name.trim(), req.userId],
+    );
+    res.json({ user: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Upload profile image (PROTECTED)
+app.post(
+  "/api/auth/profile/image",
+  authenticateToken,
+  uploadAvatar.single("image"),
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "Kein Bild hochgeladen" });
+    }
+    try {
+      const cloudResult = await uploadToCloudinary(
+        req.file.buffer,
+        `user_${req.userId}`,
+      );
+      const result = await pool.query(
+        "UPDATE users SET profile_image_url = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, created_at",
+        [cloudResult.secure_url, req.userId],
+      );
+      res.json({ user: result.rows[0] });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+);
+
+// Delete profile image (PROTECTED)
+app.delete("/api/auth/profile/image", authenticateToken, async (req, res) => {
+  try {
+    await cloudinary.uploader.destroy(`avatars/user_${req.userId}`);
+    await pool.query(
+      "UPDATE users SET profile_image_url = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = $1",
+      [req.userId],
+    );
+    res.json({ message: "Profilbild gelöscht" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Change email (PROTECTED)
+app.put("/api/auth/profile/email", authenticateToken, async (req, res) => {
+  const { email } = req.body;
+  if (!email || !email.trim()) {
+    return res.status(400).json({ error: "E-Mail ist erforderlich" });
+  }
+  const newEmail = email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+    return res.status(400).json({ error: "Ungültige E-Mail-Adresse" });
+  }
+  try {
+    const existing = await pool.query(
+      "SELECT id FROM users WHERE email = $1 AND id != $2",
+      [newEmail, req.userId],
+    );
+    if (existing.rows.length > 0) {
+      return res.status(400).json({ error: "Diese E-Mail-Adresse ist bereits vergeben" });
+    }
+    const result = await pool.query(
+      "UPDATE users SET email = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, created_at",
+      [newEmail, req.userId],
+    );
+    res.json({ user: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Change password (PROTECTED)
+app.put("/api/auth/profile/password", authenticateToken, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: "Aktuelles und neues Passwort sind erforderlich" });
+  }
+  if (newPassword.length < 8) {
+    return res.status(400).json({ error: "Das neue Passwort muss mindestens 8 Zeichen lang sein" });
+  }
+  try {
+    const result = await pool.query(
+      "SELECT password_hash FROM users WHERE id = $1",
+      [req.userId],
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User nicht gefunden" });
+    }
+    const isValid = await bcrypt.compare(currentPassword, result.rows[0].password_hash);
+    if (!isValid) {
+      return res.status(401).json({ error: "Das aktuelle Passwort ist falsch" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(newPassword, salt);
+    await pool.query(
+      "UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
+      [hashed, req.userId],
+    );
+    res.json({ message: "Passwort erfolgreich geändert" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ==================== BEWERBUNGEN ROUTES (PROTECTED) ====================
 

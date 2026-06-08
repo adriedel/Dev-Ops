@@ -122,7 +122,7 @@ async function login(req, res) {
 async function getCurrentUser(req, res) {
   try {
     const result = await pool.query(
-      "SELECT id, email, name, created_at FROM users WHERE id = $1",
+      "SELECT id, email, name, profile_image_url, created_at FROM users WHERE id = $1",
       [req.userId],
     );
 

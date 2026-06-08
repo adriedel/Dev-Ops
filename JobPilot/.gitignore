@@ -20,3 +20,6 @@ Thumbs.db
 # Build output
 node_modules/
 dist/
+
+# Uploaded user files (ephemeral, not for version control)
+backend/uploads/

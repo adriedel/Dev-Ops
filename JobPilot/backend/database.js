@@ -53,6 +53,9 @@ async function initDB() {
   await pool.query(
     `CREATE INDEX IF NOT EXISTS idx_bewerbungen_user_id ON bewerbungen(user_id)`,
   );
+  await pool.query(
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_image_url TEXT`,
+  );
 
   console.log("Datenbank initialisiert");
 }
