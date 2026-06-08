@@ -133,7 +133,9 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
             title={t("header.bookmarklet")}
           >
             <ExternalIcon className="btn-bookmarklet-icon" aria-hidden="true" />
-            <span className="btn-bookmarklet-label">{t("header.bookmarklet")}</span>
+            <span className="btn-bookmarklet-label">
+              {t("header.bookmarklet")}
+            </span>
           </button>
 
           <div className="theme-toggle-group">
@@ -143,7 +145,11 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
               aria-label="Light mode"
               title="Hell"
             >
-              <SunIcon className="theme-icon" aria-hidden="true" focusable="false" />
+              <SunIcon
+                className="theme-icon"
+                aria-hidden="true"
+                focusable="false"
+              />
             </button>
             <button
               className={`theme-btn${darkMode ? " active" : ""}`}
@@ -151,15 +157,25 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
               aria-label="Dark mode"
               title="Dunkel"
             >
-              <MoonIcon className="theme-icon" aria-hidden="true" focusable="false" />
+              <MoonIcon
+                className="theme-icon"
+                aria-hidden="true"
+                focusable="false"
+              />
             </button>
           </div>
 
           <button
             className="language-toggle"
             onClick={toggleLanguage}
-            title={i18n.language === "de" ? "Switch to English" : "Zu Deutsch wechseln"}
-            aria-label={i18n.language === "de" ? "Switch to English" : "Switch to German"}
+            title={
+              i18n.language === "de"
+                ? "Switch to English"
+                : "Zu Deutsch wechseln"
+            }
+            aria-label={
+              i18n.language === "de" ? "Switch to English" : "Switch to German"
+            }
           >
             <img
               src={
@@ -206,7 +222,17 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
                   onClick={goToProfile}
                   role="menuitem"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
@@ -242,16 +268,27 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
           <div className="header-mobile-menu">
             <button
               className="mobile-menu-item mobile-menu-new"
-              onClick={() => { setIsMenuOpen(false); onNewBewerbung(); }}
+              onClick={() => {
+                setIsMenuOpen(false);
+                onNewBewerbung();
+              }}
             >
               <span className="mobile-menu-plus">+</span>
               {t("buttons.newApplication")}
             </button>
-            <button
-              className="mobile-menu-item"
-              onClick={goToProfile}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mobile-menu-icon" aria-hidden="true">
+            <button className="mobile-menu-item" onClick={goToProfile}>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="mobile-menu-icon"
+                aria-hidden="true"
+              >
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
@@ -259,7 +296,10 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
             </button>
             <button
               className="mobile-menu-item"
-              onClick={() => { setIsMenuOpen(false); navigate("/bookmarklet"); }}
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate("/bookmarklet");
+              }}
             >
               <ExternalIcon className="mobile-menu-icon" aria-hidden="true" />
               {t("header.bookmarklet")}
