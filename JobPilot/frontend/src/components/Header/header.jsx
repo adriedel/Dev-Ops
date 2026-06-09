@@ -21,10 +21,37 @@ function getInitials(name) {
     .slice(0, 2);
 }
 
+function buildAvatarConfigUrl(config) {
+  const { backgroundColor, skinColor, accessories, facialHair, ...rest } = config;
+  const parts = ["seed=custom"];
+  Object.entries(rest).forEach(([key, value]) => {
+    parts.push(`${key}=${encodeURIComponent(value)}`);
+  });
+  if (accessories === "none") {
+    parts.push("accessoriesProbability=0");
+  } else if (accessories) {
+    parts.push(`accessories=${accessories}&accessoriesProbability=100`);
+  }
+  if (facialHair === "none") {
+    parts.push("facialHairProbability=0");
+  } else if (facialHair) {
+    parts.push(`facialHair=${facialHair}&facialHairProbability=100`);
+  }
+  if (skinColor) parts.push(`skinColor=${skinColor}`);
+  if (backgroundColor) parts.push(`backgroundColor=${backgroundColor}`);
+  return `https://api.dicebear.com/7.x/avataaars/svg?${parts.join("&")}`;
+}
+
 function getAvatarUrl(user) {
   if (user?.profile_image_url) {
     const url = user.profile_image_url;
     return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
+  }
+  if (user?.avatar_config) {
+    const cfg = typeof user.avatar_config === "string"
+      ? JSON.parse(user.avatar_config)
+      : user.avatar_config;
+    return buildAvatarConfigUrl(cfg);
   }
   const seed = encodeURIComponent(user?.name || user?.email || "user");
   return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9`;

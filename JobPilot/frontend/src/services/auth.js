@@ -167,6 +167,22 @@ export async function changePassword(currentPassword, newPassword) {
   return data;
 }
 
+// Update avatar config (null = reset to seed-based auto avatar)
+export async function updateAvatarConfig(config) {
+  const token = getToken();
+  const response = await fetch(`${API_URL}/auth/profile/avatar-config`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ avatar_config: config }),
+  });
+  const data = await parseJSON(response);
+  if (!response.ok) throw new Error(data.error || "Fehler beim Speichern");
+  return data.user;
+}
+
 // Delete profile image
 export async function deleteProfileImage() {
   const token = getToken();

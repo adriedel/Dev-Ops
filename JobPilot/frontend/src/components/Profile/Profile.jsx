@@ -9,9 +9,100 @@ import {
   changeEmail,
   changePassword,
   forgotPassword,
+  updateAvatarConfig,
 } from "../../services/auth";
 import { API_BASE_URL } from "../../utils/constants";
 import "./Profile.css";
+
+// ── Avatar Customizer Constants ───────────────────────────────────────────────
+
+const AVATAR_PRESETS = [
+  { label: "Kurze Haare", emoji: "✂️", config: { top: "shortFlat", clothing: "blazerAndShirt", eyes: "default", eyebrows: "default", mouth: "smile", accessories: "none", facialHair: "none" } },
+  { label: "Lange Haare", emoji: "💇", config: { top: "bob", clothing: "shirtCrewNeck", eyes: "default", eyebrows: "defaultNatural", mouth: "smile", accessories: "none", facialHair: "none" } },
+  { label: "Mit Bart",    emoji: "🧔", config: { top: "shortFlat", clothing: "blazerAndShirt", eyes: "default", eyebrows: "default", mouth: "default", accessories: "none", facialHair: "beardMedium" } },
+  { label: "Mit Hut",    emoji: "🎩", config: { top: "hat", clothing: "hoodie", eyes: "happy", eyebrows: "raisedExcited", mouth: "smile", accessories: "none", facialHair: "none" } },
+  { label: "Zöpfe",      emoji: "🎀", config: { top: "froBand", clothing: "shirtScoopNeck", eyes: "default", eyebrows: "defaultNatural", mouth: "twinkle", accessories: "none", facialHair: "none" } },
+];
+
+// Exact parameter names + enum values from api.dicebear.com/7.x/avataaars/schema.json
+const AVATAR_OPTIONS = {
+  top: {
+    label: "Frisur / Kopfbedeckung",
+    values: ["hat", "hijab", "turban", "winterHat1", "winterHat02", "winterHat03", "winterHat04", "bigHair", "bob", "bun", "curly", "curvy", "dreads", "frida", "fro", "froBand", "longButNotTooLong", "miaWallace", "shavedSides", "straight01", "straight02", "straightAndStrand", "dreads01", "dreads02", "frizzle", "shaggy", "shaggyMullet", "shortCurly", "shortFlat", "shortRound", "shortWaved", "sides", "theCaesar", "theCaesarAndSidePart"],
+  },
+  accessories: {
+    label: "Accessoire",
+    values: ["none", "kurt", "prescription01", "prescription02", "round", "sunglasses", "wayfarers", "eyepatch"],
+  },
+  facialHair: {
+    label: "Bartform",
+    values: ["none", "beardLight", "beardMajestic", "beardMedium", "moustacheFancy", "moustacheMagnum"],
+  },
+  clothing: {
+    label: "Kleidung",
+    values: ["blazerAndShirt", "blazerAndSweater", "collarAndSweater", "graphicShirt", "hoodie", "overall", "shirtCrewNeck", "shirtScoopNeck", "shirtVNeck"],
+  },
+  eyes: {
+    label: "Augen",
+    values: ["closed", "cry", "default", "eyeRoll", "happy", "hearts", "side", "squint", "surprised", "wink", "winkWacky", "xDizzy"],
+  },
+  eyebrows: {
+    label: "Augenbrauen",
+    values: ["angry", "angryNatural", "default", "defaultNatural", "flatNatural", "frownNatural", "raisedExcited", "raisedExcitedNatural", "sadConcerned", "sadConcernedNatural", "unibrowNatural", "upDown", "upDownNatural"],
+  },
+  mouth: {
+    label: "Mund",
+    values: ["concerned", "default", "disbelief", "eating", "grimace", "sad", "screamOpen", "serious", "smile", "tongue", "twinkle", "vomit"],
+  },
+};
+
+// skinColor uses hex values per schema (not named enum)
+const SKIN_COLORS = ["614335", "ae5d29", "d08b5b", "edb98a", "ffdbb4", "fd9841", "f8d25c"];
+const BG_COLORS = ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf", "d1f9c2", "e8e8e8", "ffffff"];
+
+const DEFAULT_AVATAR_CONFIG = {
+  top: "shortFlat",
+  accessories: "none",
+  facialHair: "none",
+  clothing: "blazerAndShirt",
+  eyes: "default",
+  eyebrows: "default",
+  mouth: "smile",
+  skinColor: "edb98a",
+  backgroundColor: "b6e3f4",
+};
+
+function buildAvatarConfigUrl(config) {
+  const { backgroundColor, skinColor, accessories, facialHair, ...rest } = config;
+  const parts = ["seed=custom"];
+
+  Object.entries(rest).forEach(([key, value]) => {
+    parts.push(`${key}=${encodeURIComponent(value)}`);
+  });
+
+  // accessories/facialHair have no "blank" enum → use probability=0 for "none"
+  if (accessories === "none") {
+    parts.push("accessoriesProbability=0");
+  } else if (accessories) {
+    parts.push(`accessories=${accessories}&accessoriesProbability=100`);
+  }
+  if (facialHair === "none") {
+    parts.push("facialHairProbability=0");
+  } else if (facialHair) {
+    parts.push(`facialHair=${facialHair}&facialHairProbability=100`);
+  }
+
+  if (skinColor) parts.push(`skinColor=${skinColor}`);
+  if (backgroundColor) parts.push(`backgroundColor=${backgroundColor}`);
+
+  return `https://api.dicebear.com/7.x/avataaars/svg?${parts.join("&")}`;
+}
+
+function formatLabel(s) {
+  if (s === "none") return "Ohne";
+  const spaced = s.replace(/([0-9]+)/g, " $1").replace(/([A-Z])/g, " $1").trim().replace(/\s+/g, " ");
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -24,6 +115,12 @@ function getAvatarUrl(user) {
   if (user?.profile_image_url) {
     const url = user.profile_image_url;
     return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
+  }
+  if (user?.avatar_config) {
+    const cfg = typeof user.avatar_config === "string"
+      ? JSON.parse(user.avatar_config)
+      : user.avatar_config;
+    return buildAvatarConfigUrl(cfg);
   }
   const seed = encodeURIComponent(user?.name || user?.email || "user");
   return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
@@ -281,6 +378,152 @@ function ChangePasswordModal({ onClose, onSuccess, t }) {
   );
 }
 
+// ── AvatarCustomizerModal ─────────────────────────────────────────────────────
+
+function AvatarCustomizerModal({ user, onClose, onSave, t }) {
+  const [config, setConfig] = useState(() => {
+    if (user?.avatar_config) {
+      const cfg = typeof user.avatar_config === "string"
+        ? JSON.parse(user.avatar_config)
+        : user.avatar_config;
+      return { ...DEFAULT_AVATAR_CONFIG, ...cfg };
+    }
+    return { ...DEFAULT_AVATAR_CONFIG };
+  });
+  const [saving, setSaving] = useState(false);
+
+  const previewUrl = buildAvatarConfigUrl(config);
+
+  const handleCycle = (key, dir) => {
+    const vals = AVATAR_OPTIONS[key].values;
+    const idx = vals.indexOf(config[key]);
+    const safeIdx = idx === -1 ? 0 : idx;
+    const next = (safeIdx + dir + vals.length) % vals.length;
+    setConfig((prev) => ({ ...prev, [key]: vals[next] }));
+  };
+
+  const handleSave = async (configToSave) => {
+    setSaving(true);
+    try {
+      await onSave(configToSave);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="profile-modal-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="profile-modal profile-modal--avatar" role="dialog" aria-modal="true" aria-labelledby="avatar-modal-title">
+        <div className="profile-modal-header">
+          <h2 id="avatar-modal-title" className="profile-modal-title">Avatar anpassen</h2>
+          <button className="profile-modal-close" onClick={onClose} aria-label="Schließen">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="profile-modal-body avatar-customizer-body">
+          <div className="avatar-presets">
+            {AVATAR_PRESETS.map((preset) => (
+              <button
+                key={preset.label}
+                className="avatar-preset-btn"
+                onClick={() => setConfig((prev) => ({ ...prev, ...preset.config }))}
+                title={preset.label}
+              >
+                {preset.emoji} {preset.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="avatar-preview">
+            <img src={previewUrl} alt="Avatar Vorschau" className="avatar-preview-img" />
+          </div>
+
+          {Object.entries(AVATAR_OPTIONS).map(([key, opt]) => {
+            const vals = opt.values;
+            const idx = vals.indexOf(config[key]);
+            const safeIdx = idx === -1 ? 0 : idx;
+            return (
+              <div key={key} className="avatar-option-row">
+                <span className="avatar-option-label">{opt.label}</span>
+                <div className="avatar-option-controls">
+                  <button
+                    className="avatar-arrow-btn"
+                    onClick={() => handleCycle(key, -1)}
+                    aria-label="Vorheriger"
+                  >‹</button>
+                  <span className="avatar-option-value">{formatLabel(vals[safeIdx])}</span>
+                  <button
+                    className="avatar-arrow-btn"
+                    onClick={() => handleCycle(key, 1)}
+                    aria-label="Nächster"
+                  >›</button>
+                </div>
+              </div>
+            );
+          })}
+
+          <div className="avatar-option-row">
+            <span className="avatar-option-label">Hautfarbe</span>
+            <div className="avatar-bg-swatches">
+              {SKIN_COLORS.map((hex) => (
+                <button
+                  key={hex}
+                  className={`avatar-bg-swatch${config.skinColor === hex ? " active" : ""}`}
+                  style={{ background: `#${hex}` }}
+                  onClick={() => setConfig((prev) => ({ ...prev, skinColor: hex }))}
+                  title={`#${hex}`}
+                  aria-label={`Hautfarbe #${hex}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="avatar-option-row">
+            <span className="avatar-option-label">Hintergrund</span>
+            <div className="avatar-bg-swatches">
+              {BG_COLORS.map((color) => (
+                <button
+                  key={color}
+                  className={`avatar-bg-swatch${config.backgroundColor === color ? " active" : ""}`}
+                  style={{ background: `#${color}`, border: color === "ffffff" ? "1.5px solid #d1d5db" : undefined }}
+                  onClick={() => setConfig((prev) => ({ ...prev, backgroundColor: color }))}
+                  title={`#${color}`}
+                  aria-label={`Hintergrundfarbe #${color}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="profile-modal-footer avatar-customizer-footer">
+          <button
+            className="profile-btn profile-btn--ghost"
+            onClick={() => handleSave(null)}
+            disabled={saving}
+            title="Zurück zum zufällig generierten Avatar"
+          >
+            Zurücksetzen
+          </button>
+          <div style={{ flex: 1 }} />
+          <button className="profile-btn profile-btn--ghost" onClick={onClose} disabled={saving}>
+            Abbrechen
+          </button>
+          <button
+            className="profile-btn profile-btn--primary"
+            onClick={() => handleSave(config)}
+            disabled={saving}
+          >
+            {saving ? "Wird gespeichert…" : "Speichern"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Profile (main) ────────────────────────────────────────────────────────────
 
 export default function Profile() {
@@ -305,6 +548,7 @@ export default function Profile() {
   const [feedback, setFeedback] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showAvatarCustomizer, setShowAvatarCustomizer] = useState(false);
   const [resetStatus, setResetStatus] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
@@ -361,6 +605,17 @@ export default function Profile() {
     } finally {
       setUploading(false);
       e.target.value = "";
+    }
+  };
+
+  const handleSaveAvatarConfig = async (config) => {
+    try {
+      const updated = await updateAvatarConfig(config);
+      updateLocalUser(updated);
+      setShowAvatarCustomizer(false);
+      showFeedback(config ? "Avatar gespeichert." : "Avatar zurückgesetzt.");
+    } catch (err) {
+      showFeedback(err.message, "error");
     }
   };
 
@@ -451,9 +706,26 @@ export default function Profile() {
                   {t("profile.deleteImage")}
                 </button>
               )}
+              {!user?.profile_image_url && (
+                <button
+                  className="profile-btn profile-btn--secondary"
+                  onClick={() => setShowAvatarCustomizer(true)}
+                  disabled={uploading}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+                  </svg>
+                  Avatar anpassen
+                </button>
+              )}
             </div>
             <p className="profile-avatar-hint">
-              {user?.profile_image_url ? t("profile.customAvatar") : t("profile.autoAvatar")}
+              {user?.profile_image_url
+                ? t("profile.customAvatar")
+                : user?.avatar_config
+                ? "Angepasster DiceBear Avatar"
+                : t("profile.autoAvatar")}
             </p>
           </div>
 
@@ -597,6 +869,15 @@ export default function Profile() {
             setShowPasswordModal(false);
             showFeedback(t("profile.passwordChangeSuccess"));
           }}
+          t={t}
+        />
+      )}
+
+      {showAvatarCustomizer && (
+        <AvatarCustomizerModal
+          user={user}
+          onClose={() => setShowAvatarCustomizer(false)}
+          onSave={handleSaveAvatarConfig}
           t={t}
         />
       )}
