@@ -380,7 +380,7 @@ function ChangePasswordModal({ onClose, onSuccess, t }) {
 
 // ── AvatarCustomizerModal ─────────────────────────────────────────────────────
 
-function AvatarCustomizerModal({ user, onClose, onSave, t }) {
+function AvatarCustomizerModal({ user, onClose, onSave }) {
   const [config, setConfig] = useState(() => {
     if (user?.avatar_config) {
       const cfg = typeof user.avatar_config === "string"

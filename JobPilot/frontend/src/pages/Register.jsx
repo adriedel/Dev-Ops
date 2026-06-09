@@ -80,7 +80,7 @@ function Register() {
     setLoading(true);
 
     try {
-      const data = await registerAPI(
+      await registerAPI(
         validatedData.trimmedEmail,
         formData.password,
         formData.name.trim(),
