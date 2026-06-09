@@ -17,43 +17,22 @@ import "./Profile.css";
 // ── Avatar Customizer Constants ───────────────────────────────────────────────
 
 const AVATAR_PRESETS = [
-  { label: "Kurze Haare", emoji: "✂️", config: { top: "shortFlat", clothing: "blazerAndShirt", eyes: "default", eyebrows: "default", mouth: "smile", accessories: "none", facialHair: "none" } },
-  { label: "Lange Haare", emoji: "💇", config: { top: "bob", clothing: "shirtCrewNeck", eyes: "default", eyebrows: "defaultNatural", mouth: "smile", accessories: "none", facialHair: "none" } },
-  { label: "Mit Bart",    emoji: "🧔", config: { top: "shortFlat", clothing: "blazerAndShirt", eyes: "default", eyebrows: "default", mouth: "default", accessories: "none", facialHair: "beardMedium" } },
-  { label: "Mit Hut",    emoji: "🎩", config: { top: "hat", clothing: "hoodie", eyes: "happy", eyebrows: "raisedExcited", mouth: "smile", accessories: "none", facialHair: "none" } },
-  { label: "Zöpfe",      emoji: "🎀", config: { top: "froBand", clothing: "shirtScoopNeck", eyes: "default", eyebrows: "defaultNatural", mouth: "twinkle", accessories: "none", facialHair: "none" } },
+  { key: "shortHair", emoji: "✂️", config: { top: "shortFlat", clothing: "blazerAndShirt", eyes: "default", eyebrows: "default", mouth: "smile", accessories: "none", facialHair: "none" } },
+  { key: "longHair",  emoji: "💇", config: { top: "bob", clothing: "shirtCrewNeck", eyes: "default", eyebrows: "defaultNatural", mouth: "smile", accessories: "none", facialHair: "none" } },
+  { key: "beard",     emoji: "🧔", config: { top: "shortFlat", clothing: "blazerAndShirt", eyes: "default", eyebrows: "default", mouth: "default", accessories: "none", facialHair: "beardMedium" } },
+  { key: "hat",       emoji: "🎩", config: { top: "hat", clothing: "hoodie", eyes: "happy", eyebrows: "raisedExcited", mouth: "smile", accessories: "none", facialHair: "none" } },
+  { key: "braids",    emoji: "🎀", config: { top: "froBand", clothing: "shirtScoopNeck", eyes: "default", eyebrows: "defaultNatural", mouth: "twinkle", accessories: "none", facialHair: "none" } },
 ];
 
 // Exact parameter names + enum values from api.dicebear.com/7.x/avataaars/schema.json
 const AVATAR_OPTIONS = {
-  top: {
-    label: "Frisur / Kopfbedeckung",
-    values: ["hat", "hijab", "turban", "winterHat1", "winterHat02", "winterHat03", "winterHat04", "bigHair", "bob", "bun", "curly", "curvy", "dreads", "frida", "fro", "froBand", "longButNotTooLong", "miaWallace", "shavedSides", "straight01", "straight02", "straightAndStrand", "dreads01", "dreads02", "frizzle", "shaggy", "shaggyMullet", "shortCurly", "shortFlat", "shortRound", "shortWaved", "sides", "theCaesar", "theCaesarAndSidePart"],
-  },
-  accessories: {
-    label: "Accessoire",
-    values: ["none", "kurt", "prescription01", "prescription02", "round", "sunglasses", "wayfarers", "eyepatch"],
-  },
-  facialHair: {
-    label: "Bartform",
-    values: ["none", "beardLight", "beardMajestic", "beardMedium", "moustacheFancy", "moustacheMagnum"],
-  },
-  clothing: {
-    label: "Kleidung",
-    values: ["blazerAndShirt", "blazerAndSweater", "collarAndSweater", "graphicShirt", "hoodie", "overall", "shirtCrewNeck", "shirtScoopNeck", "shirtVNeck"],
-  },
-  eyes: {
-    label: "Augen",
-    values: ["closed", "cry", "default", "eyeRoll", "happy", "hearts", "side", "squint", "surprised", "wink", "winkWacky", "xDizzy"],
-  },
-  eyebrows: {
-    label: "Augenbrauen",
-    values: ["angry", "angryNatural", "default", "defaultNatural", "flatNatural", "frownNatural", "raisedExcited", "raisedExcitedNatural", "sadConcerned", "sadConcernedNatural", "unibrowNatural", "upDown", "upDownNatural"],
-  },
-  mouth: {
-    label: "Mund",
-    values: ["concerned", "default", "disbelief", "eating", "grimace", "sad", "screamOpen", "serious", "smile", "tongue", "twinkle", "vomit"],
-  },
+  top:         { values: ["hat", "hijab", "turban", "winterHat1", "winterHat02", "winterHat03", "winterHat04", "bigHair", "bob", "bun", "curly", "curvy", "dreads", "frida", "fro", "froBand", "longButNotTooLong", "miaWallace", "shavedSides", "straight01", "straight02", "straightAndStrand", "dreads01", "dreads02", "frizzle", "shaggy", "shaggyMullet", "shortCurly", "shortFlat", "shortRound", "shortWaved", "sides", "theCaesar", "theCaesarAndSidePart"] },
+  accessories: { values: ["none", "kurt", "prescription01", "prescription02", "round", "sunglasses", "wayfarers", "eyepatch"] },
+  facialHair:  { values: ["none", "beardLight", "beardMajestic", "beardMedium", "moustacheFancy", "moustacheMagnum"] },
+  clothing:    { values: ["blazerAndShirt", "blazerAndSweater", "collarAndSweater", "graphicShirt", "hoodie", "overall", "shirtCrewNeck", "shirtScoopNeck", "shirtVNeck"] },
+  eyes:        { values: ["closed", "cry", "default", "eyeRoll", "happy", "hearts", "side", "squint", "surprised", "wink", "winkWacky", "xDizzy"] },
+  eyebrows:    { values: ["angry", "angryNatural", "default", "defaultNatural", "flatNatural", "frownNatural", "raisedExcited", "raisedExcitedNatural", "sadConcerned", "sadConcernedNatural", "unibrowNatural", "upDown", "upDownNatural"] },
+  mouth:       { values: ["concerned", "default", "disbelief", "eating", "grimace", "sad", "screamOpen", "serious", "smile", "tongue", "twinkle", "vomit"] },
 };
 
 // skinColor uses hex values per schema (not named enum)
@@ -98,8 +77,8 @@ function buildAvatarConfigUrl(config) {
   return `https://api.dicebear.com/7.x/avataaars/svg?${parts.join("&")}`;
 }
 
-function formatLabel(s) {
-  if (s === "none") return "Ohne";
+function formatLabel(s, noneLabel) {
+  if (s === "none") return noneLabel;
   const spaced = s.replace(/([0-9]+)/g, " $1").replace(/([A-Z])/g, " $1").trim().replace(/\s+/g, " ");
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
@@ -381,6 +360,7 @@ function ChangePasswordModal({ onClose, onSuccess, t }) {
 // ── AvatarCustomizerModal ─────────────────────────────────────────────────────
 
 function AvatarCustomizerModal({ user, onClose, onSave }) {
+  const { t } = useTranslation();
   const [config, setConfig] = useState(() => {
     if (user?.avatar_config) {
       const cfg = typeof user.avatar_config === "string"
@@ -415,8 +395,8 @@ function AvatarCustomizerModal({ user, onClose, onSave }) {
     <div className="profile-modal-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="profile-modal profile-modal--avatar" role="dialog" aria-modal="true" aria-labelledby="avatar-modal-title">
         <div className="profile-modal-header">
-          <h2 id="avatar-modal-title" className="profile-modal-title">Avatar anpassen</h2>
-          <button className="profile-modal-close" onClick={onClose} aria-label="Schließen">
+          <h2 id="avatar-modal-title" className="profile-modal-title">{t("profile.avatarCustomizeTitle")}</h2>
+          <button className="profile-modal-close" onClick={onClose} aria-label={t("profile.cancelEdit")}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -427,18 +407,18 @@ function AvatarCustomizerModal({ user, onClose, onSave }) {
           <div className="avatar-presets">
             {AVATAR_PRESETS.map((preset) => (
               <button
-                key={preset.label}
+                key={preset.key}
                 className="avatar-preset-btn"
                 onClick={() => setConfig((prev) => ({ ...prev, ...preset.config }))}
-                title={preset.label}
+                title={t(`profile.avatarPreset_${preset.key}`)}
               >
-                {preset.emoji} {preset.label}
+                {preset.emoji} {t(`profile.avatarPreset_${preset.key}`)}
               </button>
             ))}
           </div>
 
           <div className="avatar-preview">
-            <img src={previewUrl} alt="Avatar Vorschau" className="avatar-preview-img" />
+            <img src={previewUrl} alt={t("profile.avatarPreview")} className="avatar-preview-img" />
           </div>
 
           {Object.entries(AVATAR_OPTIONS).map(([key, opt]) => {
@@ -447,18 +427,18 @@ function AvatarCustomizerModal({ user, onClose, onSave }) {
             const safeIdx = idx === -1 ? 0 : idx;
             return (
               <div key={key} className="avatar-option-row">
-                <span className="avatar-option-label">{opt.label}</span>
+                <span className="avatar-option-label">{t(`profile.avatarOption_${key}`)}</span>
                 <div className="avatar-option-controls">
                   <button
                     className="avatar-arrow-btn"
                     onClick={() => handleCycle(key, -1)}
-                    aria-label="Vorheriger"
+                    aria-label={t("profile.avatarPrevious")}
                   >‹</button>
-                  <span className="avatar-option-value">{formatLabel(vals[safeIdx])}</span>
+                  <span className="avatar-option-value">{formatLabel(vals[safeIdx], t("profile.avatarNone"))}</span>
                   <button
                     className="avatar-arrow-btn"
                     onClick={() => handleCycle(key, 1)}
-                    aria-label="Nächster"
+                    aria-label={t("profile.avatarNext")}
                   >›</button>
                 </div>
               </div>
@@ -466,7 +446,7 @@ function AvatarCustomizerModal({ user, onClose, onSave }) {
           })}
 
           <div className="avatar-option-row">
-            <span className="avatar-option-label">Hautfarbe</span>
+            <span className="avatar-option-label">{t("profile.avatarSkinColor")}</span>
             <div className="avatar-bg-swatches">
               {SKIN_COLORS.map((hex) => (
                 <button
@@ -475,14 +455,14 @@ function AvatarCustomizerModal({ user, onClose, onSave }) {
                   style={{ background: `#${hex}` }}
                   onClick={() => setConfig((prev) => ({ ...prev, skinColor: hex }))}
                   title={`#${hex}`}
-                  aria-label={`Hautfarbe #${hex}`}
+                  aria-label={t("profile.avatarSkinColorLabel", { hex })}
                 />
               ))}
             </div>
           </div>
 
           <div className="avatar-option-row">
-            <span className="avatar-option-label">Hintergrund</span>
+            <span className="avatar-option-label">{t("profile.avatarBackground")}</span>
             <div className="avatar-bg-swatches">
               {BG_COLORS.map((color) => (
                 <button
@@ -491,7 +471,7 @@ function AvatarCustomizerModal({ user, onClose, onSave }) {
                   style={{ background: `#${color}`, border: color === "ffffff" ? "1.5px solid #d1d5db" : undefined }}
                   onClick={() => setConfig((prev) => ({ ...prev, backgroundColor: color }))}
                   title={`#${color}`}
-                  aria-label={`Hintergrundfarbe #${color}`}
+                  aria-label={t("profile.avatarBgColorLabel", { hex: color })}
                 />
               ))}
             </div>
@@ -503,20 +483,20 @@ function AvatarCustomizerModal({ user, onClose, onSave }) {
             className="profile-btn profile-btn--ghost"
             onClick={() => handleSave(null)}
             disabled={saving}
-            title="Zurück zum zufällig generierten Avatar"
+            title={t("profile.avatarResetTitle")}
           >
-            Zurücksetzen
+            {t("profile.avatarReset")}
           </button>
           <div style={{ flex: 1 }} />
           <button className="profile-btn profile-btn--ghost" onClick={onClose} disabled={saving}>
-            Abbrechen
+            {t("profile.cancelEdit")}
           </button>
           <button
             className="profile-btn profile-btn--primary"
             onClick={() => handleSave(config)}
             disabled={saving}
           >
-            {saving ? "Wird gespeichert…" : "Speichern"}
+            {saving ? t("profile.avatarSaving") : t("profile.saveName")}
           </button>
         </div>
       </div>
@@ -613,7 +593,7 @@ export default function Profile() {
       const updated = await updateAvatarConfig(config);
       updateLocalUser(updated);
       setShowAvatarCustomizer(false);
-      showFeedback(config ? "Avatar gespeichert." : "Avatar zurückgesetzt.");
+      showFeedback(config ? t("profile.avatarSaveSuccess") : t("profile.avatarResetSuccess"));
     } catch (err) {
       showFeedback(err.message, "error");
     }
@@ -716,7 +696,7 @@ export default function Profile() {
                     <circle cx="12" cy="12" r="3" />
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
                   </svg>
-                  Avatar anpassen
+                  {t("profile.customizeAvatar")}
                 </button>
               )}
             </div>
@@ -724,7 +704,7 @@ export default function Profile() {
               {user?.profile_image_url
                 ? t("profile.customAvatar")
                 : user?.avatar_config
-                ? "Angepasster DiceBear Avatar"
+                ? t("profile.customizedAvatar")
                 : t("profile.autoAvatar")}
             </p>
           </div>
