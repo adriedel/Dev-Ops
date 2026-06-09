@@ -810,7 +810,7 @@ export default function Profile() {
               <label className="profile-label">{t("profile.password")}</label>
               <div className="profile-value-row">
                 <span className="profile-pw-dots">••••••••••••</span>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                <div className="profile-pw-buttons">
                   <button
                     className="profile-change-btn"
                     onClick={() => setShowPasswordModal(true)}
