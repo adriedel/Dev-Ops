@@ -51,6 +51,14 @@ const uploadAvatar = multer({
   },
 });
 
+function parseUserRow(row) {
+  if (!row) return row;
+  if (row.avatar_config && typeof row.avatar_config === "string") {
+    try { row.avatar_config = JSON.parse(row.avatar_config); } catch { row.avatar_config = null; }
+  }
+  return row;
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -144,10 +152,10 @@ app.put("/api/auth/profile", authenticateToken, async (req, res) => {
   }
   try {
     const result = await pool.query(
-      "UPDATE users SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, created_at",
+      "UPDATE users SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, avatar_config, created_at",
       [name.trim(), req.userId],
     );
-    res.json({ user: result.rows[0] });
+    res.json({ user: parseUserRow(result.rows[0]) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -168,10 +176,10 @@ app.post(
         `user_${req.userId}`,
       );
       const result = await pool.query(
-        "UPDATE users SET profile_image_url = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, created_at",
+        "UPDATE users SET profile_image_url = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, avatar_config, created_at",
         [cloudResult.secure_url, req.userId],
       );
-      res.json({ user: result.rows[0] });
+      res.json({ user: parseUserRow(result.rows[0]) });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -211,10 +219,10 @@ app.put("/api/auth/profile/email", authenticateToken, async (req, res) => {
       return res.status(400).json({ error: "Diese E-Mail-Adresse ist bereits vergeben" });
     }
     const result = await pool.query(
-      "UPDATE users SET email = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, created_at",
+      "UPDATE users SET email = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, avatar_config, created_at",
       [newEmail, req.userId],
     );
-    res.json({ user: result.rows[0] });
+    res.json({ user: parseUserRow(result.rows[0]) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -248,6 +256,21 @@ app.put("/api/auth/profile/password", authenticateToken, async (req, res) => {
       [hashed, req.userId],
     );
     res.json({ message: "Passwort erfolgreich geändert" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update avatar config (PROTECTED)
+app.put("/api/auth/profile/avatar-config", authenticateToken, async (req, res) => {
+  const { avatar_config } = req.body;
+  try {
+    const configStr = avatar_config ? JSON.stringify(avatar_config) : null;
+    const result = await pool.query(
+      "UPDATE users SET avatar_config = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, name, profile_image_url, avatar_config, created_at",
+      [configStr, req.userId],
+    );
+    res.json({ user: parseUserRow(result.rows[0]) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

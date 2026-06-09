@@ -56,6 +56,9 @@ async function initDB() {
   await pool.query(
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_image_url TEXT`,
   );
+  await pool.query(
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_config TEXT`,
+  );
 
   // E-Mail-Verifizierung
   await pool.query(

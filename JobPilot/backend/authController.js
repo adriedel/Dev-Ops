@@ -288,7 +288,7 @@ async function resetPassword(req, res) {
 async function getCurrentUser(req, res) {
   try {
     const result = await pool.query(
-      "SELECT id, email, name, profile_image_url, created_at FROM users WHERE id = $1",
+      "SELECT id, email, name, profile_image_url, avatar_config, created_at FROM users WHERE id = $1",
       [req.userId],
     );
 
@@ -296,7 +296,11 @@ async function getCurrentUser(req, res) {
       return res.status(404).json({ error: "User nicht gefunden" });
     }
 
-    res.json({ user: result.rows[0] });
+    const user = result.rows[0];
+    if (user.avatar_config && typeof user.avatar_config === "string") {
+      try { user.avatar_config = JSON.parse(user.avatar_config); } catch { user.avatar_config = null; }
+    }
+    res.json({ user });
   } catch (err) {
     console.error("Get user error:", err);
     res.status(500).json({ error: "Fehler beim Laden des Users" });
