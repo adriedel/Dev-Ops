@@ -467,6 +467,18 @@
   color: var(--text-primary);
 }
 
+/* Hidden on desktop, shown on mobile via media query */
+.user-dropdown-item--mobile,
+.user-dropdown-divider--mobile {
+  display: none;
+}
+
+.user-dropdown-new-plus {
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
 .user-dropdown-logout {
   color: var(--danger);
 }
@@ -680,7 +692,7 @@
   }
 }
 
-/* ── Mobile (≤768px): Grid — Zeile 1: Titel, Zeile 2: Hamburger-Controls ── */
+/* ── Mobile (≤768px) ── */
 @media (max-width: 768px) {
   .header {
     padding: 10px 12px;
@@ -704,8 +716,54 @@
     display: none;
   }
 
-  .header-hamburger {
+  /* Combined avatar dropdown on mobile */
+  .user-dropdown {
+    min-width: 260px;
+  }
+
+  .user-dropdown-item--mobile {
     display: flex;
+  }
+
+  .user-dropdown-divider--mobile {
+    display: block;
+  }
+
+  .user-dropdown-new {
+    background: var(--brand-gradient);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+    transition: filter 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+
+  .user-dropdown-new:hover {
+    background: var(--brand-gradient);
+    color: #fff;
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(30, 58, 138, 0.3);
+  }
+
+  .user-dropdown-new:active {
+    transform: translateY(0);
+    filter: brightness(0.97);
+  }
+
+  .dark-mode .user-dropdown-new:hover {
+    background: var(--brand-gradient);
+    color: #fff;
+  }
+
+  /* Bookmarklet item hover gets the blue accent like other nav items */
+  .user-dropdown-item--mobile:not(.user-dropdown-new):hover {
+    color: var(--blue);
+    background: rgba(59, 130, 246, 0.07);
+  }
+
+  .dark-mode .user-dropdown-item--mobile:not(.user-dropdown-new):hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--blue);
   }
 }
 

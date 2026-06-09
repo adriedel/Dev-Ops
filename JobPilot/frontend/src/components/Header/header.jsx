@@ -85,23 +85,11 @@ function UserAvatar({ user, size = 36 }) {
 
 function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { i18n, t } = useTranslation();
   const navigate = useNavigate();
   const headerRef = useRef(null);
   const userMenuRef = useRef(null);
-
-  useEffect(() => {
-    if (!isMenuOpen) return;
-    const handleOutsideClick = (e) => {
-      if (!headerRef.current?.contains(e.target)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [isMenuOpen]);
 
   useEffect(() => {
     if (!isUserMenuOpen) return;
@@ -115,7 +103,6 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
   }, [isUserMenuOpen]);
 
   const handleLogout = () => {
-    setIsMenuOpen(false);
     setIsUserMenuOpen(false);
     setIsLogoutModalOpen(true);
   };
@@ -135,7 +122,6 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
   };
 
   const goToProfile = () => {
-    setIsMenuOpen(false);
     setIsUserMenuOpen(false);
     navigate("/profile");
   };
@@ -244,6 +230,18 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
                   </div>
                 </div>
                 <hr className="user-dropdown-divider" />
+
+                {/* Neue Bewerbung — mobile only */}
+                <button
+                  className="user-dropdown-item user-dropdown-new user-dropdown-item--mobile"
+                  onClick={() => { setIsUserMenuOpen(false); onNewBewerbung(); }}
+                  role="menuitem"
+                >
+                  <span className="user-dropdown-new-plus">+</span>
+                  {t("buttons.newApplication")}
+                </button>
+                <hr className="user-dropdown-divider user-dropdown-divider--mobile" />
+
                 <button
                   className="user-dropdown-item"
                   onClick={goToProfile}
@@ -265,6 +263,17 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
                   </svg>
                   {t("profile.myProfile")}
                 </button>
+
+                {/* Bookmarklet — mobile only */}
+                <button
+                  className="user-dropdown-item user-dropdown-item--mobile"
+                  onClick={() => { setIsUserMenuOpen(false); navigate("/bookmarklet"); }}
+                  role="menuitem"
+                >
+                  <ExternalIcon width="16" height="16" aria-hidden="true" />
+                  {t("header.bookmarklet")}
+                </button>
+
                 <button
                   className="user-dropdown-item user-dropdown-logout"
                   onClick={handleLogout}
@@ -276,70 +285,7 @@ function Header({ darkMode, toggleDarkMode, onNewBewerbung, user }) {
               </div>
             )}
           </div>
-
-          {/* Hamburger — only rendered / visible via CSS on mobile */}
-          <button
-            className={`header-hamburger${isMenuOpen ? " open" : ""}`}
-            onClick={() => setIsMenuOpen((v) => !v)}
-            aria-label="Menu"
-            aria-expanded={isMenuOpen}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
         </div>
-
-        {/* Mobile dropdown */}
-        {isMenuOpen && (
-          <div className="header-mobile-menu">
-            <button
-              className="mobile-menu-item mobile-menu-new"
-              onClick={() => {
-                setIsMenuOpen(false);
-                onNewBewerbung();
-              }}
-            >
-              <span className="mobile-menu-plus">+</span>
-              {t("buttons.newApplication")}
-            </button>
-            <button className="mobile-menu-item" onClick={goToProfile}>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="mobile-menu-icon"
-                aria-hidden="true"
-              >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              {t("profile.myProfile")}
-            </button>
-            <button
-              className="mobile-menu-item"
-              onClick={() => {
-                setIsMenuOpen(false);
-                navigate("/bookmarklet");
-              }}
-            >
-              <ExternalIcon className="mobile-menu-icon" aria-hidden="true" />
-              {t("header.bookmarklet")}
-            </button>
-            <button
-              className="mobile-menu-item mobile-menu-logout"
-              onClick={handleLogout}
-            >
-              <LogoutIcon className="mobile-menu-icon" aria-hidden="true" />
-              {t("header.logout")}
-            </button>
-          </div>
-        )}
       </header>
 
       {isLogoutModalOpen && (
