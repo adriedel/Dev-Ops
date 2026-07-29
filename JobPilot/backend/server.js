@@ -493,6 +493,26 @@ app.get("/api/statistiken", authenticateToken, async (req, res) => {
   }
 });
 
+// ==================== EINMALIG: FIRST ADMIN SETUP ====================
+app.get("/api/setup/first-admin", async (req, res) => {
+  const { key } = req.query;
+  if (key !== "jp-setup-2026-secure") {
+    return res.status(403).json({ error: "Ungültiger Key" });
+  }
+  try {
+    const result = await pool.query(
+      "UPDATE users SET role = 'admin' WHERE email = $1 RETURNING id, email, role",
+      ["admin@bewerbungstracker.com"],
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "User nicht gefunden" });
+    }
+    res.json({ message: "Admin gesetzt!", user: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ==================== ADMIN ROUTES (PROTECTED + ADMIN ONLY) ====================
 
 async function requireAdmin(req, res, next) {
