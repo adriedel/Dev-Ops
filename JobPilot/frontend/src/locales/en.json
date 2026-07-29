@@ -3,6 +3,8 @@
     "title": "Application Tracker",
     "subtitle": "Keep track of all your job applications",
     "bookmarklet": "Install Bookmarklet",
+    "pdfExport": "PDF Export",
+    "pdfTitle": "Application Tracker, Applications from {{name}}",
     "logout": "Logout"
   },
   "searchBar": {

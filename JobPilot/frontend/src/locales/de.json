@@ -3,6 +3,8 @@
     "title": "Bewerbungstracker",
     "subtitle": "Behalten Sie den Überblick über Ihre Bewerbungen",
     "bookmarklet": "Bookmarklet installieren",
+    "pdfExport": "PDF-Export",
+    "pdfTitle": "Bewerbungstracker, Bewerbungen von {{name}}",
     "logout": "Abmelden"
   },
   "searchBar": {
