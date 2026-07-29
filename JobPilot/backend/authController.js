@@ -80,7 +80,7 @@ async function login(req, res) {
 
   try {
     const result = await pool.query(
-      "SELECT id, email, password_hash, name, email_verified_at FROM users WHERE email = $1",
+      "SELECT id, email, password_hash, name, role, email_verified_at FROM users WHERE email = $1",
       [email.toLowerCase()],
     );
 
@@ -114,6 +114,7 @@ async function login(req, res) {
         id: user.id,
         email: user.email,
         name: user.name,
+        role: user.role,
       },
     });
   } catch (err) {
@@ -288,7 +289,7 @@ async function resetPassword(req, res) {
 async function getCurrentUser(req, res) {
   try {
     const result = await pool.query(
-      "SELECT id, email, name, profile_image_url, avatar_config, created_at FROM users WHERE id = $1",
+      "SELECT id, email, name, role, profile_image_url, avatar_config, created_at FROM users WHERE id = $1",
       [req.userId],
     );
 

@@ -59,6 +59,9 @@ async function initDB() {
   await pool.query(
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_config TEXT`,
   );
+  await pool.query(
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'user'`,
+  );
 
   // E-Mail-Verifizierung
   await pool.query(
