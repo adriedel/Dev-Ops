@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import "./App.css";
 import Header from "./components/Header/header";
 import StatCards from "./components/StatCards/StatCards";
@@ -16,6 +17,7 @@ import {
 } from "./services/api";
 
 function App() {
+  const { t, i18n } = useTranslation();
   const [bewerbungen, setBewerbungen] = useState([]);
   const [stats, setStats] = useState({
     beworben: 0,
@@ -193,6 +195,15 @@ function App() {
     setDarkMode((prev) => !prev);
   };
 
+  const handleExportPdf = async () => {
+    const { exportBewerbungenToPdf } = await import("./utils/pdfExport");
+    exportBewerbungenToPdf(bewerbungen, {
+      locale: i18n.language,
+      t,
+      userName: user?.name || user?.email || "",
+    });
+  };
+
   const getFilteredBewerbungen = () => {
     let filtered = bewerbungen;
 
@@ -220,6 +231,7 @@ function App() {
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
           onNewBewerbung={() => openModal()}
+          onExportPdf={handleExportPdf}
           user={user}
           onUserUpdate={handleUserUpdate}
         />
