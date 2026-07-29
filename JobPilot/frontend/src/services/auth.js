@@ -195,6 +195,41 @@ export async function deleteProfileImage() {
   return data;
 }
 
+// ==================== ADMIN ====================
+
+export async function getAdminUsers() {
+  const token = getToken();
+  const response = await fetch(`${API_URL}/admin/users`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await parseJSON(response);
+  if (!response.ok) throw new Error(data.error || "Fehler beim Laden der User");
+  return data.users;
+}
+
+export async function updateUserRole(userId, role) {
+  const token = getToken();
+  const response = await fetch(`${API_URL}/admin/users/${userId}/role`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ role }),
+  });
+  const data = await parseJSON(response);
+  if (!response.ok) throw new Error(data.error || "Fehler beim Ändern der Rolle");
+  return data;
+}
+
+export async function deleteAdminUser(userId) {
+  const token = getToken();
+  const response = await fetch(`${API_URL}/admin/users/${userId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await parseJSON(response);
+  if (!response.ok) throw new Error(data.error || "Fehler beim Löschen");
+  return data;
+}
+
 // Verify email with token from URL
 export async function verifyEmail(token) {
   const response = await fetch(

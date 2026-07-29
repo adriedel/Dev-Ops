@@ -14,6 +14,7 @@ import Profile from "./components/Profile/Profile";
 import QuickAdd from "./pages/QuickAdd";
 import BookmarkletInstall from "./pages/BookmarkletInstall";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminPage from "./pages/AdminPage";
 import { DEMO_MODE } from "./utils/constants";
 import "./index.css";
 
@@ -54,6 +55,16 @@ export function Root() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Route */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPage user={JSON.parse(localStorage.getItem("user") || "null")} />
             </ProtectedRoute>
           }
         />
