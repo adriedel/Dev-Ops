@@ -26,6 +26,16 @@ export const STATUS_LABELS = {
   [STATUS.GESAMT]: "Gesamt",
 };
 
+// Reihenfolge des Bewerbungs-"Trichters" — von der ersten bis zur letzten Phase.
+export const STATUS_ORDER = [
+  STATUS.IN_PLANUNG,
+  STATUS.BEWORBEN,
+  STATUS.STUFE_WEITER,
+  STATUS.ANGENOMMEN,
+  STATUS.ABGELEHNT,
+  STATUS.KEINE_ANTWORT,
+];
+
 export const STATUS_ICONS = {
   [STATUS.IN_PLANUNG]: "/plan.svg",
   [STATUS.BEWORBEN]: "/paperplane-applied.svg",
