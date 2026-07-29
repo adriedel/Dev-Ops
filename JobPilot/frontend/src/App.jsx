@@ -6,7 +6,7 @@ import StatCards from "./components/StatCards/StatCards";
 import SearchBar from "./components/SearchBar/SearchBar";
 import BewerbungsCard from "./components/BewerbungsCard/BewerbungsCard";
 import BewerbungsModal from "./components/BewerbungsModal/BewerbungsModal";
-import { STATUS } from "./utils/constants";
+import { STATUS, STATUS_ORDER } from "./utils/constants";
 
 import {
   getAll,
@@ -31,6 +31,8 @@ function App() {
   const [editingBewerbung, setEditingBewerbung] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("alle");
+  const [sortBy, setSortBy] = useState("datum");
+  const [sortDirection, setSortDirection] = useState("desc");
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("darkMode");
     if (saved !== null) {
@@ -195,6 +197,10 @@ function App() {
     setDarkMode((prev) => !prev);
   };
 
+  const toggleSortDirection = () => {
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
   const handleExportPdf = async () => {
     const { exportBewerbungenToPdf } = await import("./utils/pdfExport");
     exportBewerbungenToPdf(bewerbungen, {
@@ -221,7 +227,25 @@ function App() {
       );
     }
 
-    return filtered;
+    const directionFactor = sortDirection === "asc" ? 1 : -1;
+    const sorted = [...filtered].sort((a, b) => {
+      let comparison = 0;
+
+      if (sortBy === "datum") {
+        comparison = new Date(a.datum) - new Date(b.datum);
+      } else if (sortBy === "firma") {
+        comparison = (a.firma || "").localeCompare(b.firma || "", "de", {
+          sensitivity: "base",
+        });
+      } else if (sortBy === "status") {
+        comparison =
+          STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
+      }
+
+      return comparison * directionFactor;
+    });
+
+    return sorted;
   };
 
   return (
@@ -242,6 +266,10 @@ function App() {
             onSearchChange={setSearchQuery}
             filterStatus={filterStatus}
             onFilterChange={setFilterStatus}
+            sortBy={sortBy}
+            onSortByChange={setSortBy}
+            sortDirection={sortDirection}
+            onToggleSortDirection={toggleSortDirection}
           />
         </div>
 

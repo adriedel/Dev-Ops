@@ -63,12 +63,21 @@
   opacity: 0.6;
 }
 
-.status-dropdown {
+.status-dropdown,
+.sort-dropdown {
   position: relative;
   flex-shrink: 0;
 }
 
-.status-dropdown-trigger {
+.sort-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.status-dropdown-trigger,
+.sort-dropdown-trigger {
   min-width: 152px;
   height: 42px;
   padding: 0 14px;
@@ -90,14 +99,60 @@
     color 0.2s;
 }
 
-.status-dropdown-trigger:focus {
+.sort-dropdown-trigger {
+  min-width: 132px;
+}
+
+.status-dropdown-trigger:focus,
+.sort-dropdown-trigger:focus {
   border-color: var(--blue);
   box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.08);
   outline: none;
 }
 
-.status-dropdown-trigger:hover {
+.status-dropdown-trigger:hover,
+.sort-dropdown-trigger:hover {
   border-color: #cfd6df;
+}
+
+.sort-direction-toggle {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.2s,
+    color 0.2s;
+}
+
+.sort-direction-toggle:hover {
+  border-color: #cfd6df;
+}
+
+.sort-direction-toggle:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.08);
+  outline: none;
+}
+
+.sort-direction-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  transition: transform 0.18s ease;
+}
+
+.sort-direction-icon-desc {
+  transform: rotate(180deg);
 }
 
 .status-dropdown-menu {
@@ -222,6 +277,12 @@
     font-size: 0.92rem;
   }
 
+  .sort-dropdown-trigger {
+    min-width: 128px;
+    height: 42px;
+    font-size: 0.92rem;
+  }
+
   .search-input {
     height: 42px;
     font-size: 0.9rem;
@@ -245,12 +306,17 @@
     flex: 1 1 100%;
   }
 
-  .status-dropdown {
+  .status-dropdown,
+  .sort-group {
     flex: 0 1 auto;
   }
 
   .status-dropdown-trigger {
     min-width: 150px;
+  }
+
+  .sort-dropdown-trigger {
+    min-width: 110px;
   }
 
   .status-dropdown-menu {
