@@ -10,6 +10,15 @@
   "searchBar": {
     "placeholder": "Search company or position..."
   },
+  "sortBar": {
+    "label": "Sort",
+    "date": "Date",
+    "company": "Company",
+    "status": "Status",
+    "ascending": "Sorted ascending",
+    "descending": "Sorted descending",
+    "directionToggle": "Reverse sort order"
+  },
   "statCards": {
     "total": "Total",
     "applied": "Applied",
