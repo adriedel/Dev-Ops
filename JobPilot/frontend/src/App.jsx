@@ -7,6 +7,7 @@ import SearchBar from "./components/SearchBar/SearchBar";
 import BewerbungsCard from "./components/BewerbungsCard/BewerbungsCard";
 import BewerbungsModal from "./components/BewerbungsModal/BewerbungsModal";
 import { STATUS, STATUS_ORDER } from "./utils/constants";
+import { subscribeToBewerbungenChanges } from "./utils/syncBus";
 
 import {
   getAll,
@@ -113,6 +114,32 @@ function App() {
     };
     fetchInitialData();
   }, []);
+
+  // Automatisch synchronisieren, wenn eine Bewerbung in einem anderen Tab/Fenster
+  // hinzugefügt oder geändert wurde (z.B. über das Bookmarklet-Popup) oder wenn
+  // dieser Tab wieder in den Fokus rückt (z.B. nach dem Schließen des Popups).
+  useEffect(() => {
+    const refresh = () => {
+      loadBewerbungen();
+      loadStats();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        refresh();
+      }
+    };
+
+    const unsubscribe = subscribeToBewerbungenChanges(refresh);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [loadBewerbungen, loadStats]);
 
   const handleSubmit = async () => {
     try {

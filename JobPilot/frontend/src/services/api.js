@@ -1,5 +1,6 @@
 import { API_URL, DEMO_MODE } from "../utils/constants";
 import { getToken } from "./auth";
+import { notifyBewerbungenChanged } from "../utils/syncBus";
 
 const DEMO_STORAGE_KEY = "jobpilot-demo-bewerbungen";
 const DEMO_SEED_DATA = [
@@ -161,6 +162,7 @@ export async function create(bewerbung) {
     };
 
     writeDemoData([newItem, ...items]);
+    notifyBewerbungenChanged();
     return { id: newItem.id, message: "Demo-Bewerbung erstellt" };
   }
 
@@ -175,7 +177,9 @@ export async function create(bewerbung) {
     throw new Error(data.error || "Fehler beim Erstellen");
   }
 
-  return response.json();
+  const result = await response.json();
+  notifyBewerbungenChanged();
+  return result;
 }
 
 // PUT Bewerbung aktualisieren
@@ -189,6 +193,7 @@ export async function update(id, bewerbung) {
     );
 
     writeDemoData(updatedItems);
+    notifyBewerbungenChanged();
     return { message: "Demo-Bewerbung aktualisiert" };
   }
 
@@ -203,7 +208,9 @@ export async function update(id, bewerbung) {
     throw new Error(data.error || "Fehler beim Aktualisieren");
   }
 
-  return response.json();
+  const result = await response.json();
+  notifyBewerbungenChanged();
+  return result;
 }
 
 // DELETE Bewerbung
@@ -215,6 +222,7 @@ export async function deleteBewerbung(id) {
     );
 
     writeDemoData(filteredItems);
+    notifyBewerbungenChanged();
     return { message: "Demo-Bewerbung gelöscht" };
   }
 
@@ -228,7 +236,9 @@ export async function deleteBewerbung(id) {
     throw new Error(data.error || "Fehler beim Löschen");
   }
 
-  return response.json();
+  const result = await response.json();
+  notifyBewerbungenChanged();
+  return result;
 }
 
 // GET Statistiken
