@@ -493,6 +493,74 @@ app.get("/api/statistiken", authenticateToken, async (req, res) => {
   }
 });
 
+// ==================== ADMIN ROUTES (PROTECTED + ADMIN ONLY) ====================
+
+async function requireAdmin(req, res, next) {
+  try {
+    const result = await pool.query("SELECT role FROM users WHERE id = $1", [req.userId]);
+    if (!result.rows[0] || result.rows[0].role !== "admin") {
+      return res.status(403).json({ error: "Kein Zugriff" });
+    }
+    next();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// GET alle User mit Bewerbungsanzahl
+app.get("/api/admin/users", authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT u.id, u.email, u.name, u.role, u.created_at, u.email_verified_at,
+             COUNT(b.id)::int AS bewerbungen_count
+      FROM users u
+      LEFT JOIN bewerbungen b ON b.user_id = u.id
+      GROUP BY u.id
+      ORDER BY u.created_at DESC
+    `);
+    res.json({ users: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH Rolle eines Users ändern
+app.patch("/api/admin/users/:id/role", authenticateToken, requireAdmin, async (req, res) => {
+  const { role } = req.body;
+  const targetId = parseInt(req.params.id);
+  if (!["user", "admin"].includes(role)) {
+    return res.status(400).json({ error: "Ungültige Rolle" });
+  }
+  if (targetId === req.userId) {
+    return res.status(400).json({ error: "Eigene Rolle kann nicht geändert werden" });
+  }
+  try {
+    const result = await pool.query(
+      "UPDATE users SET role = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id",
+      [role, targetId],
+    );
+    if (result.rowCount === 0) return res.status(404).json({ error: "User nicht gefunden" });
+    res.json({ message: "Rolle aktualisiert" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE User löschen
+app.delete("/api/admin/users/:id", authenticateToken, requireAdmin, async (req, res) => {
+  const targetId = parseInt(req.params.id);
+  if (targetId === req.userId) {
+    return res.status(400).json({ error: "Eigener Account kann nicht gelöscht werden" });
+  }
+  try {
+    const result = await pool.query("DELETE FROM users WHERE id = $1", [targetId]);
+    if (result.rowCount === 0) return res.status(404).json({ error: "User nicht gefunden" });
+    res.json({ message: "User gelöscht" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 pool
   .initDB()
   .catch((error) => {
