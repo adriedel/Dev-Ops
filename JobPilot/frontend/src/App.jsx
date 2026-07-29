@@ -229,12 +229,16 @@ function App() {
   };
 
   const handleExportPdf = async () => {
-    const { exportBewerbungenToPdf } = await import("./utils/pdfExport");
-    exportBewerbungenToPdf(bewerbungen, {
-      locale: i18n.language,
-      t,
-      userName: user?.name || user?.email || "",
-    });
+    try {
+      const { exportBewerbungenToPdf } = await import("./utils/pdfExport");
+      await exportBewerbungenToPdf(bewerbungen, {
+        locale: i18n.language,
+        t,
+        userName: user?.name || user?.email || "",
+      });
+    } catch (error) {
+      console.error("Fehler beim PDF-Export:", error);
+    }
   };
 
   const getFilteredBewerbungen = () => {

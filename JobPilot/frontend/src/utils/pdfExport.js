@@ -9,7 +9,43 @@ function formatDate(value, locale) {
   return date.toLocaleDateString(locale === "en" ? "en-GB" : "de-DE");
 }
 
-export function exportBewerbungenToPdf(
+// Speichert den Blob über den nativen "Speichern unter"-Dialog, falls der
+// Browser die File System Access API unterstützt (Chrome/Edge). Andernfalls
+// Fallback auf den klassischen Browser-Download (Firefox, Safari, …).
+async function saveBlob(blob, filename) {
+  if (typeof window.showSaveFilePicker === "function") {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: filename,
+        types: [
+          {
+            description: "PDF",
+            accept: { "application/pdf": [".pdf"] },
+          },
+        ],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      return;
+    } catch (err) {
+      if (err?.name === "AbortError") return;
+      throw err;
+    }
+  }
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  // Klick auf den nächsten Tick verschieben und die URL erst danach
+  // widerrufen — ein sofortiges revokeObjectURL kann den Download-Start
+  // in manchen Browsern noch vor dem eigentlichen Abruf ungültig machen.
+  setTimeout(() => link.click(), 0);
+  setTimeout(() => URL.revokeObjectURL(url), 40000);
+}
+
+export async function exportBewerbungenToPdf(
   bewerbungen,
   { locale = "de", t, userName } = {},
 ) {
@@ -66,5 +102,6 @@ export function exportBewerbungenToPdf(
   });
 
   const dateStr = new Date().toISOString().split("T")[0];
-  doc.save(`Bewerbungen_${dateStr}.pdf`);
+  const filename = `Bewerbungen_${dateStr}.pdf`;
+  await saveBlob(doc.output("blob"), filename);
 }
