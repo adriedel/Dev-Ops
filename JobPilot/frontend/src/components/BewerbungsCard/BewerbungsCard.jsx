@@ -18,6 +18,16 @@ import ExternalIcon from "../../assets/icons/external.svg?react";
 import BuildingIcon from "../../assets/icons/building-1-line.svg?react";
 import GehaltIcon from "../../assets/icons/cash-coin.svg?react";
 
+function isHttpUrl(value) {
+  if (!value) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -192,7 +202,7 @@ function BewerbungsCard({ bewerbung, onEdit, onDelete, onStatusChange }) {
         </div>
       )}
 
-      {bewerbung.link && (
+      {isHttpUrl(bewerbung.link) && (
         <div className="detail-item detail-item-link card-link-row">
           <ExternalIcon className="meta-icon link-icon" aria-hidden="true" />
           <a
