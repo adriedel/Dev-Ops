@@ -3,6 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 14px;
   padding: 16px 24px;
   transition:
     background 0.2s,
@@ -44,6 +45,8 @@
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  flex-shrink: 1;
+  overflow: hidden;
 }
 
 .header-title {
@@ -53,6 +56,8 @@
   margin: 0;
   line-height: 1.05;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   letter-spacing: -0.5px;
 }
 
@@ -62,14 +67,17 @@
   color: var(--text-secondary);
   margin: 0;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   opacity: 0.8;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* ── Theme-Toggle ── */
@@ -242,7 +250,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 11px 24px;
+  padding: 11px 18px;
   background: var(--brand-gradient);
   color: #ffffff;
   border: none;
@@ -281,7 +289,11 @@
   justify-content: center;
   gap: 8px;
   padding: 11px 24px;
-  background: linear-gradient(135deg, var(--danger-light) 0%, var(--danger) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--danger-light) 0%,
+    var(--danger) 100%
+  );
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -592,7 +604,11 @@
   color: var(--text-secondary);
   width: 100%;
   text-align: left;
-  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
 }
 
 .mobile-menu-item:hover {
@@ -673,6 +689,7 @@
 
   .header-right {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
     gap: 10px;
@@ -734,7 +751,10 @@
     color: #fff;
     font-weight: 600;
     box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
-    transition: filter 0.15s, transform 0.15s, box-shadow 0.15s;
+    transition:
+      filter 0.15s,
+      transform 0.15s,
+      box-shadow 0.15s;
   }
 
   .user-dropdown-new:hover {
@@ -772,6 +792,10 @@
   .btn-bookmarklet {
     display: flex;
     padding: 8px 10px;
+  }
+
+  .btn-bookmarklet-label {
+    display: none;
   }
 }
 
