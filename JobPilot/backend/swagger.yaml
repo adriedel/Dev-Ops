@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: JobPilot API
   description: Backend API für den JobPilot Bewerbungstracker
-  version: 1.0.0
+  version: 1.1.0
   contact:
     name: JobPilot Support
 servers:
@@ -10,12 +10,20 @@ servers:
     description: Lokale Entwicklungsumgebung
 
 tags:
+  - name: Auth
+    description: Registrierung, Login, E-Mail-Verifizierung, Passwort-Reset
+  - name: Profil
+    description: Verwaltung des eigenen Benutzerprofils
   - name: Bewerbungen
     description: Verwaltung von Bewerbungen
   - name: Statistiken
     description: Statistiken zu Bewerbungen
+  - name: Admin
+    description: Benutzerverwaltung (nur Rolle admin)
   - name: Health
     description: Server Status
+
+security: []
 
 paths:
   /:
@@ -86,18 +94,307 @@ paths:
                       type: string
                     example: ["/api/bewerbungen", "/api/statistiken"]
 
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Benutzer registrieren
+      description: Legt einen neuen Account an und versendet eine E-Mail-Verifizierungslink
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                name:
+                  type: string
+      responses:
+        "201":
+          description: Registrierung erfolgreich, E-Mail-Bestätigung ausstehend
+        "400":
+          description: Ungültige Eingabe oder E-Mail bereits vergeben
+
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Benutzer anmelden
+      description: Meldet einen Benutzer an; erfordert eine bereits verifizierte E-Mail-Adresse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        "200":
+          description: Login erfolgreich, JWT im Response-Body
+        "401":
+          description: Ungültige Zugangsdaten
+        "403":
+          description: E-Mail-Adresse noch nicht bestätigt
+
+  /api/auth/verify-email:
+    get:
+      tags:
+        - Auth
+      summary: E-Mail-Adresse bestätigen
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: E-Mail-Adresse erfolgreich bestätigt
+        "400":
+          description: Ungültiger oder abgelaufener Token
+
+  /api/auth/resend-verification:
+    post:
+      tags:
+        - Auth
+      summary: Verifizierungs-E-Mail erneut anfordern
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Falls ein unbestätigter Account existiert, wurde eine neue E-Mail gesendet
+
+  /api/auth/forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Passwort-Reset anfordern
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Falls ein Account existiert, wurde ein Reset-Link gesendet
+
+  /api/auth/reset-password:
+    post:
+      tags:
+        - Auth
+      summary: Passwort mit Reset-Token setzen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password]
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+      responses:
+        "200":
+          description: Passwort erfolgreich zurückgesetzt
+        "400":
+          description: Ungültiger oder abgelaufener Token
+
+  /api/auth/me:
+    get:
+      tags:
+        - Profil
+      summary: Aktuellen Benutzer abrufen
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Benutzerdaten
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+        "401":
+          description: Nicht authentifiziert
+
+  /api/auth/profile:
+    put:
+      tags:
+        - Profil
+      summary: Namen aktualisieren
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+      responses:
+        "200":
+          description: Aktualisierter Benutzer
+
+  /api/auth/profile/email:
+    put:
+      tags:
+        - Profil
+      summary: E-Mail-Adresse ändern
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Aktualisierter Benutzer
+        "400":
+          description: Ungültige oder bereits vergebene E-Mail-Adresse
+
+  /api/auth/profile/password:
+    put:
+      tags:
+        - Profil
+      summary: Passwort ändern
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword]
+              properties:
+                currentPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+                  minLength: 8
+      responses:
+        "200":
+          description: Passwort erfolgreich geändert
+        "401":
+          description: Aktuelles Passwort falsch
+
+  /api/auth/profile/image:
+    post:
+      tags:
+        - Profil
+      summary: Profilbild hochladen
+      description: Lädt ein Bild (JPEG/PNG/GIF/WebP, max. 5 MB) zu Cloudinary hoch
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Aktualisierter Benutzer mit neuer profile_image_url
+        "400":
+          description: Kein Bild hochgeladen oder ungültiges Format
+    delete:
+      tags:
+        - Profil
+      summary: Profilbild löschen
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Profilbild gelöscht
+
+  /api/auth/profile/avatar-config:
+    put:
+      tags:
+        - Profil
+      summary: DiceBear-Avatar-Konfiguration speichern
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                avatar_config:
+                  type: object
+                  nullable: true
+      responses:
+        "200":
+          description: Aktualisierter Benutzer
+
   /api/bewerbungen:
     get:
       tags:
         - Bewerbungen
       summary: Alle Bewerbungen abrufen
-      description: Gibt alle Bewerbungen zurück, optional gefiltert nach Status
+      description: Gibt alle Bewerbungen des angemeldeten Benutzers zurück, optional gefiltert nach Status
+      security:
+        - bearerAuth: []
       parameters:
         - in: query
           name: status
           schema:
             type: string
             enum:
+              - in_planung
               - beworben
               - stufe_weiter
               - angenommen
@@ -124,7 +421,9 @@ paths:
       tags:
         - Bewerbungen
       summary: Neue Bewerbung erstellen
-      description: Erstellt eine neue Bewerbung in der Datenbank
+      description: Erstellt eine neue Bewerbung für den angemeldeten Benutzer
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -163,7 +462,9 @@ paths:
       tags:
         - Bewerbungen
       summary: Einzelne Bewerbung abrufen
-      description: Gibt eine bestimmte Bewerbung anhand der ID zurück
+      description: Gibt eine bestimmte Bewerbung des angemeldeten Benutzers anhand der ID zurück
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -195,7 +496,9 @@ paths:
       tags:
         - Bewerbungen
       summary: Bewerbung aktualisieren
-      description: Aktualisiert eine bestehende Bewerbung
+      description: Aktualisiert eine bestehende Bewerbung des angemeldeten Benutzers
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -237,7 +540,9 @@ paths:
       tags:
         - Bewerbungen
       summary: Bewerbung löschen
-      description: Löscht eine Bewerbung und nummeriert IDs neu
+      description: Löscht eine Bewerbung des angemeldeten Benutzers
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -274,7 +579,9 @@ paths:
       tags:
         - Statistiken
       summary: Statistiken abrufen
-      description: Gibt Statistiken über Bewerbungen gruppiert nach Status zurück
+      description: Gibt Statistiken über die Bewerbungen des angemeldeten Benutzers gruppiert nach Status zurück
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Erfolgreiche Antwort
@@ -289,8 +596,116 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Alle Benutzer abrufen
+      description: Listet alle Benutzer inkl. Anzahl ihrer Bewerbungen auf (nur Rolle admin)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Liste aller Benutzer
+        "403":
+          description: Kein Zugriff (keine Admin-Rolle)
+
+  /api/admin/users/{id}/role:
+    patch:
+      tags:
+        - Admin
+      summary: Rolle eines Benutzers ändern
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [user, admin]
+      responses:
+        "200":
+          description: Rolle aktualisiert
+        "400":
+          description: Ungültige Rolle oder Versuch, die eigene Rolle zu ändern
+        "403":
+          description: Kein Zugriff (keine Admin-Rolle)
+        "404":
+          description: Benutzer nicht gefunden
+
+  /api/admin/users/{id}:
+    delete:
+      tags:
+        - Admin
+      summary: Benutzer löschen
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Benutzer gelöscht
+        "400":
+          description: Versuch, den eigenen Account zu löschen
+        "403":
+          description: Kein Zugriff (keine Admin-Rolle)
+        "404":
+          description: Benutzer nicht gefunden
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT aus /api/auth/login, gesendet als "Authorization: Bearer <token>"
+
   schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: "max@example.com"
+        name:
+          type: string
+          nullable: true
+          example: "Max Mustermann"
+        role:
+          type: string
+          enum: [user, admin]
+          example: "user"
+        profile_image_url:
+          type: string
+          nullable: true
+          example: "https://res.cloudinary.com/.../avatars/user_1.png"
+        avatar_config:
+          type: object
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-03-01T10:00:00Z"
+
     Bewerbung:
       type: object
       properties:
@@ -306,6 +721,7 @@ components:
         status:
           type: string
           enum:
+            - in_planung
             - beworben
             - stufe_weiter
             - angenommen
@@ -341,6 +757,15 @@ components:
           type: string
           nullable: true
           example: "https://example.com/job"
+        gehalt:
+          type: string
+          nullable: true
+          example: "65000"
+        waehrung:
+          type: string
+          nullable: true
+          enum: [EUR, USD, CHF]
+          example: "EUR"
         created_at:
           type: string
           format: date-time
@@ -367,6 +792,7 @@ components:
         status:
           type: string
           enum:
+            - in_planung
             - beworben
             - stufe_weiter
             - angenommen
@@ -402,10 +828,22 @@ components:
           type: string
           nullable: true
           example: "https://example.com/job"
+        gehalt:
+          type: string
+          nullable: true
+          example: "65000"
+        waehrung:
+          type: string
+          nullable: true
+          enum: [EUR, USD, CHF]
+          example: "EUR"
 
     Statistiken:
       type: object
       properties:
+        in_planung:
+          type: integer
+          example: 2
         beworben:
           type: integer
           example: 5

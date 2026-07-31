@@ -8,20 +8,32 @@ JobPilot ist eine im Rahmen des DevOps-Projekts entwickelte Full-Stack-Webanwend
 
 ## 📌 Projektstatus
 
-- **Phase 1 umgesetzt**: Registrierung, Anmeldung, geschützte Routen, Dashboard, CRUD-Funktionalität und statistische Auswertung
-- **Phase 2 derzeit noch nicht implementiert**
-- **Docker- und CI/CD-Setup vorbereitet**, um das Projekt frühzeitig containerisiert demonstrieren und im weiteren Verlauf gezielt ausbauen zu können
+Das Projekt ist über eine reine CRUD-Anwendung hinausgewachsen und umfasst inzwischen einen vollständigen Nutzerkreislauf von Registrierung über Verwaltung bis Administration:
+
+- **Kernfunktionalität**: Registrierung, Login, geschützte Routen, Dashboard, CRUD-Funktionalität und statistische Auswertung
+- **Konto- & Sicherheitsfunktionen**: E-Mail-Verifizierung, „Passwort vergessen“-Flow, Profilverwaltung, Avatar-Upload und -Customizer
+- **Admin-Bereich**: Rollenverwaltung und Benutzerübersicht für Administrator:innen
+- **Komfortfunktionen**: Mehrsprachigkeit (DE/EN), PDF-Export, Sortierung, Cross-Tab-Synchronisation und ein Browser-Bookmarklet zum schnellen Erfassen von Bewerbungen direkt von Jobportalen aus
+- **Containerisiert und deploybar**: Docker- und CI/CD-Setup vorhanden; produktiv erreichbar über Vercel (Frontend) und Render (Backend)
 
 ---
 
 ## ✨ Funktionen
 
 - **Login & Registrierung** mit JWT-basierter Authentifizierung
+- **E-Mail-Verifizierung** nach der Registrierung sowie erneuter Versand des Bestätigungslinks
+- **Passwort vergessen / zurücksetzen** über einen zeitlich befristeten, gehashten Reset-Token
 - **Geschütztes Dashboard** für persönliche Bewerbungsdaten
-- **Status-Tracking** für verschiedene Phasen im Bewerbungsprozess
+- **Status-Tracking** über den gesamten Bewerbungs-Trichter (In Planung → Beworben → Nächste Stufe → Angenommen/Abgelehnt/Keine Antwort)
 - **CRUD-Funktionen** zum Erstellen, Bearbeiten und Löschen von Bewerbungen
-- **Suche & Filter** nach Firma, Position oder Standort
+- **Suche, Filter & Sortierung** nach Firma, Position, Standort, Datum oder Status
 - **Statistiken** zur schnellen Übersicht
+- **PDF-Export** der eigenen Bewerbungsübersicht (lokal im Browser erzeugt, inkl. Speichern-Dialog über die File System Access API, wo verfügbar)
+- **Profilverwaltung**: Name, E-Mail und Passwort ändern, Profilbild hochladen (Cloudinary) oder individuellen DiceBear-Avatar zusammenstellen
+- **Admin-Bereich** zur Verwaltung von Benutzerrollen und Accounts (nur für Rolle `admin`)
+- **Mehrsprachigkeit** (Deutsch/Englisch) via i18next
+- **Bookmarklet „Quick Add“**: Bewerbungen direkt von LinkedIn, Indeed, Stepstone, XING oder der Arbeitsagentur per Klick in einem Popup anlegen, ohne die Jobseite zu verlassen
+- **Cross-Tab-Synchronisation**: Änderungen (z. B. über das Bookmarklet-Popup) aktualisieren automatisch alle offenen Tabs
 - **Dark Mode** mit Speicherung der Benutzereinstellung
 - **Responsive UI** für Desktop und Mobile
 - **Demo-Modus für Docker**, damit die Anwendung ohne Login präsentiert werden kann
@@ -30,14 +42,19 @@ JobPilot ist eine im Rahmen des DevOps-Projekts entwickelte Full-Stack-Webanwend
 
 ## 🧰 Tech Stack
 
-| Bereich   | Technologie                                  |
-| --------- | -------------------------------------------- |
-| Frontend  | `React 19`, `Vite 7`, `CSS3`                 |
-| Backend   | `Node.js`, `Express.js 5`                    |
-| Datenbank | `PostgreSQL`                                 |
-| Auth      | `JWT`, `bcryptjs`                            |
-| DevOps    | `Docker`, `Docker Compose`, `GitHub Actions` |
-| API-Doku  | `Swagger`                                    |
+| Bereich         | Technologie                                          |
+| --------------- | ----------------------------------------------------- |
+| Frontend        | `React 19`, `Vite 7`, `React Router 6`, `CSS3`         |
+| Internationalisierung | `i18next`, `react-i18next`                       |
+| PDF-Export       | `jsPDF`, `jspdf-autotable`, File System Access API     |
+| Backend          | `Node.js`, `Express.js 5`                              |
+| Datenbank        | `PostgreSQL`                                           |
+| Auth             | `JWT`, `bcryptjs`                                      |
+| Bildupload       | `Cloudinary`, `Multer`                                 |
+| Transaktions-E-Mails | `Resend`                                           |
+| DevOps           | `Docker`, `Docker Compose`, `GitHub Actions`           |
+| Hosting          | `Vercel` (Frontend), `Render` (Backend)                |
+| API-Doku         | `Swagger` (OpenAPI 3, `swagger-ui-express`)             |
 
 ---
 
@@ -48,29 +65,58 @@ Dev-Ops/
 ├── README.md
 ├── .github/
 │   └── workflows/
-│       └── jobpilot-ci.yml
+│       ├── jobpilot-ci.yml   # Lint, Build, Docker-Images (+ Push zu GHCR)
+│       └── qa.yml            # Lint, Build, Playwright-E2E-Tests
 └── JobPilot/
     ├── docker-compose.yml
     ├── backend/
     │   ├── Dockerfile
-    │   ├── authController.js
-    │   ├── authMiddleware.js
-    │   ├── database.js
-    │   ├── migrate.js
-    │   ├── server.js
-    │   ├── swagger.yaml
+    │   ├── authController.js   # Register, Login, E-Mail-Verifizierung, Passwort-Reset
+    │   ├── authMiddleware.js   # JWT-Prüfung
+    │   ├── database.js         # DB-Pool & Schema-Initialisierung
+    │   ├── emailService.js     # Transaktions-E-Mails via Resend
+    │   ├── migrate.js          # Datenbankmigration
+    │   ├── server.js           # Routen: Auth, Profil, Bewerbungen, Statistiken, Admin
+    │   ├── swagger.yaml        # OpenAPI-Spezifikation
     │   └── package.json
     └── frontend/
         ├── Dockerfile
         ├── nginx.conf
+        ├── vercel.json
         ├── package.json
+        ├── public/
+        │   ├── flags/           # Sprach-Icons (DE/EN)
+        │   └── fonts/
         └── src/
             ├── App.jsx
-            ├── main.jsx
+            ├── main.jsx          # Routing
+            ├── i18n.js
+            ├── locales/          # de.json, en.json
             ├── components/
+            │   ├── Header/
+            │   ├── StatCards/
+            │   ├── SearchBar/
+            │   ├── BewerbungsCard/
+            │   ├── BewerbungsModal/
+            │   ├── DeleteConfirmModal/
+            │   ├── LogoutConfirmModal/
+            │   ├── Profile/
+            │   └── ProtectedRoute.jsx
             ├── pages/
+            │   ├── LandingPage.jsx
+            │   ├── Login.jsx / Register.jsx
+            │   ├── VerifyEmail.jsx / VerifyEmailConfirm.jsx
+            │   ├── ForgotPassword.jsx / ResetPassword.jsx
+            │   ├── AdminPage.jsx
+            │   ├── QuickAdd.jsx           # Zielseite des Bookmarklets
+            │   └── BookmarkletInstall.jsx # Installationsanleitung fürs Bookmarklet
             ├── services/
+            │   ├── api.js    # Bewerbungen/Statistiken
+            │   └── auth.js   # Login/Profil
             └── utils/
+                ├── constants.js
+                ├── pdfExport.js
+                └── syncBus.js   # Cross-Tab-Synchronisation
 ```
 
 ---
@@ -91,6 +137,8 @@ Danach ist die Anwendung erreichbar unter:
 - **Frontend:** `http://localhost:8080`
 - **Backend:** `http://localhost:3001`
 - **Health-Check:** `http://localhost:3001/health`
+
+> Für Bildupload (Cloudinary) und Transaktions-E-Mails (Resend) werden gültige API-Keys in `JobPilot/backend/.env` benötigt (siehe Abschnitt „Umgebungsvariablen" weiter unten). Ohne diese starten Login, Registrierung und CRUD-Funktionen weiterhin normal – lediglich Profilbild-Upload und der Versand von Verifizierungs-/Reset-Mails schlagen fehl.
 
 ### Einordnung des Demo-Modus im Docker-Setup
 
@@ -142,6 +190,8 @@ In diesem Modus wird bei Aufruf der Anwendung zunächst die Landing Page angezei
 ```bash
 cd JobPilot/backend
 npm install
+cp .env.example .env   # Werte anpassen, siehe unten
+npm run migrate
 npm start
 ```
 
@@ -165,79 +215,78 @@ Falls du lokal gegen dein eigenes Backend testen möchtest, kannst du in der Dat
 VITE_API_URL=http://localhost:3001/api
 ```
 
+Ist keine `VITE_API_URL` gesetzt, greift das Frontend standardmäßig auf das produktive Backend unter Render zurück.
+
+---
+
+## 🔧 Umgebungsvariablen
+
+### Backend (`JobPilot/backend/.env`, siehe `.env.example`)
+
+| Variable                | Beschreibung                                                          |
+| ------------------------ | --------------------------------------------------------------------- |
+| `DATABASE_URL`           | Verbindungsstring zur PostgreSQL-Datenbank                             |
+| `JWT_SECRET`             | Signaturschlüssel für JWTs                                             |
+| `PORT`                   | Port des Backends (Standard: `3001`)                                   |
+| `CLOUDINARY_CLOUD_NAME`  | Cloudinary-Account für Profilbild-Upload                               |
+| `CLOUDINARY_API_KEY`     | siehe oben                                                             |
+| `CLOUDINARY_API_SECRET`  | siehe oben                                                             |
+| `RESEND_API_KEY`         | API-Key für den Versand von Transaktions-E-Mails über [Resend](https://resend.com) |
+| `FROM_EMAIL`             | Absenderadresse (muss zu einer bei Resend verifizierten Domain passen) |
+| `FRONTEND_URL`           | Basis-URL des Frontends, wird für Links in E-Mails verwendet           |
+| `FRONTEND_URLS`          | Kommagetrennte Liste zusätzlich erlaubter CORS-Origins                 |
+
+### Frontend (Build-Time-Variablen)
+
+| Variable         | Beschreibung                                                      |
+| ----------------- | ------------------------------------------------------------------ |
+| `VITE_API_URL`     | Basis-URL der Backend-API (Standard-Fallback: produktives Render-Backend) |
+| `VITE_DEMO_MODE`   | `"true"` öffnet die App direkt im Dashboard ohne Login (siehe unten) |
+
 ---
 
 ## 🔐 Demo-Modus vs. echter Login
 
 | Einsatz                          | Einstellung              | Verhalten                                                         |
-| -------------------------------- | ------------------------ | ----------------------------------------------------------------- |
-| **Präsentation / Bewertung**     | `VITE_DEMO_MODE="true"`  | App öffnet direkt das Dashboard, kein Login erforderlich          |
-| **Regulärer Betrieb (Standard)** | `VITE_DEMO_MODE="false"` | Landing Page → Registrierung oder Anmeldung → Dashboard (mit JWT) |
+| --------------------------------- | ------------------------- | ------------------------------------------------------------------ |
+| **Präsentation / Bewertung**      | `VITE_DEMO_MODE="true"`   | App öffnet direkt das Dashboard, kein Login erforderlich           |
+| **Regulärer Betrieb (Standard)**  | `VITE_DEMO_MODE="false"`  | Landing Page → Registrierung/Anmeldung (inkl. E-Mail-Verifizierung) → Dashboard (mit JWT) |
 
 > Da es sich um eine **Build-Time-Variable** handelt, muss nach jeder Änderung ein Rebuild des Frontend-Images erfolgen: `docker compose build frontend`. Ein anschließender Hard Refresh im Browser (Cmd + Shift + R) stellt sicher, dass keine veraltete Version aus dem Browser-Cache geladen wird.
 
 ---
 
-## 🧪 End-to-End-Tests (Playwright) _(CI-Integration ausstehend)_
+## 🔖 Bookmarklet „Quick Add“
 
-Für das Projekt wurden **automatisierte End-to-End-Tests** mit [Playwright](https://playwright.dev/) implementiert. Die Tests befinden sich im Verzeichnis `JobPilot/e2e/` und decken die gesamte Benutzeroberfläche ab – von der Landing Page über Authentifizierung bis hin zur vollständigen CRUD-Funktionalität. Die lokale Ausführung ist vollständig funktionsfähig; die Einbindung in die CI/CD-Pipeline ist für einen nachfolgenden Schritt vorgesehen.
+Unter `/bookmarklet` findet sich eine Installationsanleitung für ein Browser-Bookmarklet, das auf unterstützten Jobportalen (LinkedIn, Indeed, Stepstone, XING, Arbeitsagentur) Position, Firma und Link automatisch ausliest und in einem kompakten Popup (`/quick-add`) zur schnellen Übernahme in JobPilot anbietet. Änderungen aus dem Popup werden per `syncBus` automatisch mit allen offenen JobPilot-Tabs synchronisiert.
 
-### Teststruktur
+---
 
-| Testprojekt     | Browser           | Modus      | Beschreibung                                       |
-| --------------- | ----------------- | ---------- | -------------------------------------------------- |
-| `demo-chromium` | Chromium          | Demo-Modus | Alle CRUD-, Filter- und Statistik-Tests            |
-| `demo-firefox`  | Firefox           | Demo-Modus | Cross-Browser-Abdeckung der Kernfunktionalitäten   |
-| `demo-mobile`   | Chromium (Mobile) | Demo-Modus | Responsive-Verhalten auf mobilen Viewports         |
-| `auth-chromium` | Chromium          | Auth-Modus | Login, Registrierung und geschützte Routen         |
-| `visual`        | Chromium          | Demo-Modus | Visuelle Regressionstests mit Screenshot-Vergleich |
+## 🌍 Mehrsprachigkeit
 
-### Tests ausführen
-
-Voraussetzung: Dependencies und Browser einmalig installieren.
-
-```bash
-cd JobPilot/e2e
-npm install
-npm run install:browsers   # Lädt Chromium und Firefox herunter
-```
-
-Danach:
-
-```bash
-npm test                   # Alle 80 funktionalen Tests (4 Projekte)
-npm run test:visual        # Visuelle Regressionstests (7 Tests)
-npm run test:update-snapshots  # Baseline-Screenshots neu generieren
-```
-
-> Die Tests starten automatisch einen lokalen Vite-Entwicklungsserver. Es muss kein Frontend vorab manuell gestartet werden.
-
-### Testabdeckung (80 Tests)
-
-- **Navigation & Routing**: Landing Page, Login, Registrierung, geschützte Routen, 404-Handling
-- **CRUD-Operationen**: Erstellen, Bearbeiten, Löschen von Bewerbungen inkl. Formularvalidierung
-- **Suche & Filter**: Freitextsuche, Statusfilter, Kombinationsfilter
-- **Statistiken**: Korrekte Darstellung der Status-Zähler nach Datenänderungen
-- **Dark Mode**: Umschaltung und Persistenz über `localStorage`
-- **Authentifizierung**: Login, Logout, Registrierung, Route-Guards
-- **Cross-Browser / Mobile**: Firefox und Chromium Mobile
+Die Benutzeroberfläche ist über `i18next`/`react-i18next` vollständig auf Deutsch und Englisch verfügbar. Die Übersetzungen liegen in `JobPilot/frontend/src/locales/` (`de.json`, `en.json`); die Sprachumschaltung ist über das Header-Menü erreichbar.
 
 ---
 
 ## 🔄 CI/CD-Pipeline
 
-Für das Projekt wurde eine GitHub-Actions-Pipeline in `.github/workflows/jobpilot-ci.yml` eingerichtet.
+Für das Projekt sind zwei GitHub-Actions-Workflows eingerichtet:
 
-### Die Pipeline führt automatisch aus:
+### `jobpilot-ci.yml`
 
-1. **Checkout des Repositories**
-2. **Node.js Setup**
-3. **Installation der Frontend-Dependencies**
-4. **Linting des Frontends** (ESLint)
-5. **Production Build des Frontends**
-6. **Syntax-Check des Backends**
-7. **Build der Docker-Images**
-8. Optional: **Push der Container-Images nach GHCR** bei Push auf `main`
+1. Checkout & Node.js-Setup
+2. Installation der Frontend-Dependencies
+3. Linting des Frontends (ESLint)
+4. Production Build des Frontends
+5. Syntax-Check des Backends
+6. Build der Docker-Images für Frontend und Backend
+7. Optional: **Push der Container-Images nach GHCR** bei Push auf `main`
+
+### `qa.yml`
+
+Läuft bei jedem Push auf `main`/`master` sowie bei Pull Requests: installiert die Frontend-Dependencies, lintet, baut das Frontend und führt anschließend Playwright-E2E-Tests (`npm run test:e2e`) aus.
+
+> **Hinweis:** Die End-to-End-Testsuite befindet sich aktuell im Aufbau; der `test:e2e`-Skript-Eintrag und die zugehörigen Playwright-Tests sind im Frontend-`package.json` noch zu ergänzen, damit der `qa.yml`-Workflow erfolgreich durchläuft.
 
 Damit werden zentrale DevOps-Schritte wie **Build, Qualitätssicherung und Bereitstellung der Laufzeitumgebung** in strukturierter Form automatisiert abgedeckt.
 
@@ -245,57 +294,83 @@ Damit werden zentrale DevOps-Schritte wie **Build, Qualitätssicherung und Berei
 
 ## 🌐 API-Übersicht
 
-### Auth
-
-| Methode | Endpoint             | Beschreibung               |
-| ------- | -------------------- | -------------------------- |
-| `POST`  | `/api/auth/register` | Benutzer registrieren      |
-| `POST`  | `/api/auth/login`    | Benutzer anmelden          |
-| `GET`   | `/api/auth/me`       | Aktuellen Benutzer abrufen |
-
-### Bewerbungen
-
-| Methode  | Endpoint               | Beschreibung               |
-| -------- | ---------------------- | -------------------------- |
-| `GET`    | `/api/bewerbungen`     | Alle Bewerbungen abrufen   |
-| `GET`    | `/api/bewerbungen/:id` | Einzelne Bewerbung abrufen |
-| `POST`   | `/api/bewerbungen`     | Neue Bewerbung erstellen   |
-| `PUT`    | `/api/bewerbungen/:id` | Bewerbung aktualisieren    |
-| `DELETE` | `/api/bewerbungen/:id` | Bewerbung löschen          |
-
-### Statistiken
-
-| Methode | Endpoint           | Beschreibung                      |
-| ------- | ------------------ | --------------------------------- |
-| `GET`   | `/api/statistiken` | Status-Zähler und Gesamtübersicht |
-
-Zusätzlich steht die Swagger-Dokumentation bereit unter:
+Vollständig und interaktiv dokumentiert ist die API über Swagger unter:
 
 ```text
 http://localhost:3001/api-docs
 ```
 
+### Auth
+
+| Methode | Endpoint                          | Auth | Beschreibung                              |
+| ------- | ---------------------------------- | ---- | ------------------------------------------ |
+| `POST`  | `/api/auth/register`               | –    | Benutzer registrieren, versendet Verifizierungs-Mail |
+| `POST`  | `/api/auth/login`                  | –    | Benutzer anmelden (erfordert verifizierte E-Mail) |
+| `GET`   | `/api/auth/verify-email`           | –    | E-Mail-Adresse per Token bestätigen         |
+| `POST`  | `/api/auth/resend-verification`    | –    | Verifizierungs-Mail erneut anfordern        |
+| `POST`  | `/api/auth/forgot-password`        | –    | Passwort-Reset-Mail anfordern               |
+| `POST`  | `/api/auth/reset-password`         | –    | Passwort mit gültigem Reset-Token setzen    |
+| `GET`   | `/api/auth/me`                     | JWT  | Aktuellen Benutzer abrufen                  |
+| `PUT`   | `/api/auth/profile`                | JWT  | Namen aktualisieren                         |
+| `PUT`   | `/api/auth/profile/email`          | JWT  | E-Mail-Adresse ändern                       |
+| `PUT`   | `/api/auth/profile/password`       | JWT  | Passwort ändern                             |
+| `POST`  | `/api/auth/profile/image`          | JWT  | Profilbild hochladen (Cloudinary)           |
+| `DELETE`| `/api/auth/profile/image`          | JWT  | Profilbild löschen                          |
+| `PUT`   | `/api/auth/profile/avatar-config`  | JWT  | DiceBear-Avatar-Konfiguration speichern     |
+
+### Bewerbungen (jeweils nur für den eingeloggten Benutzer)
+
+| Methode  | Endpoint               | Auth | Beschreibung               |
+| -------- | ----------------------- | ---- | --------------------------- |
+| `GET`    | `/api/bewerbungen`      | JWT  | Alle Bewerbungen abrufen (optional `?status=`) |
+| `GET`    | `/api/bewerbungen/:id`  | JWT  | Einzelne Bewerbung abrufen  |
+| `POST`   | `/api/bewerbungen`      | JWT  | Neue Bewerbung erstellen    |
+| `PUT`    | `/api/bewerbungen/:id`  | JWT  | Bewerbung aktualisieren     |
+| `DELETE` | `/api/bewerbungen/:id`  | JWT  | Bewerbung löschen           |
+
+### Statistiken
+
+| Methode | Endpoint           | Auth | Beschreibung                      |
+| ------- | ------------------- | ---- | ----------------------------------- |
+| `GET`   | `/api/statistiken`  | JWT  | Status-Zähler und Gesamtübersicht  |
+
+### Admin (nur für Rolle `admin`)
+
+| Methode  | Endpoint                     | Auth        | Beschreibung                            |
+| -------- | ----------------------------- | ----------- | ----------------------------------------- |
+| `GET`    | `/api/admin/users`            | JWT + Admin | Alle Benutzer inkl. Bewerbungsanzahl abrufen |
+| `PATCH`  | `/api/admin/users/:id/role`   | JWT + Admin | Rolle eines Benutzers ändern (`user`/`admin`) |
+| `DELETE` | `/api/admin/users/:id`        | JWT + Admin | Benutzer löschen                          |
+
 ---
 
 ## 🗃️ Datenmodell
 
+### `users`
+
+| Feld                                     | Beschreibung                                      |
+| ------------------------------------------ | --------------------------------------------------- |
+| `email`, `password_hash`, `name`           | Grunddaten des Accounts                             |
+| `role`                                     | `user` (Standard) oder `admin`                      |
+| `profile_image_url`                        | Cloudinary-URL des hochgeladenen Profilbilds         |
+| `avatar_config`                            | Gespeicherte Konfiguration des DiceBear-Avatars (JSON) |
+| `email_verified_at`, `email_verification_token(_expires)` | E-Mail-Verifizierungsstatus              |
+
+### `bewerbungen`
+
 Die zentrale Tabelle `bewerbungen` enthält unter anderem folgende Felder:
 
-- `position`
-- `firma`
-- `status`
-- `datum`
-- `standort`
-- `ansprechpartner`
-- `notizen`
-- `bewerbungsart`
-- `startdatum`
-- `link`
-- `gehalt`
-- `waehrung`
-- `user_id`
+- `position`, `firma`, `status`, `datum`
+- `standort`, `ansprechpartner`, `notizen`
+- `bewerbungsart`, `startdatum`, `link`
+- `gehalt`, `waehrung`
+- `user_id` (Fremdschlüssel auf `users`)
 
 Dadurch können Bewerbungen **benutzerbezogen getrennt gespeichert** und im regulären Anwendungsbetrieb authentifiziert verwaltet werden.
+
+### `password_reset_tokens`
+
+Speichert gehashte, zeitlich befristete Tokens für den „Passwort vergessen“-Flow (`user_id`, `token_hash`, `expires_at`).
 
 ---
 
@@ -322,12 +397,11 @@ npm run preview  # Zeigt den Production-Build lokal an
 
 ## ✅ Fazit
 
-JobPilot verbindet die in **Phase 1 entwickelte Webanwendung** mit einem **strukturierten Docker-Setup**, einer **vorbereiteten CI/CD-Pipeline** sowie einer **umfassenden automatisierten Testabdeckung**. Dadurch ist das Projekt nicht nur lokal lauffähig, sondern kann reproduzierbar demonstriert und in weiteren Entwicklungsphasen zielgerichtet erweitert werden.
+JobPilot verbindet eine vollständige Bewerbungsverwaltung (inkl. E-Mail-Verifizierung, Passwort-Reset, Profil- und Rollenverwaltung) mit Komfortfunktionen wie Mehrsprachigkeit, PDF-Export und einem Bookmarklet zur schnellen Erfassung von Bewerbungen direkt aus Jobportalen. Ergänzt wird dies durch ein **strukturiertes Docker-Setup** und eine **CI/CD-Pipeline**, wodurch das Projekt reproduzierbar demonstriert, produktiv betrieben (Vercel/Render) und zielgerichtet weiterentwickelt werden kann.
 
 Für die Abgabe ist insbesondere hervorzuheben:
 
 - Die Anwendung ist **containerisiert** und damit reproduzierbar ausführbar
 - Sie lässt sich mittels **Docker Compose** mit geringem Aufwand starten
-- Eine **CI/CD-Pipeline** für Build- und Prüfprozesse ist vorbereitet
-- **80 automatisierte End-to-End-Tests** mit Playwright sichern Funktionalität, Authentifizierung, Cross-Browser-Verhalten und visuelle Korrektheit ab
-- Der **Login-Prozess bleibt für die spätere reale Nutzung erhalten**, während der **Demo-Modus** die Präsentation ohne vorherige Registrierung ermöglicht
+- Eine **CI/CD-Pipeline** für Build-, Prüf- und Deployment-Prozesse ist eingerichtet
+- Der **Login-Prozess inklusive E-Mail-Verifizierung** bleibt für die reale Nutzung erhalten, während der **Demo-Modus** die Präsentation ohne vorherige Registrierung ermöglicht
